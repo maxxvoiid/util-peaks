@@ -1,2 +1,2 @@
-# util-peaks
-Util Peaks: a modpack for Psych Engine where you can add and customize new features!
+# Util Peaks For FNF Psych Engine 0.7.3
+Util Peaks is a modpack where you can add and customize some extra features to your FNF Psych Engine!<br><br>Util Peaks includes you:<br><ul><li>Improved Timer Bar (Modern Version &amp; Boucing on Beat Hit)</li><li>Shaking Icons at low health</li><li>BF Winning Icon</li><li>Rating Counter</li><li>Improved Ratings &amp; Combos</li><li>Marvelous Rating</li><li>Resume Countdown</li><li class="SelectedElement">The sound of the scratched disk on combo break<br></li></ul>and more with this modpack!<br><br><b><span class="RedColor">THIS WORKS ONLY FOR PSYCH ENGINE 0.7.3 AT THE MOMENT!!</span></b><br><span class="RedColor"><b>CORRECT OPERATION OF THE PSYCH ENGINE MOBILE PORT IS NOT ASSURED!!!</b></span><br>
