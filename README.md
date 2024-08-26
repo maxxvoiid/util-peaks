@@ -16,10 +16,10 @@ Util Peaks includes you:
 and more with this modpack!
 
 <br><br>Check out some amazing images of what Util Peaks looks like!
-<br><img src="./for_github/images/utilpeakscover.png" alt="Util Peaks Cover" width="350"/>
-<img src="./for_github/images/inthegameplay.png" alt="Util Peaks Gameplay" width="350"/>
-<br><img src="./for_github/images/inthemodmenu.png" alt="Util Peaks Mod Menu" width="350"/>
-<img src="./for_github/images/inthesettings.png" alt="Util Peaks Settings" width="350"/>
+<br><img src="./for_github/images/utilpeakscover.png" alt="Util Peaks Cover" width="360"/>
+<img src="./for_github/images/inthegameplay.png" alt="Util Peaks Gameplay" width="360"/>
+<br><img src="./for_github/images/inthemodmenu.png" alt="Util Peaks Mod Menu" width="360"/>
+<img src="./for_github/images/inthesettings.png" alt="Util Peaks Settings" width="360"/>
 
 <br><br><b>To install Util Peaks</b>
 <br>You need <a href="https://github.com/ShadowMario/FNF-PsychEngine/releases/tag/0.7.3" class="SelectedElement">Psych Engine 0.7.3</a>, it is <span class="RedColor">not recommended</span> to use any other PE version than this one.
