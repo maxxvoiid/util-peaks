@@ -1,0 +1,167 @@
+[
+	// All types:
+	// bool - Has a checkbox only, meaning it can only be 'true' or 'false'.
+	// int - Numbers with no decimals (ex. 1, 3, 9, -1)
+	// float - Similar to int, but numbers can have decimals (ex. 1.5, 2.75)
+	// percent - Similar to float, but the displayed value is multiplied by 100 (ex. 1.1 will be displayed as "110%")
+	// string - A text instead of numbers/false and true, you gotta set up "options" variable to it
+	// key - TO BE IMPLEMENTED
+
+    {
+		"save": "moderntimetext",
+		"name": "Modern Time Text", //Name shown on the mod settings menu
+		"type": "bool",
+		"description": "If checked, it will display the elapsed time and the total time of the song on the time bar. For example: '0:30 (1:25)'", //Description shown on the mod settings menu
+		"value": true //This is the default value
+	},
+    {
+		"save": "bouncingtimetext",
+		"name": "Bouncing Time Text", //Name shown on the mod settings menu
+		"type": "bool",
+		"description": "If checked, the time bar text will bounce on every beat hit", //Description shown on the mod settings menu
+		"value": true //This is the default value
+	},
+    {
+		"save": "shakingicons",
+		"name": "Shaking Icons:",
+		"type": "string",
+		"description": "When the selected character has low health, their icon will shake slightly",
+		"value": "Opponent & BF",
+		"format": "%v", //Text formatting, '%v' means 'current value', so if my current value is 'Fri', it wil be shown as 'Friday'. You can also use '%d' to represent the default value
+
+		// String only variables
+		"options": ["Opponent & BF", "Only Opponent", "Only BF", "None"] //Available options to choose
+	},
+    {
+		"save": "bfwinicon",
+		"name": "BF Winning Icon", //Name shown on the mod settings menu
+		"type": "bool",
+		"description": "If checked, Boyfriend will display a winning icon when the opponent has low health", //Description shown on the mod settings menu
+		"value": true //This is the default value
+	},
+    {
+		"save": "ratingcounterenabled",
+		"name": "Rating Counter", //Name shown on the mod settings menu
+		"type": "bool",
+		"description": "If checked, you can see how many Sicks, Goods, Bads, etc; you've hit on the left", //Description shown on the mod settings menu
+		"value": true //This is the default value
+	},
+    {
+		"save": "fullfcname",
+		"name": "Full FC Rating Name", //Name shown on the mod settings menu
+		"type": "bool",
+		"description": "If checked, FC ratings will use their full names instead of abbreviations (e.g., 'SFC' will become 'Sick Full Combo')", //Description shown on the mod settings menu
+		"value": false //This is the default value
+	},
+    {
+		"save": "newratings",
+		"name": "New Ratings", //Name shown on the mod settings menu
+		"type": "bool",
+		"description": "If checked, 'Perfect!!' will change to 'SSSS', 'Sick!' will change to 'SSS', and so on", //Description shown on the mod settings menu
+		"value": true //This is the default value
+	},
+    {
+		"save": "showratingms",
+		"name": "Show MS Rating", //Name shown on the mod settings menu
+		"type": "bool",
+		"description": "If checked, hitting a note will display the milliseconds it took you to hit it", //Description shown on the mod settings menu
+		"value": true //This is the default value
+	},
+	{
+		"save": "shownps",
+		"name": "Show NPS", //Name shown on the mod settings menu
+		"type": "bool",
+		"description": "If checked, the game will show your Notes Per Second in the score text", //Description shown on the mod settings menu
+		"value": false //This is the default value
+	},
+    {
+		"save": "missenabled",
+		"name": "Miss Rating", //Name shown on the mod settings menu
+		"type": "bool",
+		"description": "If checked, losing a combo greater than 10 will display a 'Miss...' rating (does not affect gameplay)", //Description shown on the mod settings menu
+		"value": true //This is the default value
+	},
+    {
+		"save": "showlesscombo",
+		"name": "Show Combo Lower Than 10", //Name shown on the mod settings menu
+		"type": "bool",
+		"description": "If checked, it will display the combo even if it is less than 10", //Description shown on the mod settings menu
+		"value": false //This is the default value
+	},
+	{
+		"save": "marvelousenabled",
+		"name": "Marvelous Rating", //Name shown on the mod settings menu
+		"type": "bool",
+		"description": "If checked, it will toggle an additional rating when achieving higher accuracy than 'Sick!'", //Description shown on the mod settings menu
+		"value": true //This is the default value
+	},
+	{
+		"save": "marvelousms",
+		"name": "Marvelous Hit Windows (ms):",
+		"type": "float", //
+		"description": "If 'Marvelous Rating' is checked, you can adjust the amount of the time you have to press a Marvelous in milliseconds",
+		"value": 25,
+	
+		// Int/Float/Percent only variables
+		"min": 5, //How low can the value be
+		"max": 25, //How high can the value be
+		"step": 1, //How much is changed at once when you press left/right
+
+		// Float/Percent only variables
+		"decimals": 0, //If your option is type 'float' or 'percent', you should probably make it have atleast 1 decimal places
+		"scroll": 50 //How fast you scroll while holding left/right (in this case, it changes 5 per second)
+	},
+	{
+		"save": "onlymarvelous",
+		"name": "Only Marvelous", //Name shown on the mod settings menu
+		"type": "bool",
+		"description": "<<< FLASH WARNING!!! >>>\nIf checked, you can only get Marvelous Rating on songs, otherwise you will get a popup image with a funny sound", //Description shown on the mod settings menu
+		"value": false //This is the default value
+	},
+	{
+		"save": "onlymarvelousvolume",
+		"name": "Funny Sounds Volume:",
+		"type": "percent", //
+		"description": "If 'Only Marvelous' is checked, you can adjust the volume of the funny sounds by not giving it 'Marvelous'",
+		"value": 0.6,
+	
+		// Int/Float/Percent only variables
+		"min": 0, //How low can the value be
+		"max": 1, //How high can the value be
+		"step": 0.1, //How much is changed at once when you press left/right
+
+		// Float/Percent only variables
+		"decimals": 1, //If your option is type 'float' or 'percent', you should probably make it have atleast 1 decimal places
+		"scroll": 2.5 //How fast you scroll while holding left/right (in this case, it changes 5 per second)
+	},
+    {
+		"save": "resumecountenabled",
+		"name": "Resume Countdown", //Name shown on the mod settings menu
+		"type": "bool",
+		"description": "If checked, when resuming the game, you will have 3 seconds to prepare before continuing", //Description shown on the mod settings menu
+		"value": true //This is the default value
+	},
+	{
+		"save": "misssound",
+		"name": "Scratch Disk on Combo Break", //Name shown on the mod settings menu
+		"type": "bool",
+		"description": "If checked, losing a combo of more than 10 will trigger the original scratched disk sound (the psych guys removed it :c)", //Description shown on the mod settings menu
+		"value": true //This is the default value
+	},
+	{
+		"save": "missvolume",
+		"name": "Scratch Disk Volume:",
+		"type": "percent", //
+		"description": "If 'Sound of Scratched Disk on Combo Break' is checked, you can adjust the volume of the scratched disk sound when the combo is broken",
+		"value": 0.5,
+	
+		// Int/Float/Percent only variables
+		"min": 0, //How low can the value be
+		"max": 1, //How high can the value be
+		"step": 0.1, //How much is changed at once when you press left/right
+
+		// Float/Percent only variables
+		"decimals": 1, //If your option is type 'float' or 'percent', you should probably make it have atleast 1 decimal places
+		"scroll": 2.5 //How fast you scroll while holding left/right (in this case, it changes 5 per second)
+	}
+]

@@ -1,0 +1,9 @@
+{
+	"name": "Utils Peaks 1.0",
+	"description": "This mod pack makes your playing experience more comfortable with cool features.\n\nIt includes:\n- Improved Time Bar (Modern Version & Boucing)\n- Shaking Icons at low health & BF Winning Icon\n- Rating Counter\n- Improved Ratings & Combos\n- Adds the Marvelous rating\n- Resume Countdown\n- Vanilla Combo Numbers\n- The sound of the scratched disk is back\n\nMod Pack created by MaxxVoiid :)",
+	"restart":false,
+	"runsGlobally": true,
+	"color": [170, 0, 255],
+	"discordRPC": "863222024192262205",
+	"iconFramerate": 10
+}
