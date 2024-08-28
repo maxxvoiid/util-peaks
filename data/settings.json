@@ -163,5 +163,12 @@
 		// Float/Percent only variables
 		"decimals": 1, //If your option is type 'float' or 'percent', you should probably make it have atleast 1 decimal places
 		"scroll": 2.5 //How fast you scroll while holding left/right (in this case, it changes 5 per second)
+	},
+	{
+		"save": "opponentplay",
+		"name": "Play As Oppenent", //Name shown on the mod settings menu
+		"type": "bool",
+		"description": "If checked, you will play as the opponent instead of Boyfriend", //Description shown on the mod settings menu
+		"value": false //This is the default value
 	}
 ]
