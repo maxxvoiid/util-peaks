@@ -2,12 +2,7 @@ local iconsShake = getModSetting('shakingicons')
 local bfWinIcon = getModSetting('bfwinicon')
 local opponentPlay = getModSetting('opponentplay')
 
-iconPath = nil
-desiredIcon = 'icons/win-'
-defaultIcon = 'icons/win-bf' -- Default
-
 bfWinningIcons = bfWinIcon
-dadWinningIcons = false
 
 bfLoseShakeIcon = true
 dadLoseShakeIcon = true
@@ -64,15 +59,6 @@ function createIcons()
 		setProperty('winIcoPlayer.flipX', true)
 		setProperty('winIcoPlayer.visible', false)
 	end
-
-	--Opponent
-	if dadWinningIcons == true then
-		makeLuaSprite('winIcoOpponent', 'icons/win-'..getProperty('dad.healthIcon'), getProperty('iconP2.x'), getProperty('iconP2.y'))
-		setObjectCamera('winIcoOpponent', 'hud')
-		addLuaSprite('winIcoOpponent', true)
-		setProperty('winIcoOpponent.flipX', false)
-		setProperty('winIcoOpponent.visible', false)
-	end
 end
 
 function onUpdatePost(elapsed)
@@ -118,33 +104,6 @@ function onUpdatePost(elapsed)
 				end
 			end
 		end
-
-		--Opponent
-		if dadWinningIcons == true then
-			setObjectOrder('winIcoOpponent', getObjectOrder('iconP2') - 1)
-			makeLuaSprite('winIcoOpponent', 'icons/win-'..getProperty('dad.healthIcon'), getProperty('iconP2.x'), getProperty('iconP2.y'))
-			setObjectCamera('winIcoOpponent', 'hud')
-			addLuaSprite('winIcoOpponent', true)
-			setProperty('winIcoOpponent.flipX', false)
-			setProperty('winIcoOpponent.visible', false)
-
-			--Set pos
-			setProperty('winIcoOpponent.x', getProperty('iconP2.x'))
-			setProperty('winIcoOpponent.angle', getProperty('iconP2.angle'))
-			setProperty('winIcoOpponent.alpha', getProperty('iconP2.alpha'))
-			setProperty('winIcoOpponent.y', getProperty('iconP2.y'))
-			setProperty('winIcoOpponent.scale.x', getProperty('iconP2.scale.x'))
-			setProperty('winIcoOpponent.scale.y', getProperty('iconP2.scale.y'))
-			
-			--Toggle win icon
-			if getProperty('health') <= 0.4 then
-				setProperty('iconP2.visible', false)
-				setProperty('winIcoOpponent.visible', true)
-			else
-				setProperty('iconP2.visible', true)
-				setProperty('winIcoOpponent.visible', false)
-			end
-		end
 end
 
 function onBeatHit()
@@ -188,7 +147,6 @@ function onEvent(name, value1, value2, strumTime)
 		if name == 'Change Character' then
 			--Update characters
 			removeLuaSprite('winIcoPlayer', true)
-			removeLuaSprite('winIcoOpponent', true)
 			createIcons()
 		end
 end
