@@ -79,31 +79,41 @@ function onUpdatePost(elapsed)
 			setProperty('winIcoPlayer.y', getProperty('iconP1.y'))
 			setProperty('winIcoPlayer.scale.x', getProperty('iconP1.scale.x'))
 			setProperty('winIcoPlayer.scale.y', getProperty('iconP1.scale.y'))
+		end
 
-			--Toggle win icon
+			-- Handle Icons
 			if not opponentPlay then
-				if getProperty('health') >= 1.62 then
-					setProperty('iconP1.visible', false)
-					setProperty('winIcoPlayer.visible', true)
-				else
-					setProperty('iconP1.visible', true)
-					setProperty('winIcoPlayer.visible', false)
+				if bfWinningIcons == true then
+					if getProperty('health') >= 1.62 then
+						setProperty('iconP1.visible', false)
+						setProperty('winIcoPlayer.visible', true)
+					else
+						setProperty('iconP1.visible', true)
+						setProperty('winIcoPlayer.visible', false)
+					end
 				end
 			else
 				-- This here fixes bugs with icons in Play As Opponent
 
-				if getProperty('health') <= 0.38 then -- BF Winning Icon
-					setProperty('iconP1.visible', false)
-					setProperty('winIcoPlayer.visible', true)
-				elseif getProperty('health') >= 1.62 then -- BF Losing Icon
-					setProperty('iconP1.animation.curAnim.curFrame', 1)
-				else -- BF Normal Icon (I've had serious problems with this)
-					setProperty('iconP1.animation.curAnim.curFrame', 0)
-					setProperty('iconP1.visible', true)
-					setProperty('winIcoPlayer.visible', false)
+				if bfWinningIcons == true then
+					if getProperty('health') <= 0.38 then -- BF Winning Icon
+						setProperty('iconP1.visible', false)
+						setProperty('winIcoPlayer.visible', true)
+					elseif getProperty('health') >= 1.62 then -- BF Losing Icon
+						setProperty('iconP1.animation.curAnim.curFrame', 1)
+					else -- BF Normal Icon (I've had serious problems with this)
+						setProperty('iconP1.animation.curAnim.curFrame', 0)
+						setProperty('iconP1.visible', true)
+						setProperty('winIcoPlayer.visible', false)
+					end
+				else
+					if getProperty('health') >= 1.62 then -- BF Losing Icon
+						setProperty('iconP1.animation.curAnim.curFrame', 1)
+					else -- BF Normal Icon
+						setProperty('iconP1.animation.curAnim.curFrame', 0)
+					end
 				end
 			end
-		end
 end
 
 function onBeatHit()
