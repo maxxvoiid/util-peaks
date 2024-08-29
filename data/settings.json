@@ -53,11 +53,25 @@
 		"description": "If checked, FC ratings will use their full names instead of abbreviations (e.g., 'SFC' will become 'Sick Full Combo')", //Description shown on the mod settings menu
 		"value": false //This is the default value
 	},
+	{
+		"save": "compactscore",
+		"name": "Compact Score Text", //Name shown on the mod settings menu
+		"type": "bool",
+		"description": "If checked, the Score Text will be compacted to display information more concisely", //Description shown on the mod settings menu
+		"value": false //This is the default value
+	},
     {
 		"save": "newratings",
 		"name": "New Ratings", //Name shown on the mod settings menu
 		"type": "bool",
 		"description": "If checked, 'Perfect!!' will change to 'SSSS', 'Sick!' will change to 'SSS', and so on", //Description shown on the mod settings menu
+		"value": true //This is the default value
+	},
+	{
+		"save": "colorfulratings",
+		"name": "Colorful Ratings", //Name shown on the mod settings menu
+		"type": "bool",
+		"description": "If checked, the 'Sick' rating will be light blue, 'Good' will be green, and so on", //Description shown on the mod settings menu
 		"value": true //This is the default value
 	},
     {
@@ -80,6 +94,13 @@
 		"type": "bool",
 		"description": "If checked, losing a combo greater than 10 will display a 'Miss...' rating (does not affect gameplay)", //Description shown on the mod settings menu
 		"value": true //This is the default value
+	},
+	{
+		"save": "removeinitialzeros",
+		"name": "Remove Initial Zeros Combo", //Name shown on the mod settings menu
+		"type": "bool",
+		"description": "If checked, leading zeros in the combo count will be removed (e.g., '005' will become '5' and '018' will become '18')", //Description shown on the mod settings menu
+		"value": false //This is the default value
 	},
     {
 		"save": "showlesscombo",
