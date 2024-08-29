@@ -6,7 +6,8 @@ local removeInitialZeros = getModSetting('removeinitialzeros')
 local showRatingMS = getModSetting('showratingms')
 local showLessCombo = getModSetting('showlesscombo')
 local missDiskSoundEnabled = getModSetting('misssound')
-local missDiskVolume = getModSetting('missvolume') 
+local missDiskVolume = getModSetting('missvolume')
+local opponentPlay = getModSetting('opponentplay')
 
 -- Settings (Player) --
     local visible = true  -- Show it?
@@ -202,6 +203,7 @@ local MODES = {
 -----------------------------------------------------------------------|By Unholywanderer04|------------------------------------------------------------------------------------------
 
 function onCreatePost()
+    opponentName = getProperty('dad.curCharacter')
     clientComboStacking = getPropertyFromClass('backend.ClientPrefs', 'data.comboStacking')
     mainOffset = getPropertyFromClass('backend.ClientPrefs', 'data.comboOffset') -- rating offsets 
     -- ( [1] Rating X | [2] Rating Y | [3] Number X | [4] Number Y ) 
@@ -320,12 +322,26 @@ function onUpdatePost(e)
 
         if constantGameCam then
             if camSet == 'game' and visible then -- no point in doing it if not on game cam
-                bf1 = getMidpointX('boyfriend') - (getProperty('boyfriend.width') / 2) - 120
-                bf2 = ((getMidpointY('boyfriend') - (getProperty('boyfriend.height') / 1.7)) / (pixel and 1.5 or 1))
-
-                ratingPos.game  = {x = bf1, y = bf2}
-                numPos.game     = {x = bf1 - 40, y = bf2 + 100}
-                comboPos.game.y = bf2 + 100 -- the x doesnt matter right here
+                -- shitty thing for Opponent Play to have the rating on the opponent
+                if opponentPlay then
+                    if opponentName == 'pico' then -- Pico i hate u, why are you making me do thissssssssss
+                        dad1 = getMidpointX('boyfriend') - (getProperty('boyfriend.width') / 2) - 240
+                        dad2 = ((getMidpointY('boyfriend') - (getProperty('boyfriend.height') / 1.7)) / (pixel and 1.5 or 1))
+                    else
+                        dad1 = getMidpointX('dad') + (getProperty('dad.width') / (2 * (pixelOp and -5 or 1)))
+                        dad2 = getMidpointY('dad') - (getProperty('dad.height') / (pixelOp and 2 or 4))
+                    end
+    
+                    ratingPos.game = {x = dad1, y = dad2}
+                    numPos.game    = {x = ratingPos.game.x - 40, y = ratingPos.game.y + 100}
+                else
+                    bf1 = getMidpointX('boyfriend') - (getProperty('boyfriend.width') / 2) - 120
+                    bf2 = ((getMidpointY('boyfriend') - (getProperty('boyfriend.height') / 1.7)) / (pixel and 1.5 or 1))
+    
+                    ratingPos.game  = {x = bf1, y = bf2}
+                    numPos.game     = {x = bf1 - 40, y = bf2 + 100}
+                    comboPos.game.y = bf2 + 100 -- the x doesnt matter right here
+                end
             end
 
             if camSetOp == 'game' and visibleOp then
