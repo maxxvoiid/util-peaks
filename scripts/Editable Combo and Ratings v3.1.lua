@@ -1,10 +1,12 @@
 local marvelousRatingEnabled = getModSetting('marvelousenabled')
 local marvelousRatingMs = getModSetting('marvelousms')
 local missRatingEnabled = getModSetting('missenabled')
+local colorfulRatings = getModSetting('colorfulratings')
+local removeInitialZeros = getModSetting('removeinitialzeros')
 local showRatingMS = getModSetting('showratingms')
 local showLessCombo = getModSetting('showlesscombo')
 local missDiskSoundEnabled = getModSetting('misssound')
-local missDiskVolume = getModSetting('missvolume')
+local missDiskVolume = getModSetting('missvolume') 
 
 -- Settings (Player) --
     local visible = true  -- Show it?
@@ -20,7 +22,7 @@ local missDiskVolume = getModSetting('missvolume')
     }
 
     local msTxt        = showRatingMS     -- Show your hit milliseconds next to the rating
-    local foreverCount = false     -- Shows combo one by one, like forever engine 
+    local foreverCount = removeInitialZeros     -- Shows combo one by one, like forever engine 
     local countMisses  = false     -- If show.missNums is true, then show the total misses each miss (Like Forever Engine)
 
     -- path to images, for both ratings and numbers | Will be used for all proceeding images
@@ -112,11 +114,9 @@ local missDiskVolume = getModSetting('missvolume')
 
 local MODES = {
     PLAYER = {
-        stacking       = true, -- Only 1 set of numbers and ratings are shown at a time | Helps prevent lag
-
         stationary     = false, -- Prevent the Rating hop | recommended with no stacking
 
-        colorRatings   = true, -- Color the ratings based on which you get, Sick is blue, good is green, etc | NEEDS TO BE ON FOR THESE OTHER RATING COLOR SETTINGS TO WORK
+        colorRatings   = colorfulRatings, -- Color the ratings based on which you get, Sick is blue, good is green, etc | NEEDS TO BE ON FOR THESE OTHER RATING COLOR SETTINGS TO WORK
         colorSyncing   = false, -- Rating takes color of direction pressed | Overwrites colorRatings and fcColorRating
         fcColorRating  = false, -- Colors Ratings based of FC level, like andromeda!!!
         colorFade      = false, -- Fades color back to normal
@@ -202,6 +202,7 @@ local MODES = {
 -----------------------------------------------------------------------|By Unholywanderer04|------------------------------------------------------------------------------------------
 
 function onCreatePost()
+    clientComboStacking = getPropertyFromClass('backend.ClientPrefs', 'data.comboStacking')
     mainOffset = getPropertyFromClass('backend.ClientPrefs', 'data.comboOffset') -- rating offsets 
     -- ( [1] Rating X | [2] Rating Y | [3] Number X | [4] Number Y ) 
 
@@ -313,7 +314,7 @@ function onUpdatePost(e)
         setProperty('showRating', not visible)
         setProperty('showComboNum', not visible)
 
-        eh = (MODES.PLAYER.stacking and getProperty('combo') + misses or 0)
+        eh = (clientComboStacking and getProperty('combo') + misses or 0)
         isThousand = getProperty('combo') >= 999
         setProperty('msTxt.visible', msTxt)
 
@@ -508,7 +509,7 @@ end
 function noteMiss()
     checkCFC()
     if show.missSprite and (playerComboRest >= 10 or showLessCombo == true) then
-        local missSpr = MODES.PLAYER.stacking and 'missRating'..eh or 'rating0'
+        local missSpr = clientComboStacking and 'missRating'..eh or 'rating0'
         local missImage = path.ratings..missType
         local x, y = getXandY(ratingPos, true, true) 
         
