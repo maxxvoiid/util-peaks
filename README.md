@@ -1,5 +1,4 @@
-# Util Peaks EXPERIMENTAL For FNF Psych Engine 0.7.3
-## BEWARE!!! This is an EXPERIMENTAL branch, elements may fail or more!
+# Util Peaks For FNF Psych Engine 0.7.3
 
 <img src="./for_github/images/utilpeakslogopng.png" alt="Util Peaks Logo" width="700"/>
 
