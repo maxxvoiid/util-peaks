@@ -4,6 +4,8 @@ local ratingCounterEnabled = getModSetting('ratingcounterenabled')
 
 local fullFcName = getModSetting('fullfcname')
 
+local compactScore = getModSetting('compactscore')
+
 local marvelousRatingEnabled = getModSetting('marvelousenabled')
 local marvelousRatingMs = getModSetting('marvelousms')
 
@@ -14,6 +16,7 @@ local showNPS = getModSetting('shownps')
 
 local settings = {
     customFont = 'vcr.ttf',
+	divider = ' • ',
     modernTimer = getModSetting('moderntimetext'),
     timerZoomOnBeat = getModSetting('bouncingtimetext')
 }
@@ -42,7 +45,7 @@ function getNewScore()
     local percent = getProperty('ratingPercent') * 100
 
 	if showNPS then
-		nps = ' | NPS/Max: '..tostring(formatNumberWithCommas(Nps))..'/'..tostring(formatNumberWithCommas(MaxNps))
+		nps = settings.divider..'NPS/Max: '..tostring(formatNumberWithCommas(Nps))..'/'..tostring(formatNumberWithCommas(MaxNps))
 	end
 
     if percent > 0 then
@@ -76,13 +79,25 @@ function getNewScore()
         rating = rating
     else
 		percent = '100%'
-        rating = rating..'SSSS'
+		if newRatingEnabled then
+			rating = rating..'SSSS'
+		else
+			rating = rating..'Perfect!!'
+		end
     end
 
-	if not ratingCounterEnabled then
-		setTextString('scoreTxt', 'Score: '..tostring(formatNumberWithCommas(getProperty('songScore')))..''..nps..' | Misses: '..getProperty('songMisses')..' | Accuracy: '..percent..' | '..rating..' - '..getProperty('ratingFC'))
+	if not compactScore then
+		if not ratingCounterEnabled then
+			setTextString('scoreTxt', 'Score: '..tostring(formatNumberWithCommas(getProperty('songScore')))..settings.divider..'Misses: '..getProperty('songMisses')..nps..settings.divider..'Accuracy: '..percent..settings.divider..rating..' - '..getProperty('ratingFC'))
+		else
+			setTextString('scoreTxt', 'Score: '..tostring(formatNumberWithCommas(getProperty('songScore')))..settings.divider..'Misses: '..getProperty('songMisses')..nps..settings.divider..'Accuracy: '..percent..settings.divider..rating)
+		end
 	else
-		setTextString('scoreTxt', 'Score: '..tostring(formatNumberWithCommas(getProperty('songScore')))..''..nps..' | Misses: '..getProperty('songMisses')..' | Accuracy: '..percent..' | '..rating)
+		if not ratingCounterEnabled then
+			setTextString('scoreTxt', 'Score: '..tostring(formatNumberWithCommas(getProperty('songScore')))..settings.divider..'Misses: '..getProperty('songMisses')..nps..settings.divider..rating..' - '..getProperty('ratingFC'))
+		else
+			setTextString('scoreTxt', 'Score: '..tostring(formatNumberWithCommas(getProperty('songScore')))..settings.divider..'Misses: '..getProperty('songMisses')..nps..settings.divider..rating)
+		end
 	end
 end
 

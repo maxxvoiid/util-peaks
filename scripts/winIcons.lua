@@ -1,8 +1,8 @@
 local iconsShake = getModSetting('shakingicons')
 local bfWinIcon = getModSetting('bfwinicon')
+local opponentPlay = getModSetting('opponentplay')
 
 bfWinningIcons = bfWinIcon
-dadWinningIcons = false
 
 bfLoseShakeIcon = true
 dadLoseShakeIcon = true
@@ -47,28 +47,17 @@ function onTimerCompleted(tag, loops, loopsLeft)
 end
 
 function onCreatePost()
-	createWinIcons()
+	createIcons()
 end
 
-function createWinIcons()
-	if not lowQuality then
-		--BF
-		if bfWinningIcons == true then
-			makeLuaSprite('winIcoPlayer', 'icons/win-'..getProperty('boyfriend.healthIcon'), getProperty('iconP1.x'), getProperty('iconP1.y'))
-			setObjectCamera('winIcoPlayer', 'hud')
-			addLuaSprite('winIcoPlayer', true)
-			setProperty('winIcoPlayer.flipX', true)
-			setProperty('winIcoPlayer.visible', false)
-		end
-
-		--Opponent
-		if dadWinningIcons == true then
-			makeLuaSprite('winIcoOpponent', 'icons/win-'..getProperty('dad.healthIcon'), getProperty('iconP2.x'), getProperty('iconP2.y'))
-			setObjectCamera('winIcoOpponent', 'hud')
-			addLuaSprite('winIcoOpponent', true)
-			setProperty('winIcoOpponent.flipX', false)
-			setProperty('winIcoOpponent.visible', false)
-		end
+function createIcons()
+	--BF
+	if bfWinningIcons == true then
+		makeLuaSprite('winIcoPlayer', 'icons/win-'..getProperty('boyfriend.healthIcon'), getProperty('iconP1.x'), getProperty('iconP1.y'))
+		setObjectCamera('winIcoPlayer', 'hud')
+		addLuaSprite('winIcoPlayer', true)
+		setProperty('winIcoPlayer.flipX', true)
+		setProperty('winIcoPlayer.visible', false)
 	end
 end
 
@@ -90,47 +79,44 @@ function onUpdatePost(elapsed)
 			setProperty('winIcoPlayer.y', getProperty('iconP1.y'))
 			setProperty('winIcoPlayer.scale.x', getProperty('iconP1.scale.x'))
 			setProperty('winIcoPlayer.scale.y', getProperty('iconP1.scale.y'))
-
-			--Toggle win icon
-			if getProperty('health') >= 1.62 then
-				setProperty('iconP1.visible', false)
-				setProperty('winIcoPlayer.visible', true)
-			else
-				setProperty('iconP1.visible', true)
-				setProperty('winIcoPlayer.visible', false)
-			end
 		end
 
-		--Opponent
-		if dadWinningIcons == true then
-			setObjectOrder('winIcoOpponent', getObjectOrder('iconP2') - 1)
-			makeLuaSprite('winIcoOpponent', 'icons/win-'..getProperty('dad.healthIcon'), getProperty('iconP2.x'), getProperty('iconP2.y'))
-			setObjectCamera('winIcoOpponent', 'hud')
-			addLuaSprite('winIcoOpponent', true)
-			setProperty('winIcoOpponent.flipX', false)
-			setProperty('winIcoOpponent.visible', false)
-
-			--Set pos
-			setProperty('winIcoOpponent.x', getProperty('iconP2.x'))
-			setProperty('winIcoOpponent.angle', getProperty('iconP2.angle'))
-			setProperty('winIcoOpponent.alpha', getProperty('iconP2.alpha'))
-			setProperty('winIcoOpponent.y', getProperty('iconP2.y'))
-			setProperty('winIcoOpponent.scale.x', getProperty('iconP2.scale.x'))
-			setProperty('winIcoOpponent.scale.y', getProperty('iconP2.scale.y'))
-			
-			--Toggle win icon
-			if getProperty('health') <= 0.4 then
-				setProperty('iconP2.visible', false)
-				setProperty('winIcoOpponent.visible', true)
+			-- Handle Icons
+			if not opponentPlay then
+				if bfWinningIcons == true then
+					if getProperty('health') >= 1.62 then
+						setProperty('iconP1.visible', false)
+						setProperty('winIcoPlayer.visible', true)
+					else
+						setProperty('iconP1.visible', true)
+						setProperty('winIcoPlayer.visible', false)
+					end
+				end
 			else
-				setProperty('iconP2.visible', true)
-				setProperty('winIcoOpponent.visible', false)
+				-- This here fixes bugs with icons in Play As Opponent
+
+				if bfWinningIcons == true then
+					if getProperty('health') <= 0.38 then -- BF Winning Icon
+						setProperty('iconP1.visible', false)
+						setProperty('winIcoPlayer.visible', true)
+					elseif getProperty('health') >= 1.62 then -- BF Losing Icon
+						setProperty('iconP1.animation.curAnim.curFrame', 1)
+					else -- BF Normal Icon (I've had serious problems with this)
+						setProperty('iconP1.animation.curAnim.curFrame', 0)
+						setProperty('iconP1.visible', true)
+						setProperty('winIcoPlayer.visible', false)
+					end
+				else
+					if getProperty('health') >= 1.62 then -- BF Losing Icon
+						setProperty('iconP1.animation.curAnim.curFrame', 1)
+					else -- BF Normal Icon
+						setProperty('iconP1.animation.curAnim.curFrame', 0)
+					end
+				end
 			end
-		end
 end
 
 function onBeatHit()
-	if not lowQuality then
 		local currentBeatTime = getSongPosition()
 		local timeDifference = currentBeatTime - previousBeatTime
 		timeDifference = (timeDifference / 2) / 1000
@@ -138,29 +124,39 @@ function onBeatHit()
 		--Shake
 		local angleOfs = math.random(-5, 5)
 
-		if getProperty('healthBar.percent') > 80 and dadLoseShakeIcon then
-			canShakeIcon = true
-			shakeIconWhile('iconP2', timeDifference)
-		elseif getProperty('healthBar.percent') < 20 and bfLoseShakeIcon then
-			canShakeIcon = true
-			shakeIconWhile('iconP1', timeDifference)
+		if not opponentPlay then
+			if getProperty('healthBar.percent') > 80 and dadLoseShakeIcon then
+				canShakeIcon = true
+				shakeIconWhile('iconP2', timeDifference)
+			elseif getProperty('healthBar.percent') < 20 and bfLoseShakeIcon then
+				canShakeIcon = true
+				shakeIconWhile('iconP1', timeDifference)
+			else
+				canShakeIcon = false
+				setProperty('iconP1.angle', 0)
+				setProperty('iconP2.angle', 0)
+			end
 		else
-			canShakeIcon = false
-			setProperty('iconP1.angle', 0)
-			setProperty('iconP2.angle', 0)
+			if getProperty('healthBar.percent') < 20 and dadLoseShakeIcon then
+				canShakeIcon = true
+				shakeIconWhile('iconP2', timeDifference)
+			elseif getProperty('healthBar.percent') > 80 and bfLoseShakeIcon then
+				canShakeIcon = true
+				shakeIconWhile('iconP1', timeDifference)
+			else
+				canShakeIcon = false
+				setProperty('iconP1.angle', 0)
+				setProperty('iconP2.angle', 0)
+			end
 		end
 
 		previousBeatTime = currentBeatTime
-	end
 end
 
 function onEvent(name, value1, value2, strumTime)
-	if not lowQuality then
 		if name == 'Change Character' then
 			--Update characters
 			removeLuaSprite('winIcoPlayer', true)
-			removeLuaSprite('winIcoOpponent', true)
-			createWinIcons()
+			createIcons()
 		end
-	end
 end
