@@ -51,6 +51,8 @@ function onCreatePost()
 end
 
 function createIcons()
+	debugPrint('combos: '..tostring(getPropertyFromClass('ClientPrefs', 'comboStacking')))
+
 	--BF
 	if bfWinningIcons == true then
 		makeLuaSprite('winIcoPlayer', 'icons/win-'..getProperty('boyfriend.healthIcon'), getProperty('iconP1.x'), getProperty('iconP1.y'))
