@@ -363,7 +363,7 @@ function onUpdatePost(e)
     
         if msTxt then
             setProperty('msTxt.scrollFactor.x', camSet == 'game' and 1 or 0)
-            setProperty('msTxt.scrollFactor.y', camSet == 'game' and 1 or 0)
+            setProperty('msTxt.scrollFactor.y', camSet == 'game' and 0.9 or 0)
         end
 
         if MODES.PLAYER.randomColor then
@@ -427,7 +427,7 @@ function goodNoteHit(id, d, t, isSustainNote)
                 add('saturation', 0.3)
             end
 
-            setTextSize('msTxt', (camSet == 'game' and 25 or 20))
+            setTextSize('msTxt', (camSet == 'game' and 20 or 15))
             setObjectCamera('msTxt', camSet)    
 
             -------------------------------Ratings---------------------------------------            
@@ -687,7 +687,7 @@ function getRating(diff, isPlayer) -- fused them, cuz they basically did the sam
 
     if msTxt then
         if botPlay then
-            setTextString('msTxt', '0 ms (BOT)')
+            setTextString('msTxt', isEarly..round(diff, 2)..' ms (BOT)')
         else
             setTextString('msTxt', isEarly..round(diff, 2)..' ms')
         end
