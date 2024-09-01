@@ -25,6 +25,7 @@ elseif iconsShake == 'None' then
 end
 
 local previousBeatTime = 0
+local existsWinning = true
 
 function shakeIconWhile(icon, time)
 	iconShake = icon
@@ -53,17 +54,23 @@ end
 function createIcons()
 	--BF
 	if bfWinningIcons == true then
-		makeLuaSprite('winIcoPlayer', 'icons/win-'..getProperty('boyfriend.healthIcon'), getProperty('iconP1.x'), getProperty('iconP1.y'))
-		setObjectCamera('winIcoPlayer', 'hud')
-		addLuaSprite('winIcoPlayer', true)
-		setProperty('winIcoPlayer.flipX', true)
-		setProperty('winIcoPlayer.visible', false)
+		winningFile = checkFileExists('images/icons/win-'..getProperty('boyfriend.healthIcon')..'.png')
+
+		if winningFile then
+			makeLuaSprite('winIcoPlayer', 'icons/win-'..getProperty('boyfriend.healthIcon'), getProperty('iconP1.x'), getProperty('iconP1.y'))
+			setObjectCamera('winIcoPlayer', 'hud')
+			addLuaSprite('winIcoPlayer', true)
+			setProperty('winIcoPlayer.flipX', true)
+			setProperty('winIcoPlayer.visible', false)
+		else
+			existsWinning = false
+		end
 	end
 end
 
 function onUpdatePost(elapsed)
 		--BF
-		if bfWinningIcons == true then
+		if bfWinningIcons == true and existsWinning == true then
 			--Set sprite and things
 			setObjectOrder('winIcoPlayer', getObjectOrder('iconP1') - 1)
 			makeLuaSprite('winIcoPlayer', 'icons/win-'..getProperty('boyfriend.healthIcon'), getProperty('iconP1.x'), getProperty('iconP1.y'))
@@ -84,7 +91,7 @@ function onUpdatePost(elapsed)
 			-- Handle Icons
 			if not opponentPlay then
 				if bfWinningIcons == true then
-					if getProperty('health') >= 1.62 then
+					if getProperty('health') >= 1.62 and existsWinning == true then
 						setProperty('iconP1.visible', false)
 						setProperty('winIcoPlayer.visible', true)
 					else
@@ -96,7 +103,7 @@ function onUpdatePost(elapsed)
 				-- This here fixes bugs with icons in Play As Opponent
 
 				if bfWinningIcons == true then
-					if getProperty('health') <= 0.38 then -- BF Winning Icon
+					if getProperty('health') <= 0.38 and existsWinning == true then -- BF Winning Icon
 						setProperty('iconP1.visible', false)
 						setProperty('winIcoPlayer.visible', true)
 					elseif getProperty('health') >= 1.62 then -- BF Losing Icon
@@ -156,7 +163,9 @@ end
 function onEvent(name, value1, value2, strumTime)
 		if name == 'Change Character' then
 			--Update characters
-			removeLuaSprite('winIcoPlayer', true)
+			if existsWinning == true then
+				removeLuaSprite('winIcoPlayer', true)
+			end
 			createIcons()
 		end
 end
