@@ -20,6 +20,17 @@
 		"description": "If checked, the time bar text will bounce on every beat hit", //Description shown on the mod settings menu
 		"value": true //This is the default value
 	},
+	{
+		"save": "timebarstyle",
+		"name": "Time Bar Style:",
+		"type": "string",
+		"description": "Changes the appearance of the Timer Bar to the selected style",
+		"value": "Psych Engine",
+		"format": "%v", //Text formatting, '%v' means 'current value', so if my current value is 'Fri', it wil be shown as 'Friday'. You can also use '%d' to represent the default value
+
+		// String only variables
+		"options": ["Psych Engine", "Leather Engine", "Kade Engine"] //Available options to choose
+	},
     {
 		"save": "shakingicons",
 		"name": "Shaking Icons:",
@@ -183,6 +194,13 @@
 		// Float/Percent only variables
 		"decimals": 1, //If your option is type 'float' or 'percent', you should probably make it have atleast 1 decimal places
 		"scroll": 2.5 //How fast you scroll while holding left/right (in this case, it changes 5 per second)
+	},
+	{
+		"save": "getbotscore",
+		"name": "Get Bot Score", //Name shown on the mod settings menu
+		"type": "bool",
+		"description": "If checked, the game will count the Bot's score in the Score Text (it will not replace the player's score)", //Description shown on the mod settings menu
+		"value": true //This is the default value
 	},
 	{
 		"save": "opponentplay",
