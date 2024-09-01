@@ -1,4 +1,4 @@
-function removeHash(t)
+function removeHash(t) -- I swear that if I don't put this, people will complain about why it doesn't work
     if string.sub(t, 1, 1) == "#" then
         return string.sub(t, 2)
     else
