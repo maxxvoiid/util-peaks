@@ -193,6 +193,12 @@ function onCreatePost()
 	makeLuaSprite('utilBarEmpty', 'timerBarSprite', barX, barY)
 	makeLuaSprite('utilBarFill', 'timerBarSprite', barX, barY)
 
+	if settings.styleTimer == 'Leather Engine' then
+		makeLuaSprite('utilBarFill', 'timerBarGradient', barX, barY) -- with gradient :D
+	else
+		makeLuaSprite('utilBarFill', 'timerBarSprite', barX, barY) -- without gradient :(
+	end
+
 	addLuaSprite('utilBarBorder', true)
 	addLuaSprite('utilBarEmpty', true)
 	addLuaSprite('utilBarFill', true)
