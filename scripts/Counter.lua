@@ -364,28 +364,6 @@ local actBad = 0
 local actShit = 0
 
 function addRatingMS(diff)
-	if botPlay then
-		if marvelousRatingEnabled then
-			tweenNumber(nil, "marvelousSX", 1.075, 1, .2, nil, easing.linear)
-			tweenNumber(nil, "marvelousSY", 1.075, 1, .2, nil, easing.linear)
-
-			actMarvelous = actMarvelous + 1
-
-			setTextColor("marvelous", "FDFD96")
-			doTweenColor('marvelousW', "marvelous", 'ffffff', 0.3, 'linear')
-			return
-		else
-			tweenNumber(nil, "sickSX", 1.075, 1, .2, nil, easing.linear)
-			tweenNumber(nil, "sickSY", 1.075, 1, .2, nil, easing.linear)
-
-			actSick = actSick + 1
-
-			setTextColor("sick", "68FAFC")
-			doTweenColor('sickW', "sick", 'ffffff', 0.3, 'linear')
-			return
-		end
-	end
-
 	diff = math.abs(diff)
 
 	local windowSick = getProperty('ratingsData[0].hitWindow')
@@ -491,7 +469,11 @@ function getCFC()
 			return 'Marvelous Full Combo'
 		end
 
-		setProperty('ratingFC', 'Marvelous Full Combo')
+		if marvelousRatingEnabled then
+			setProperty('ratingFC', 'Marvelous Full Combo')
+		else
+			setProperty('ratingFC', 'Sick Full Combo')
+		end
 	else
 		if misses >= 1000 then
 			setProperty('ratingFC', 'QDCB')
@@ -533,7 +515,11 @@ function getCFC()
 			return 'MFC' -- Marvelous Full Combo
 		end
 
-		setProperty('ratingFC', 'MFC')
+		if marvelousRatingEnabled then
+			setProperty('ratingFC', 'MFC')
+		else
+			setProperty('ratingFC', 'SFC')
+		end
 	end
 
 	return '' -- Not Play
