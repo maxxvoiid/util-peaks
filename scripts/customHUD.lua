@@ -191,7 +191,6 @@ function onCreatePost()
 	-- custom timebar created
 	makeLuaSprite('utilBarBorder', 'timerBarSprite', barX - barBorder * 175, barY - barBorder * 165)
 	makeLuaSprite('utilBarEmpty', 'timerBarSprite', barX, barY)
-	makeLuaSprite('utilBarFill', 'timerBarSprite', barX, barY)
 
 	if settings.styleTimer == 'Leather Engine' then
 		makeLuaSprite('utilBarFill', 'timerBarGradient', barX, barY) -- with gradient :D
