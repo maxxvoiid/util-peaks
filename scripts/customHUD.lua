@@ -14,9 +14,12 @@ local onlyMarvelousVolume = getModSetting('onlymarvelousvolume')
 
 local showNPS = getModSetting('shownps')
 
+local getBotScore = getModSetting('getbotscore')
+
 local settings = {
     customFont = 'vcr.ttf',
 	divider = ' • ',
+	styleTimer = getModSetting('timebarstyle'),
     modernTimer = getModSetting('moderntimetext'),
     timerZoomOnBeat = getModSetting('bouncingtimetext')
 }
@@ -25,6 +28,24 @@ local Nps = 0
 local MaxNps = 0
 local npsRefresh1 = 0
 local npsRefresh2 = 0
+local bScore = 0
+
+local barThickness = .04
+local barBorder = .03
+local barLength = 1.965
+local barX = 312
+local barY = 12.5
+
+local barFillColor = '00ff00'
+local barEmptyColor = '000000'
+local barBorderColor = '000000'
+
+local hasBarTxtBefore = false
+local barTxtBefore = ''
+local barTxtX = screenWidth/2
+local barTxtY = not downscroll and 20 or screenHeight - 42
+local barTxtSize = 30
+local barTxtAlpha = 0
 
 function formatNumberWithCommas(number)
 	number = math.floor(number)
@@ -41,11 +62,20 @@ end
 
 function getNewScore()
 	local nps = ''
+	local scoreAndMisses = ''
     local rating = ""
     local percent = getProperty('ratingPercent') * 100
 
 	if showNPS then
 		nps = settings.divider..'NPS/Max: '..tostring(formatNumberWithCommas(Nps))..'/'..tostring(formatNumberWithCommas(MaxNps))
+	end
+
+	if botPlay then
+		if getBotScore then
+			scoreAndMisses = 'Bot Score: '..tostring(formatNumberWithCommas(bScore))
+		end
+	else
+		scoreAndMisses = 'Score: '..tostring(formatNumberWithCommas(getProperty('songScore')))..settings.divider..'Misses: '..getProperty('songMisses')
 	end
 
     if percent > 0 then
@@ -88,15 +118,15 @@ function getNewScore()
 
 	if not compactScore then
 		if not ratingCounterEnabled then
-			setTextString('scoreTxt', 'Score: '..tostring(formatNumberWithCommas(getProperty('songScore')))..settings.divider..'Misses: '..getProperty('songMisses')..nps..settings.divider..'Accuracy: '..percent..settings.divider..rating..' - '..getProperty('ratingFC'))
+			setTextString('scoreTxt', scoreAndMisses..nps..settings.divider..'Accuracy: '..percent..settings.divider..rating..' - '..getProperty('ratingFC'))
 		else
-			setTextString('scoreTxt', 'Score: '..tostring(formatNumberWithCommas(getProperty('songScore')))..settings.divider..'Misses: '..getProperty('songMisses')..nps..settings.divider..'Accuracy: '..percent..settings.divider..rating)
+			setTextString('scoreTxt', scoreAndMisses..nps..settings.divider..'Accuracy: '..percent..settings.divider..rating)
 		end
 	else
 		if not ratingCounterEnabled then
-			setTextString('scoreTxt', 'Score: '..tostring(formatNumberWithCommas(getProperty('songScore')))..settings.divider..'Misses: '..getProperty('songMisses')..nps..settings.divider..rating..' - '..getProperty('ratingFC'))
+			setTextString('scoreTxt', scoreAndMisses..nps..settings.divider..rating..' - '..getProperty('ratingFC'))
 		else
-			setTextString('scoreTxt', 'Score: '..tostring(formatNumberWithCommas(getProperty('songScore')))..settings.divider..'Misses: '..getProperty('songMisses')..nps..settings.divider..rating)
+			setTextString('scoreTxt', scoreAndMisses..nps..settings.divider..rating)
 		end
 	end
 end
@@ -106,32 +136,110 @@ function onUpdateScore()
 end
 
 function onCreatePost()
-    if settings.modernTimer then
-        local gAA = getPropertyFromClass("ClientPrefs", "globalAntialiasing")
+	local gAA = getPropertyFromClass("ClientPrefs", "globalAntialiasing")
+	
+	if settings.styleTimer == 'Leather Engine' then
+		local dadColR = getProperty('dad.healthColorArray[0]')
+		local dadColG = getProperty('dad.healthColorArray[1]')
+		local dadColB = getProperty('dad.healthColorArray[2]')
+	
+		local dadColFinal = string.format('%02x%02x%02x', dadColR, dadColG, dadColB)
 
-        makeLuaText('timerModed', 'TIME', 300, screenWidth/2, not downscroll and 20 or screenHeight - 42);  
-        setTextSize('timerModed', 30);
-        setTextFont('timerModed', settings.customFont)
-        setTextAlignment('timerModed', 'center'); 
-    
-        setProperty("timerModed.wordWrap", false)
-        setProperty("timerModed.autoSize", true)
-        
-        setProperty("timerModed.antialiasing", gAA)
-    
-        setTextBorder('timerModed', 2, '000000')
-    
-        setScrollFactor("timerModed", 0, 0)
-        setObjectCamera("timerModed", "hud")
-    
-        setProperty('timerModed.alpha', 0)
-    
-        addLuaText('timerModed', true);
-    
-        setProperty('timeTxt.visible', false)
-	else
-		setTextBorder('timeTxt', 2, '000000')
-    end
+		if downscroll then
+			barY = 705
+			barTxtY = barY - 25
+		else
+			barY = 4
+			barTxtY = barY + 20
+		end
+
+		hasBarTxtBefore = true
+		barTxtBefore = songName
+		barLength = 1.75
+		barBorder = .025
+		barX = 345
+		barThickness = .035
+		barFillColor = dadColFinal
+		barTxtSize = 16
+		barTxtAlpha = 1
+
+		makeLuaSprite('utilBarBorder', 'timerBarSprite', barX - barBorder * 175, barY - barBorder * 165)
+		makeLuaSprite('utilBarEmpty', 'timerBarSprite', barX, barY)
+		makeLuaSprite('utilBarFill', 'timerBarGradient', barX, barY)
+
+		addLuaSprite('utilBarBorder', true)
+		addLuaSprite('utilBarEmpty', true)
+		addLuaSprite('utilBarFill', true)
+
+		setObjectCamera('utilBarBorder', 'hud')
+		setObjectCamera('utilBarEmpty', 'hud')
+		setObjectCamera('utilBarFill', 'hud')
+
+		scaleObject('utilBarBorder', barLength + barBorder, barThickness + barBorder)
+		scaleObject('utilBarEmpty', barLength, barThickness)
+		scaleObject('utilBarFill', barLength, barThickness)
+
+		doTweenColor('utilBarBorderColor', 'utilBarBorder', barBorderColor, 0.01)
+		doTweenColor('utilBarEmptyarColor', 'utilBarEmpty', barEmptyColor, 0.01)
+		doTweenColor('utilBarFillColor', 'utilBarFill', barFillColor, 0.01)
+
+		setProperty('timeBarBG.visible', false)
+		setProperty('timeBar.visible', false)
+	elseif settings.styleTimer == 'Kade Engine' then
+		if downscroll then
+			barY = 695
+		end
+
+		barEmptyColor = '828282'
+		barTxtBefore = songName
+		barTxtY = barY - 5
+		barTxtSize = 20
+		barTxtAlpha = 1
+
+		makeLuaSprite('utilBarBorder', 'timerBarSprite', barX - barBorder * 175, barY - barBorder * 165)
+		makeLuaSprite('utilBarEmpty', 'timerBarSprite', barX, barY)
+		makeLuaSprite('utilBarFill', 'timerBarSprite', barX, barY)
+
+		addLuaSprite('utilBarBorder', true)
+		addLuaSprite('utilBarEmpty', true)
+		addLuaSprite('utilBarFill', true)
+
+		setObjectCamera('utilBarBorder', 'hud')
+		setObjectCamera('utilBarEmpty', 'hud')
+		setObjectCamera('utilBarFill', 'hud')
+
+		scaleObject('utilBarBorder', barLength + barBorder, barThickness + barBorder)
+		scaleObject('utilBarEmpty', barLength, barThickness)
+		scaleObject('utilBarFill', barLength, barThickness)
+
+		doTweenColor('utilBarBorderColor', 'utilBarBorder', barBorderColor, 0.01)
+		doTweenColor('utilBarEmptyarColor', 'utilBarEmpty', barEmptyColor, 0.01)
+		doTweenColor('utilBarFillColor', 'utilBarFill', barFillColor, 0.01)
+
+		setProperty('timeBarBG.visible', false)
+		setProperty('timeBar.visible', false)
+	end
+
+	makeLuaText('utilTimer', 'TIME', 300, barTxtX, barTxtY);  
+	setTextSize('utilTimer', barTxtSize);
+	setTextFont('utilTimer', settings.customFont)
+	setTextAlignment('utilTimer', 'center'); 
+
+	setProperty("utilTimer.wordWrap", false)
+	setProperty("utilTimer.autoSize", true)
+	
+	setProperty("utilTimer.antialiasing", gAA)
+
+	setTextBorder('utilTimer', 2, '000000')
+
+	setScrollFactor("utilTimer", 0, 0)
+	setObjectCamera("utilTimer", "hud")
+
+	setProperty('utilTimer.alpha', barTxtAlpha)
+
+	addLuaText('utilTimer', true);
+
+	setProperty('timeTxt.visible', false)
 
 	if onlyMarvelous and marvelousRatingEnabled then
 		makeLuaSprite('noMarvelousJPG', 'nomarvelous', 0, 0);
@@ -337,12 +445,13 @@ end
 timeSX = 1
 timeSY = 1
 
+scoreTxtSX = 1
+scoreTxtSY = 1
+
 local hudArray = {'noMarvelousJPG', 'catWuajajajaJPG'}
 
 function onSongStart()
-    if settings.modernTimer then
-        doTweenAlpha('fadeInTween', 'timerModed', 1, 0.1, 'linear')
-    end
+	doTweenAlpha('fadeInTween', 'utilTimer', 1, 0.1, 'linear')
 end
 
 function onBeatHit()
@@ -352,8 +461,34 @@ function onBeatHit()
     end
 end
 
+function getRatingMS(diff)
+	diff = math.abs(diff)
+
+	local windowSick = getProperty('ratingsData[0].hitWindow')
+	local windowGood = getProperty('ratingsData[1].hitWindow')
+	local windowBad = getProperty('ratingsData[2].hitWindow')
+
+	if marvelousRatingEnabled and diff <= marvelousRatingMs then
+		return 'marvelous'
+	end
+
+	if diff <= windowSick then
+		return 'sick'
+	end
+
+	if diff <= windowGood then
+		return 'good'
+	end
+
+	if diff <= windowBad then
+		return 'bad'
+	end
+
+	return 'shit'
+end
+
 function addRatingMS(diff, noteTouch)
-	if botPlay or (not onlyMarvelous or not marvelousRatingEnabled) then return end
+	if not onlyMarvelous or not marvelousRatingEnabled then return end
 
 	diff = math.abs(diff)
 
@@ -390,6 +525,28 @@ function addRatingMS(diff, noteTouch)
 end
 
 function goodNoteHit(id, direction, noteType, isSustainNote)
+	if botPlay and getBotScore and not isSustainNote then
+		local strumTime = getPropertyFromGroup('notes', id, 'strumTime')
+		isEarly = strumTime < getSongPosition() and '' or '-'
+
+		local fRating = getRatingMS((strumTime - getSongPosition() + getPropertyFromClass('backend.ClientPrefs', 'data.ratingOffset')) / playbackRate)
+
+		if fRating == 'marvelous' then
+			bScore = bScore + 500
+		elseif fRating == 'sick' then
+			bScore = bScore + 350
+		elseif fRating == 'good' then
+			bScore = bScore + 200
+		elseif fRating == 'bad' then
+			bScore = bScore + 100
+		elseif fRating == 'shit' then
+			bScore = bScore + 50
+		end
+
+		tweenNumber(nil, "scoreTxtSX", 1.075, 1, .2, nil, easing.linear)
+		tweenNumber(nil, "scoreTxtSY", 1.075, 1, .2, nil, easing.linear)
+	end
+
 	getNewScore()
 
 	if (not isSustainNote) then
@@ -415,25 +572,47 @@ end
 function onUpdate(dt)
 	time = time + dt
 
+	if settings.styleTimer == 'Leather Engine' or settings.styleTimer == 'Kade Engine'then
+		scaleObject('utilBarFill', barLength * getProperty("songPercent"), barThickness)
+	end
+
     if settings.modernTimer then
-        -- Obtiene el tiempo transcurrido en segundos
         local elapsedTime = getSongPosition() / 1000
         
-        -- Obtiene la duración total de la canción en segundos
         local songLength = getProperty('songLength') / 1000
         
-        -- Convierte el tiempo transcurrido a formato "minutos:segundos"
         local elapsedMinutes = math.floor(elapsedTime / 60)
         local elapsedSeconds = elapsedTime % 60
         
-        -- Convierte la duración total a formato "minutos:segundos"
         local totalMinutes = math.floor(songLength / 60)
         local totalSeconds = songLength % 60
         
-        -- Formatea el texto como "0:00 (3:42)"
-        local timeText = string.format("%d:%02d (%d:%02d)", elapsedMinutes, elapsedSeconds, totalMinutes, totalSeconds)
+        local timeText = string.format("%d:%02d / %d:%02d", elapsedMinutes, elapsedSeconds, totalMinutes, totalSeconds)
+
+		if curStep == 0 then
+			timeText = string.format("%d:%02d / %d:%02d", 0, 0, totalMinutes, totalSeconds)
+		end
         
-        setTextString('timerModed', timeText)
+		setTextString('utilTimer', barTxtBefore..' ('..timeText..')')
+	else
+		local ogTimeText = getProperty('timeTxt.text')
+		if hasBarTxtBefore == true then
+			if ogTimeText == barTxtBefore then
+				return setTextString('utilTimer', barTxtBefore)
+			end
+
+			if ogTimeText == '' then
+				setTextString('utilTimer', barTxtBefore..' (0:00)')
+			else
+				setTextString('utilTimer', barTxtBefore..' ('..ogTimeText..')')
+			end
+		else
+			if barTxtBefore ~= '' then
+				setTextString('utilTimer', barTxtBefore)
+			else
+				setTextString('utilTimer', ogTimeText)
+			end
+		end
     end
 end
 
@@ -448,20 +627,18 @@ function onUpdatePost(dt)
 		end 
 	end
 
+	if botPlay and getBotScore then
+		setProperty("scoreTxt.scale.x", scoreTxtSX)
+		setProperty("scoreTxt.scale.y", scoreTxtSY)
+	end
+
     if settings.timerZoomOnBeat then
-        if settings.modernTimer then
-            setProperty("timerModed.scale.x", timeSX)
-            setProperty("timerModed.scale.y", timeSY)
-        else
-            setProperty("timeTxt.scale.x", timeSX)
-            setProperty("timeTxt.scale.y", timeSY)
-        end
+        setProperty("utilTimer.scale.x", timeSX)
+        setProperty("utilTimer.scale.y", timeSY)
     end
 
-    if settings.modernTimer then
-        local timerWidth = getProperty('timerModed.width')
-        setProperty('timerModed.x', (screenWidth - timerWidth) / 2)
-    end
+    local timerWidth = getProperty('utilTimer.width')
+    setProperty('utilTimer.x', (screenWidth - timerWidth) / 2)
 end
 
 function onTimerCompleted(tag, loops, loopsLeft)
