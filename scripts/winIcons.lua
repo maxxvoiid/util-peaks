@@ -61,7 +61,7 @@ function createIcons()
 			setObjectCamera('winIcoPlayer', 'hud')
 			addLuaSprite('winIcoPlayer', true)
 			setProperty('winIcoPlayer.flipX', true)
-			setProperty('winIcoPlayer.visible', false)
+			setProperty('winIcoPlayer.alpha', 0)
 		else
 			existsWinning = false
 		end
@@ -69,6 +69,8 @@ function createIcons()
 end
 
 function onUpdatePost(elapsed)
+		local actIconVisible = getProperty('iconP1.visible')
+
 		--BF
 		if bfWinningIcons == true and existsWinning == true then
 			--Set sprite and things
@@ -77,7 +79,7 @@ function onUpdatePost(elapsed)
 			setObjectCamera('winIcoPlayer', 'hud')
 			addLuaSprite('winIcoPlayer', true)
 			setProperty('winIcoPlayer.flipX', true)
-			setProperty('winIcoPlayer.visible', false)
+			setProperty('winIcoPlayer.alpha', 0)
 
 			--Set pos
 			setProperty('winIcoPlayer.x', getProperty('iconP1.x'))
@@ -88,15 +90,18 @@ function onUpdatePost(elapsed)
 			setProperty('winIcoPlayer.scale.y', getProperty('iconP1.scale.y'))
 		end
 
+		setProperty('winIcoPlayer.visible', actIconVisible)
+		setProperty('iconP1.visible', actIconVisible)
+
 			-- Handle Icons
 			if not opponentPlay then
 				if bfWinningIcons == true then
 					if getProperty('health') >= 1.62 and existsWinning == true then
-						setProperty('iconP1.visible', false)
-						setProperty('winIcoPlayer.visible', true)
+						setProperty('winIcoPlayer.alpha', 1)
+						setProperty('iconP1.alpha', 0)
 					else
-						setProperty('iconP1.visible', true)
-						setProperty('winIcoPlayer.visible', false)
+						setProperty('winIcoPlayer.alpha', 0)
+						setProperty('iconP1.alpha', 1)
 					end
 				end
 			else
@@ -104,14 +109,15 @@ function onUpdatePost(elapsed)
 
 				if bfWinningIcons == true then
 					if getProperty('health') <= 0.38 and existsWinning == true then -- BF Winning Icon
-						setProperty('iconP1.visible', false)
-						setProperty('winIcoPlayer.visible', true)
+						setProperty('winIcoPlayer.alpha', 1)
+						setProperty('iconP1.alpha', 0)
 					elseif getProperty('health') >= 1.62 then -- BF Losing Icon
 						setProperty('iconP1.animation.curAnim.curFrame', 1)
+						setProperty('winIcoPlayer.alpha', 0)
 					else -- BF Normal Icon (I've had serious problems with this)
 						setProperty('iconP1.animation.curAnim.curFrame', 0)
-						setProperty('iconP1.visible', true)
-						setProperty('winIcoPlayer.visible', false)
+						setProperty('winIcoPlayer.alpha', 0)
+						setProperty('iconP1.alpha', 1)
 					end
 				else
 					if getProperty('health') >= 1.62 then -- BF Losing Icon
