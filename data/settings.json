@@ -5,7 +5,6 @@
 	// float - Similar to int, but numbers can have decimals (ex. 1.5, 2.75)
 	// percent - Similar to float, but the displayed value is multiplied by 100 (ex. 1.1 will be displayed as "110%")
 	// string - A text instead of numbers/false and true, you gotta set up "options" variable to it
-	// key - TO BE IMPLEMENTED
 
     {
 		"save": "moderntimetext",
