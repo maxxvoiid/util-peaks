@@ -4,7 +4,7 @@ if resumeCountEnabled then
    local isON = false;
 
    function onResume()
-       if not isON then
+       if not isON and curStep > 0 then
           time = 3;
           playSound('metronome')
           openCustomSubstate('countdownOnResume', true);
