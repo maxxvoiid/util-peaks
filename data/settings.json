@@ -203,29 +203,6 @@
 		"value": true //This is the default value
 	},
 	{
-		"save": "nowplayingpopup",
-		"name": "Now Playing Pop-up", //Name shown on the mod settings menu
-		"type": "bool",
-		"description": "If checked, a pop-up will appear at the start of each song, displaying the title of the currently playing track for a few seconds", //Description shown on the mod settings menu
-		"value": true //This is the default value
-	},
-	{
-		"save": "nowplayingduration",
-		"name": "Now Playing Duration (s):",
-		"type": "float", //
-		"description": "If 'Now Playing Pop-up' is checked, you can adjust how many seconds you want the pop-up to stay on the screen",
-		"value": 4.5,
-	
-		// Int/Float/Percent only variables
-		"min": 2, //How low can the value be
-		"max": 10, //How high can the value be
-		"step": 0.1, //How much is changed at once when you press left/right
-
-		// Float/Percent only variables
-		"decimals": 1, //If your option is type 'float' or 'percent', you should probably make it have atleast 1 decimal places
-		"scroll": 10.1 //How fast you scroll while holding left/right (in this case, it changes 5 per second)
-	},
-	{
 		"save": "opponentplay",
 		"name": "Play As Oppenent", //Name shown on the mod settings menu
 		"type": "bool",
