@@ -16,6 +16,9 @@ local showNPS = getModSetting('shownps')
 
 local getBotScore = getModSetting('getbotscore')
 
+local nowPlayingPopup = getModSetting('nowplayingpopup')
+local nowPlayingDuration = getModSetting('nowplayingduration')
+
 local settings = {
     customFont = 'vcr.ttf',
 	divider = ' • ',
@@ -138,16 +141,18 @@ end
 function onCreatePost()
 	local gAA = getPropertyFromClass("ClientPrefs", "globalAntialiasing")
 
+	--// getting dad health bar color
+	local dadColR = getProperty('dad.healthColorArray[0]')
+	local dadColG = getProperty('dad.healthColorArray[1]')
+	local dadColB = getProperty('dad.healthColorArray[2]')
+
+	local dadColFinal = string.format('%02x%02x%02x', dadColR, dadColG, dadColB)
+
+	--// creating the custom timebar
 	local oldVisibleBar = getProperty('timeBar.visible') -- this tries to avoid bugs by psych settings
 	local oldVisibleTxt = getProperty('timeTxt.visible')
 	
 	if settings.styleTimer == 'Leather Engine' then
-		local dadColR = getProperty('dad.healthColorArray[0]')
-		local dadColG = getProperty('dad.healthColorArray[1]')
-		local dadColB = getProperty('dad.healthColorArray[2]')
-	
-		local dadColFinal = string.format('%02x%02x%02x', dadColR, dadColG, dadColB)
-
 		if downscroll then
 			barY = 705
 			barTxtY = barY - 25
@@ -188,14 +193,13 @@ function onCreatePost()
 		barTxtY = barY - 10
 	end
 
-	-- custom timebar created
-	makeLuaSprite('utilBarBorder', 'timerBarSprite', barX - barBorder * 175, barY - barBorder * 165)
-	makeLuaSprite('utilBarEmpty', 'timerBarSprite', barX, barY)
+	makeLuaSprite('utilBarBorder', 'spriteSolid', barX - barBorder * 175, barY - barBorder * 165)
+	makeLuaSprite('utilBarEmpty', 'spriteSolid', barX, barY)
 
 	if settings.styleTimer == 'Leather Engine' then
-		makeLuaSprite('utilBarFill', 'timerBarGradient', barX, barY) -- with gradient :D
+		makeLuaSprite('utilBarFill', 'spriteGradient', barX, barY) -- with gradient :D
 	else
-		makeLuaSprite('utilBarFill', 'timerBarSprite', barX, barY) -- without gradient :(
+		makeLuaSprite('utilBarFill', 'spriteSolid', barX, barY) -- without gradient :(
 	end
 
 	addLuaSprite('utilBarBorder', true)
@@ -222,7 +226,7 @@ function onCreatePost()
 	setProperty('timeBar.visible', false)
 
 
-	-- custom timetxt created
+	--// creating the custom timetxt
 	makeLuaText('utilTimer', 'TIME', 300, barTxtX, barTxtY);  
 	setTextSize('utilTimer', barTxtSize);
 	setTextFont('utilTimer', settings.customFont)
@@ -246,6 +250,42 @@ function onCreatePost()
 
 	setProperty('timeTxt.visible', false)
 
+	--// now playing popup
+	if nowPlayingPopup then
+		makeLuaSprite('utilPlayingLineColor', 'spriteSolid', -305 - 15, 50) -- color bar
+		makeGraphic('utilPlayingLineColor', 300 + 15, 100, dadColFinal)
+		setObjectCamera('utilPlayingLineColor', 'other')
+		addLuaSprite('utilPlayingLineColor', true)
+	
+		makeLuaSprite('utilPlayingBox', 'spriteSolid', -305 - 15, 50) -- box
+		makeGraphic('utilPlayingBox', 300, 100, '000000')
+		setObjectCamera('utilPlayingBox', 'other')
+		addLuaSprite('utilPlayingBox', true)
+	
+		makeLuaText('utilPlayingTxt', 'Now Playing:', 290, 10, 65) -- "Now Playing" text
+		setTextAlignment('utilPlayingTxt', 'left')
+		setObjectCamera('utilPlayingTxt', 'other')
+		setTextSize('utilPlayingTxt', 25)
+		setProperty('utilPlayingTxt.alpha', 0)
+		addLuaText('utilPlayingTxt')
+	
+		makeLuaText('utilPlayingSubTxt', songName, 290, 10, 95) -- song name sub text
+		setTextAlignment('utilPlayingSubTxt', 'left')
+		setObjectCamera('utilPlayingSubTxt', 'other')
+
+		if string.len(songName) >= 15 then
+			setTextSize('utilPlayingSubTxt', 25)
+		elseif string.len(songName) >= 25 then
+			setTextSize('utilPlayingSubTxt', 20)
+		else
+			setTextSize('utilPlayingSubTxt', 30)
+		end
+
+		setProperty('utilPlayingSubTxt.alpha', 0)
+		addLuaText('utilPlayingSubTxt')
+	end
+
+	--// extra configs
 	if onlyMarvelous and marvelousRatingEnabled then
 		makeLuaSprite('noMarvelousJPG', 'nomarvelous', 0, 0);
         addLuaSprite('noMarvelousJPG', true);
@@ -455,6 +495,14 @@ scoreTxtSY = 1
 
 local hudArray = {'noMarvelousJPG', 'catWuajajajaJPG'}
 
+function onSongStart()
+	if nowPlayingPopup then
+		doTweenX('MoveInOne', 'utilPlayingLineColor', 0, 0.35, 'CircInOut')
+
+		runTimer('utilPlayingBoxBegin', 0.25, 1)
+	end
+end
+
 function onBeatHit()
     if settings.timerZoomOnBeat then
         tweenNumber(nil, "timeSX", 1.2, 1, .2, nil, easing.linear)
@@ -613,7 +661,11 @@ function onUpdate(dt)
 			if barTxtBefore ~= '' then
 				setTextString('utilTimer', barTxtBefore)
 			else
-				setTextString('utilTimer', ogTimeText)
+				if ogTimeText == '' then
+					setTextString('utilTimer', '0:00')
+				else
+					setTextString('utilTimer', ogTimeText)
+				end
 			end
 		end
     end
@@ -645,17 +697,43 @@ function onUpdatePost(dt)
 end
 
 function onTimerCompleted(tag, loops, loopsLeft)
+	if tag == 'utilPlayingBoxBegin' then
+		doTweenX('MoveInTwo', 'utilPlayingBox', 0, 0.35, 'CircInOut')
+
+		runTimer('utilPlayingTxtBegin', 0.25, 1)
+	end
+	if tag == 'utilPlayingTxtBegin' then
+		doTweenAlpha('fadeInTxt', 'utilPlayingTxt', 1, 0.5, 'linear')
+		doTweenAlpha('fadeInSubTxt', 'utilPlayingSubTxt', 1, 0.5, 'linear')
+
+		runTimer('utilPlayingBoxWait', nowPlayingDuration, 1)
+	end
+	if tag == 'utilPlayingBoxWait' then
+		doTweenX('MoveOutTwo', 'utilPlayingBox', -450, 0.35, 'CircInOut')
+
+		setProperty('utilPlayingTxt.alpha', 0)
+		setProperty('utilPlayingSubTxt.alpha', 0)
+
+		runTimer('utilPlayingBoxLeave', 0.25, 1)
+	end
+	if tag == 'utilPlayingBoxLeave' then
+		doTweenX('MoveOutOne', 'utilPlayingLineColor', -450, 0.35, 'CircInOut')
+	end
+
 	if tag == npsTimer1 then
 		npsRefresh2 = npsRefresh1
 		runTimer(npsTimer4, 0.15, 0)
 	end
+
 	if tag == npsTimer2 then
 		Nps = (npsRefresh2)
 		runTimer(npsTimer3, 1.15, 0)
 	end
+
 	if tag == npsTimer3 then
 		npsRefresh2 = 0
 	end
+
 	if tag == npsTimer4 then
 		npsRefresh1 = 0
 	end
