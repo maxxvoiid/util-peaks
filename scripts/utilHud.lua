@@ -17,7 +17,10 @@ local showNPS = getModSetting('shownps')
 local getBotScore = getModSetting('getbotscore')
 
 local nowPlayingPopup = getModSetting('nowplayingpopup')
+local nowPlayingPosition = getModSetting('nowplayingposition')
 local nowPlayingDuration = getModSetting('nowplayingduration')
+
+local animatedHudEnabled = getModSetting('animatedhudenabled')
 
 local settings = {
     customFont = 'vcr.ttf',
@@ -252,24 +255,40 @@ function onCreatePost()
 
 	--// now playing popup
 	if nowPlayingPopup then
-		makeLuaSprite('utilPlayingLineColor', 'spriteSolid', -305 - 15, 50) -- color bar
+		boxX = -305
+		boxY = 50
+		textsX = 10
+		nowTextY = 65
+		subTextY = 95
+
+		if nowPlayingPosition == 'Top Right' or nowPlayingPosition == 'Bottom Right' then
+			boxX = 1405
+			textsX = 995
+		end
+		if nowPlayingPosition == 'Bottom Left' or nowPlayingPosition == 'Bottom Right' then
+			boxY = 560
+			nowTextY = 575
+			subTextY = 605
+		end
+
+		makeLuaSprite('utilPlayingLineColor', 'spriteSolid', boxX - 15, boxY) -- color bar
 		makeGraphic('utilPlayingLineColor', 300 + 15, 100, dadColFinal)
 		setObjectCamera('utilPlayingLineColor', 'other')
 		addLuaSprite('utilPlayingLineColor', true)
 	
-		makeLuaSprite('utilPlayingBox', 'spriteSolid', -305 - 15, 50) -- box
+		makeLuaSprite('utilPlayingBox', 'spriteSolid', boxX - 15, boxY) -- box
 		makeGraphic('utilPlayingBox', 300, 100, '000000')
 		setObjectCamera('utilPlayingBox', 'other')
 		addLuaSprite('utilPlayingBox', true)
 	
-		makeLuaText('utilPlayingTxt', 'Now Playing:', 290, 10, 65) -- "Now Playing" text
+		makeLuaText('utilPlayingTxt', 'Now Playing:', 290, textsX, nowTextY) -- "Now Playing" text
 		setTextAlignment('utilPlayingTxt', 'left')
 		setObjectCamera('utilPlayingTxt', 'other')
 		setTextSize('utilPlayingTxt', 25)
 		setProperty('utilPlayingTxt.alpha', 0)
 		addLuaText('utilPlayingTxt')
 	
-		makeLuaText('utilPlayingSubTxt', songName, 290, 10, 95) -- song name sub text
+		makeLuaText('utilPlayingSubTxt', songName, 290, textsX, subTextY) -- song name sub text
 		setTextAlignment('utilPlayingSubTxt', 'left')
 		setObjectCamera('utilPlayingSubTxt', 'other')
 
@@ -303,6 +322,43 @@ function onCreatePost()
 	if showNPS then
 		runTimer(npsTimer1, 0.1, 0)
 		runTimer(npsTimer2, 0.5, 0)
+	end
+
+	if animatedHudEnabled then
+		if not downscroll then
+			setProperty('healthBar.y', getProperty('healthBar.y') + 300)
+			setProperty('iconP1.y', getProperty('iconP1.y') + 300)
+			setProperty('iconP2.y', getProperty('iconP2.y') + 300)
+			setProperty('scoreTxt.y', getProperty('scoreTxt.y') + 300)
+		
+			setProperty('utilBarBorder.y', getProperty('utilBarBorder.y') - 300)
+			setProperty('utilBarEmpty.y', getProperty('utilBarEmpty.y') - 300)
+			setProperty('utilBarFill.y', getProperty('utilBarFill.y') - 300)
+			setProperty('utilTimer.y', getProperty('utilTimer.y') - 300)
+		else
+			setProperty('healthBar.y', getProperty('healthBar.y') - 300)
+			setProperty('iconP1.y', getProperty('iconP1.y') - 300)
+			setProperty('iconP2.y', getProperty('iconP2.y') - 300)
+			setProperty('scoreTxt.y', getProperty('scoreTxt.y') - 300)
+		
+			setProperty('utilBarBorder.y', getProperty('utilBarBorder.y') + 300)
+			setProperty('utilBarEmpty.y', getProperty('utilBarEmpty.y') + 300)
+			setProperty('utilBarFill.y', getProperty('utilBarFill.y') + 300)
+			setProperty('utilTimer.y', getProperty('utilTimer.y') + 300)
+		end
+
+		if ratingCounterEnabled then
+			setProperty('combo.x', getProperty('combo.x') - 300)
+			setProperty('sick.x', getProperty('sick.x') - 300)
+			setProperty('good.x', getProperty('good.x') - 300)
+			setProperty('bad.x', getProperty('bad.x') - 300)
+			setProperty('shit.x', getProperty('shit.x') - 300)
+			setProperty('fc.x', getProperty('fc.x') - 300)
+	
+			if marvelousRatingEnabled then
+				setProperty('marvelous.x', getProperty('marvelous.x') - 300)
+			end
+		end
 	end
 end
 
@@ -496,8 +552,55 @@ scoreTxtSY = 1
 local hudArray = {'noMarvelousJPG', 'catWuajajajaJPG'}
 
 function onSongStart()
+	if animatedHudEnabled then
+		if not downscroll then
+			doTweenY('healthBarTween', 'healthBar', getProperty('healthBar.y') - 300, 1, 'quintOut')
+			doTweenY('healthIconBFTween', 'iconP1', getProperty('iconP1.y') - 300, 1, 'quintOut')
+			doTweenY('healthIconDadTween', 'iconP2', getProperty('iconP2.y') - 300, 1, 'quintOut')
+			doTweenY('scoreTxtTween', 'scoreTxt', getProperty('scoreTxt.y') - 300, 1, 'quintOut')
+		
+			doTweenY('utilBarBorderTween', 'utilBarBorder', getProperty('utilBarBorder.y') + 300, 1, 'quintOut')
+			doTweenY('utilBarEmptyTween', 'utilBarEmpty', getProperty('utilBarEmpty.y') + 300, 1, 'quintOut')
+			doTweenY('utilBarFillTween', 'utilBarFill', getProperty('utilBarFill.y') + 300, 1, 'quintOut')
+			doTweenY('utilTimerTween', 'utilTimer', getProperty('utilTimer.y') + 300, 1, 'quintOut')
+		else
+			doTweenY('healthBarTween', 'healthBar', getProperty('healthBar.y') + 300, 1, 'quintOut')
+			doTweenY('healthIconBFTween', 'iconP1', getProperty('iconP1.y') + 300, 1, 'quintOut')
+			doTweenY('healthIconDadTween', 'iconP2', getProperty('iconP2.y') + 300, 1, 'quintOut')
+			doTweenY('scoreTxtTween', 'scoreTxt', getProperty('scoreTxt.y') + 300, 1, 'quintOut')
+		
+			doTweenY('utilBarBorderTween', 'utilBarBorder', getProperty('utilBarBorder.y') - 300, 1, 'quintOut')
+			doTweenY('utilBarEmptyTween', 'utilBarEmpty', getProperty('utilBarEmpty.y') - 300, 1, 'quintOut')
+			doTweenY('utilBarFillTween', 'utilBarFill', getProperty('utilBarFill.y') - 300, 1, 'quintOut')
+			doTweenY('utilTimerTween', 'utilTimer', getProperty('utilTimer.y') - 300, 1, 'quintOut')
+		end
+
+		if ratingCounterEnabled then
+			if marvelousRatingEnabled then
+				doTweenX('ratingComboTween', 'combo', getProperty('combo.x') + 300, 1, 'quintOut')
+				doTweenX('ratingMarvelousTween', 'marvelous', getProperty('marvelous.x') + 300, 1.15, 'quintOut')
+				doTweenX('ratingSickTween', 'sick', getProperty('sick.x') + 300, 1.25, 'quintOut')
+				doTweenX('ratingGoodTween', 'good', getProperty('good.x') + 300, 1.35, 'quintOut')
+				doTweenX('ratingBadTween', 'bad', getProperty('bad.x') + 300, 1.45, 'quintOut')
+				doTweenX('ratingShitTween', 'shit', getProperty('shit.x') + 300, 1.55, 'quintOut')
+				doTweenX('ratingFcTween', 'fc', getProperty('fc.x') + 300, 1.65, 'quintOut')
+			else
+				doTweenX('ratingComboTween', 'combo', getProperty('combo.x') + 300, 1, 'quintOut')
+				doTweenX('ratingSickTween', 'sick', getProperty('sick.x') + 300, 1.15, 'quintOut')
+				doTweenX('ratingGoodTween', 'good', getProperty('good.x') + 300, 1.25, 'quintOut')
+				doTweenX('ratingBadTween', 'bad', getProperty('bad.x') + 300, 1.35, 'quintOut')
+				doTweenX('ratingShitTween', 'shit', getProperty('shit.x') + 300, 1.45, 'quintOut')
+				doTweenX('ratingFcTween', 'fc', getProperty('fc.x') + 300, 1.55, 'quintOut')
+			end
+		end
+	end
+
 	if nowPlayingPopup then
-		doTweenX('MoveInOne', 'utilPlayingLineColor', 0, 0.35, 'CircInOut')
+		if nowPlayingPosition == 'Top Left' or nowPlayingPosition == 'Bottom Left' then
+			doTweenX('MoveInOne', 'utilPlayingLineColor', 0, 0.35, 'CircInOut')
+		elseif nowPlayingPosition == 'Top Right' or nowPlayingPosition == 'Bottom Right' then
+			doTweenX('MoveInOne', 'utilPlayingLineColor', 970, 0.35, 'CircInOut')
+		end
 
 		runTimer('utilPlayingBoxBegin', 0.25, 1)
 	end
@@ -697,27 +800,67 @@ function onUpdatePost(dt)
 end
 
 function onTimerCompleted(tag, loops, loopsLeft)
-	if tag == 'utilPlayingBoxBegin' then
-		doTweenX('MoveInTwo', 'utilPlayingBox', 0, 0.35, 'CircInOut')
+	if nowPlayingPosition == 'Top Left' or nowPlayingPosition == 'Bottom Left' then
 
-		runTimer('utilPlayingTxtBegin', 0.25, 1)
+		if tag == 'utilPlayingBoxBegin' then
+			doTweenX('MoveInTwo', 'utilPlayingBox', 0, 0.35, 'CircInOut')
+	
+			runTimer('utilPlayingTxtBegin', 0.25, 1)
+		end
+		if tag == 'utilPlayingTxtBegin' then
+			doTweenAlpha('fadeInTxt', 'utilPlayingTxt', 1, 0.5, 'linear')
+			doTweenAlpha('fadeInSubTxt', 'utilPlayingSubTxt', 1, 0.5, 'linear')
+	
+			runTimer('utilPlayingBoxWait', nowPlayingDuration, 1)
+		end
+		if tag == 'utilPlayingBoxWait' then
+			doTweenX('MoveOutTwo', 'utilPlayingBox', -450, 0.35, 'CircInOut')
+	
+			setProperty('utilPlayingTxt.alpha', 0)
+			setProperty('utilPlayingSubTxt.alpha', 0)
+	
+			runTimer('utilPlayingBoxLeave', 0.25, 1)
+		end
+		if tag == 'utilPlayingBoxLeave' then
+			doTweenX('MoveOutOne', 'utilPlayingLineColor', -450, 0.35, 'CircInOut')
+
+			runTimer('utilPlayingNonVisible', 1, 1)
+		end
+
+	elseif nowPlayingPosition == 'Top Right' or nowPlayingPosition == 'Bottom Right' then
+
+		if tag == 'utilPlayingBoxBegin' then
+			doTweenX('MoveInTwo', 'utilPlayingBox', 985, 0.35, 'CircInOut')
+	
+			runTimer('utilPlayingTxtBegin', 0.25, 1)
+		end
+		if tag == 'utilPlayingTxtBegin' then
+			doTweenAlpha('fadeInTxt', 'utilPlayingTxt', 1, 0.5, 'linear')
+			doTweenAlpha('fadeInSubTxt', 'utilPlayingSubTxt', 1, 0.5, 'linear')
+	
+			runTimer('utilPlayingBoxWait', nowPlayingDuration, 1)
+		end
+		if tag == 'utilPlayingBoxWait' then
+			doTweenX('MoveOutTwo', 'utilPlayingBox', 1405, 0.35, 'CircInOut')
+	
+			setProperty('utilPlayingTxt.alpha', 0)
+			setProperty('utilPlayingSubTxt.alpha', 0)
+	
+			runTimer('utilPlayingBoxLeave', 0.25, 1)
+		end
+		if tag == 'utilPlayingBoxLeave' then
+			doTweenX('MoveOutOne', 'utilPlayingLineColor', 1405, 0.35, 'CircInOut')
+
+			runTimer('utilPlayingNonVisible', 1, 1)
+		end
+
 	end
-	if tag == 'utilPlayingTxtBegin' then
-		doTweenAlpha('fadeInTxt', 'utilPlayingTxt', 1, 0.5, 'linear')
-		doTweenAlpha('fadeInSubTxt', 'utilPlayingSubTxt', 1, 0.5, 'linear')
 
-		runTimer('utilPlayingBoxWait', nowPlayingDuration, 1)
-	end
-	if tag == 'utilPlayingBoxWait' then
-		doTweenX('MoveOutTwo', 'utilPlayingBox', -450, 0.35, 'CircInOut')
-
-		setProperty('utilPlayingTxt.alpha', 0)
-		setProperty('utilPlayingSubTxt.alpha', 0)
-
-		runTimer('utilPlayingBoxLeave', 0.25, 1)
-	end
-	if tag == 'utilPlayingBoxLeave' then
-		doTweenX('MoveOutOne', 'utilPlayingLineColor', -450, 0.35, 'CircInOut')
+	if tag == 'utilPlayingNonVisible' then
+		setProperty('utilPlayingLineColor.visible', false)
+		setProperty('utilPlayingBox.visible', false)
+		setProperty('utilPlayingTxt.visible', false)
+		setProperty('utilPlayingSubTxt.visible', false)
 	end
 
 	if tag == npsTimer1 then
