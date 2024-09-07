@@ -6,13 +6,15 @@ Util Peaks is a modpack where you can add and customize some extra features to y
 
 Util Peaks includes you:
 <ul><li>Improved Timer Bar (Modern Version &amp; Boucing on Beat Hit)</li>
+<li>New custom styles for Time Bar</li>
 <li>Shaking Icons at low health</li>
 <li>BF Winning Icon</li>
 <li>Rating Counter</li>
 <li>Improved Ratings &amp; Combos</li>
 <li>Marvelous Rating</li>
 <li>Resume Countdown</li>
-<li>The sound of the scratched disk on combo break</li></ul>
+<li>The sound of the scratched disk on combo break</li>
+<li>Play as the opponent</li></ul>
 and more with this modpack!
 
 <br><br>Check out some amazing images of what Util Peaks looks like!
