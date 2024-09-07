@@ -1,0 +1,4 @@
+Customize the HUD size
+
+Value 1: Desired scale (Default: 1)
+Value 2: Transition to the new size? (true / false)
