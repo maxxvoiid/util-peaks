@@ -19,6 +19,7 @@ if resumeCountEnabled then
              setTextSize('countdownTxt', 60);
              setTextBorder('countdownTxt', 3, '000000')
              screenCenter('countdownTxt', 'xy');
+             setObjectCamera("countdownTxt", "other")
              addLuaText('countdownTxt', true);
    
              runTimer('pauseCountdown', 0.5);
