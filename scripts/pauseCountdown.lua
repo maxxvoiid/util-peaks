@@ -4,7 +4,7 @@ if resumeCountEnabled then
    local isON = false;
 
    function onResume()
-       if not isON then
+       if not isON and curStep > 0 then
           time = 3;
           playSound('metronome')
           openCustomSubstate('countdownOnResume', true);
@@ -19,6 +19,7 @@ if resumeCountEnabled then
              setTextSize('countdownTxt', 60);
              setTextBorder('countdownTxt', 3, '000000')
              screenCenter('countdownTxt', 'xy');
+             setObjectCamera("countdownTxt", "other")
              addLuaText('countdownTxt', true);
    
              runTimer('pauseCountdown', 0.5);
