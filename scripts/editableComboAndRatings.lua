@@ -1,3 +1,29 @@
+--[[ Hey neds 🤓☝️
+
+This script handles all these functions:
+- Colorful Ratings
+- Show MS Rating
+- Miss Rating
+- Remove Initial Zeros Combo
+- Show Combo Lower Than 10
+- Marvelous Rating
+- Marvelous Hit Windows
+- Get Bot Score
+
+
+This script works as it should, don't touch anything if you don't know what you are doing :)
+    ~ MaxxVoiid
+
+]]
+
+
+
+
+
+-----------------------------------------------------------------------
+    --- DON'T EDIT ANYTHING IF YOU DON'T KNOW WHAT YOU'RE DOING ---
+-----------------------------------------------------------------------
+
 local marvelousRatingEnabled = getModSetting('marvelousenabled')
 local marvelousRatingMs = getModSetting('marvelousms')
 local missRatingEnabled = getModSetting('missenabled')
@@ -206,6 +232,8 @@ function onCreatePost()
     opponentName = getProperty('dad.curCharacter')
     clientComboStacking = getPropertyFromClass('backend.ClientPrefs', 'data.comboStacking')
     mainOffset = getPropertyFromClass('backend.ClientPrefs', 'data.comboOffset') -- rating offsets 
+
+    
     -- ( [1] Rating X | [2] Rating Y | [3] Number X | [4] Number Y ) 
 
     makeLuaText('msTxt', '', 200, 0, 0)
@@ -436,7 +464,15 @@ function goodNoteHit(id, d, t, isSustainNote)
             -- I recommend making a folder for ratings if you do some wacky things, specifially for ease of access.
             
             local x, y = getXandY(ratingPos, true, true)
-            if msTxt then setProperty('msTxt.x', x + 100) setProperty('msTxt.y', y + 70) end
+            if msTxt then
+                if getProperty('combo') >= 1000 then
+                    setProperty('msTxt.x', x + 150)
+                else
+                    setProperty('msTxt.x', x + 110)
+                end
+
+                setProperty('msTxt.y', y + 70)
+            end
            
             if ratiNum ~= nil then
                 local ratingSpr = 'rating'..eh
