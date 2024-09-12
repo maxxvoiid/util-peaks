@@ -1,3 +1,38 @@
+--[[ Hey neds 🤓☝️
+
+This script handles all these functions:
+- Modern Time Text
+- Bouncing Time Text
+- Time Bar Styles
+- New Ratings
+- Compact Score Text
+- Only Marvelous
+- Show NPS
+- Get Bot Score
+- Now Playing Pop-up
+- Random Botplay Text
+
+
+This script works as it should, don't touch anything if you don't know what you are doing :)
+    ~ MaxxVoiid
+
+
+/!\ For NOTHING IN THE WORLD delete this script, IT BREAK EVERYTHING!!! /!\
+/!\ For NOTHING IN THE WORLD delete this script, IT BREAK EVERYTHING!!! /!\
+/!\ For NOTHING IN THE WORLD delete this script, IT BREAK EVERYTHING!!! /!\
+/!\ For NOTHING IN THE WORLD delete this script, IT BREAK EVERYTHING!!! /!\
+/!\ For NOTHING IN THE WORLD delete this script, IT BREAK EVERYTHING!!! /!\
+
+]]
+
+
+
+
+
+-----------------------------------------------------------------------
+    --- DON'T EDIT ANYTHING IF YOU DON'T KNOW WHAT YOU'RE DOING ---
+-----------------------------------------------------------------------
+
 local newRatingEnabled = getModSetting('newratings')
 
 local ratingCounterEnabled = getModSetting('ratingcounterenabled')
