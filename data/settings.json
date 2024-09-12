@@ -240,7 +240,14 @@
 		"save": "animatedhudenabled",
 		"name": "Animated HUD Transition", //Name shown on the mod settings menu
 		"type": "bool",
-		"description": "If enabled, the HUD elements (score text, health bar, etc.) will transition at the start of a song", //Description shown on the mod settings menu
+		"description": "If checked, the HUD elements (score text, health bar, etc.) will transition at the start of a song", //Description shown on the mod settings menu
+		"value": true //This is the default value
+	},
+	{
+		"save": "randombotplaytext",
+		"name": "Random Botplay Text", //Name shown on the mod settings menu
+		"type": "bool",
+		"description": "If checked, causes the 'Botplay' text to be replaced by random phrases", //Description shown on the mod settings menu
 		"value": true //This is the default value
 	},
 	{
