@@ -1,3 +1,19 @@
+--[[ Hey neds 🤓☝️
+
+Well, as the name says, this script handles the Resume Countdown
+This script works as it should, don't touch anything if you don't know what you are doing :)
+    ~ MaxxVoiid
+
+]]
+
+
+
+
+
+-----------------------------------------------------------------------
+    --- DON'T EDIT ANYTHING IF YOU DON'T KNOW WHAT YOU'RE DOING ---
+-----------------------------------------------------------------------
+
 local resumeCountEnabled = getModSetting('resumecountenabled')
 
 if resumeCountEnabled then
