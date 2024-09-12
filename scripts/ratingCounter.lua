@@ -1,35 +1,28 @@
+--[[ Hey neds 🤓☝️
+
+This script handles all these functions:
+- Rating Counter
+- Full FC Rating Name
+
+
+This script works as it should, don't touch anything if you don't know what you are doing :)
+    ~ MaxxVoiid
+
+]]
+
+
+
+
+
+-----------------------------------------------------------------------
+    --- DON'T EDIT ANYTHING IF YOU DON'T KNOW WHAT YOU'RE DOING ---
+-----------------------------------------------------------------------
+
 local dFont = 'vcr.ttf'
 local ratingCounterEnabled = getModSetting('ratingcounterenabled')
 local marvelousRatingEnabled = getModSetting('marvelousenabled')
 local marvelousRatingMs = getModSetting('marvelousms')
 local fullFcName = getModSetting('fullfcname')
-
------------------------------------------------------------------------
--- NO TOUCHIES >:(
------------------------------------------------------------------------
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 local usedBotplay = false -- used for cheaters who used botplay at some point in the song >:(
 
