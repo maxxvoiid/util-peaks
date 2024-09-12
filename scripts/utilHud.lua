@@ -22,6 +22,8 @@ local nowPlayingDuration = getModSetting('nowplayingduration')
 
 local animatedHudEnabled = getModSetting('animatedhudenabled')
 
+local randomBotplayText = getModSetting('randombotplaytext')
+
 local settings = {
     customFont = 'vcr.ttf',
 	divider = ' • ',
@@ -52,6 +54,9 @@ local barTxtX = screenWidth/2
 local barTxtY = not downscroll and 20 or screenHeight - 42
 local barTxtSize = 30
 local barTxtAlpha = 1
+
+local practice = getProperty('practiceMode')
+local playerDied = false
 
 function formatNumberWithCommas(number)
 	number = math.floor(number)
@@ -122,17 +127,35 @@ function getNewScore()
 		end
     end
 
+	if practice then
+		if getProperty('health') <= 0 and playerDied == false then
+			playerDied = true
+		end
+	end
+
 	if not compactScore then
-		if not ratingCounterEnabled then
-			setTextString('scoreTxt', scoreAndMisses..nps..settings.divider..'Accuracy: '..percent..settings.divider..rating..' - '..getProperty('ratingFC'))
+		if practice and not botPlay then
+			if not playerDied then
+				setTextString('scoreTxt', scoreAndMisses..nps..settings.divider..'Practice Mode')
+			else
+				setTextString('scoreTxt', scoreAndMisses..nps..settings.divider..'Practice Mode - Died')
+			end
 		else
-			setTextString('scoreTxt', scoreAndMisses..nps..settings.divider..'Accuracy: '..percent..settings.divider..rating)
+			if not ratingCounterEnabled then
+				setTextString('scoreTxt', scoreAndMisses..nps..settings.divider..'Accuracy: '..percent..settings.divider..rating..' - '..getProperty('ratingFC'))
+			else
+				setTextString('scoreTxt', scoreAndMisses..nps..settings.divider..'Accuracy: '..percent..settings.divider..rating)
+			end
 		end
 	else
-		if not ratingCounterEnabled then
-			setTextString('scoreTxt', scoreAndMisses..nps..settings.divider..rating..' - '..getProperty('ratingFC'))
+		if practice and not botPlay then
+			setTextString('scoreTxt', scoreAndMisses..nps..settings.divider..'Practice')
 		else
-			setTextString('scoreTxt', scoreAndMisses..nps..settings.divider..rating)
+			if not ratingCounterEnabled then
+				setTextString('scoreTxt', scoreAndMisses..nps..settings.divider..rating..' - '..getProperty('ratingFC'))
+			else
+				setTextString('scoreTxt', scoreAndMisses..nps..settings.divider..rating)
+			end
 		end
 	end
 end
@@ -360,6 +383,16 @@ function onCreatePost()
 			end
 		end
 	end
+
+	if randomBotplayText then
+		loadBotplayTexts()
+
+		math.randomseed(os.time()) -- it's amazing how this piece makes something “““randomized””” work
+
+		local randomIndex = math.random(1, #botplayStrings)
+		local botTxt = botplayStrings[randomIndex]
+		setTextString("botplayTxt", botTxt)
+	end
 end
 
 --[[ NERD TIME! ]]--
@@ -534,6 +567,33 @@ function formatNumberWithCommas(number)
     end
     return formatted
 end
+
+botplayStrings = {}
+
+function loadBotplayTexts() -- i dont want to change the name every new update, so even if you change the name of the mod folder it works
+    local scriptPath = debug.getinfo(2, "S").source:sub(2)
+    local currentDirectory = scriptPath:match("(.*/)")
+
+	local modsDirectory = currentDirectory:match("(.*/).*/")
+
+    local file = io.open(modsDirectory.."/data/botplayText.txt", "r") 
+
+    if file then
+        for line in file:lines() do
+			if line ~= '' then
+				table.insert(botplayStrings, line)
+			end
+        end
+        file:close()
+    else
+        table.insert(botplayStrings, "BOTPLAY") -- this is for when the txt disappears for some reason
+    end
+end
+
+
+
+
+
 
 
 
