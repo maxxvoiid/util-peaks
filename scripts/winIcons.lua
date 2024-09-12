@@ -1,3 +1,23 @@
+--[[ Hey neds 🤓☝️
+
+This script handles all these functions:
+- Shaking Icons
+- BF Winning Icon
+
+
+This script works as it should, don't touch anything if you don't know what you are doing :)
+    ~ MaxxVoiid
+
+]]
+
+
+
+
+
+-----------------------------------------------------------------------
+    --- DON'T EDIT ANYTHING IF YOU DON'T KNOW WHAT YOU'RE DOING ---
+-----------------------------------------------------------------------
+
 local iconsShake = getModSetting('shakingicons')
 local bfWinIcon = getModSetting('bfwinicon')
 local opponentPlay = getModSetting('opponentplay')
