@@ -93,6 +93,51 @@ local barTxtAlpha = 1
 local practice = getProperty('practiceMode')
 local playerDied = false
 
+function onCreate()
+	local blockVersionBeforePrefixes = {'0.3', '0.4', '0.5', '0.6'}
+	local blockVersionAfterPrefixes = {'1.0'}
+	local minimalVersion = '0.7'
+
+	for k, v in pairs(blockVersionAfterPrefixes) do
+		if version:find('^'..v:gsub("^%s*(.-)%s*$", "%1")) ~= nil then
+			debugPrint("------------------------------------------------------")
+			debugPrint("We are waiting for you!")
+			debugPrint("You can use Util Peaks in version "..minimalVersion)
+			debugPrint("")
+			debugPrint("Your Version: "..version)
+			debugPrint("")
+			debugPrint("we haven't ported everything to it yet!")
+			debugPrint("You have a very updated version of Psych Engine,")
+			debugPrint("")
+			debugPrint("with Util Peaks!")
+			debugPrint("Uh-oh, your version of Psych Engine is not compatible")
+			debugPrint("------------------------------------------------------")
+			setVar("utilEnabled", false)
+			close()
+			return
+		end
+	end
+
+	for k, v in pairs(blockVersionBeforePrefixes) do
+		if version:find('^'..v:gsub("^%s*(.-)%s*$", "%1")) ~= nil then
+			debugPrint("--------------------------------------------------------")
+			debugPrint("Thank you for your interest in Util Peaks!!!")
+			debugPrint("")
+			debugPrint("We require you to have at least version: "..minimalVersion.." or higher")
+			debugPrint("Your Version: "..version)
+			debugPrint("")
+			debugPrint("with Util Peaks!")
+			debugPrint("Uh-oh, your version of Psych Engine is not compatible")
+			debugPrint("--------------------------------------------------------")
+			setVar("utilEnabled", false)
+			close()
+			return
+		end
+	end
+
+	setVar("utilEnabled", true)
+end
+
 function formatNumberWithCommas(number)
 	number = math.floor(number)
 	
