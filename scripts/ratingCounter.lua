@@ -25,125 +25,121 @@ local marvelousRatingMs = getModSetting('marvelousms')
 local fullFcName = getModSetting('fullfcname')
 
 local usedBotplay = false -- used for cheaters who used botplay at some point in the song >:(
-local utilEnabled
 
 function onCreatePost()
-	if getVar("utilEnabled") == true then
-		usedBotplay = false -- reset
-		utilEnabled = true
+	closeIfUtilNotEnabled()
 
-		local gAA = getPropertyFromClass("ClientPrefs", "globalAntialiasing")
+	usedBotplay = false
+
+	local gAA = getPropertyFromClass("ClientPrefs", "globalAntialiasing")
+
+	makeLuaText('combo', 'Combo: 0 (0)', -1, (-10 + (1280 * 0.0375)), 289);  
+	setTextSize('combo', 22);
+	setTextFont('combo', dFont)
+	setTextAlignment('combo', 'left')
+
+	if marvelousRatingEnabled then
+		makeLuaText('marvelous', 'Marvelous: 0', -1, getProperty('combo.x'), getProperty('combo.y') + getProperty('combo.height'));  
+		setTextSize('marvelous', 22);
+		setTextFont('marvelous', dFont)
+		setTextAlignment('marvelous', 'left')
+
+		makeLuaText('sick', 'Sicks: 0', -1, getProperty('combo.x'), getProperty('marvelous.y') + getProperty('marvelous.height'));  
+		setTextSize('sick', 22);
+		setTextFont('sick', dFont)
+		setTextAlignment('sick', 'left')
+	else
+		makeLuaText('sick', 'Sicks: 0', -1, getProperty('combo.x'), getProperty('combo.y') + getProperty('combo.height'));  
+		setTextSize('sick', 22);
+		setTextFont('sick', dFont)
+		setTextAlignment('sick', 'left')
+	end
+
+	makeLuaText('good', 'Goods: 0', -1, getProperty('combo.x'), getProperty('sick.y') + getProperty('sick.height'));    
+	setTextSize('good', 22);
+	setTextFont('good', dFont)
+	setTextAlignment('good', 'left')
+
+	makeLuaText('bad', 'Bads: 0', -1, getProperty('combo.x'), getProperty('good.y') + getProperty('good.height'));    
+	setTextSize('bad', 22);
+	setTextFont('bad', dFont)
+	setTextAlignment('bad', 'left')
+
+	makeLuaText('shit', 'Shits: 0', -1, getProperty('combo.x'), getProperty('bad.y') + getProperty('bad.height'));      
+	setTextSize('shit', 22);
+	setTextFont('shit', dFont)
+	setTextAlignment('shit', 'left')
+
+	makeLuaText('fc', '?', -1, getProperty('combo.x'), getProperty('shit.y') + getProperty('shit.height') * 2);  
+	setTextSize('fc', 22);
+	setTextFont('fc', dFont)
+	setTextAlignment('fc', 'left')
+
+	setProperty("combo.wordWrap", false)
+	setProperty("combo.autoSize", true)
+	setProperty("sick.wordWrap", false)
+	setProperty("sick.autoSize", true)
+	setProperty("good.wordWrap", false)
+	setProperty("good.autoSize", true)
+	setProperty("bad.wordWrap", false)
+	setProperty("bad.autoSize", true)
+	setProperty("shit.wordWrap", false)
+	setProperty("shit.autoSize", true)
+	setProperty("fc.wordWrap", false)
+	setProperty("fc.autoSize", true)
 	
-		makeLuaText('combo', 'Combo: 0 (0)', -1, (-10 + (1280 * 0.0375)), 289);  
-		setTextSize('combo', 22);
-		setTextFont('combo', dFont)
-		setTextAlignment('combo', 'left')
-	
+	setProperty("combo.antialiasing", gAA)
+	setProperty("sick.antialiasing", gAA)
+	setProperty("good.antialiasing", gAA)
+	setProperty("bad.antialiasing", gAA)
+	setProperty("shit.antialiasing", gAA)
+	setProperty("fc.antialiasing", gAA)
+
+	setTextBorder('combo', 2, '000000')
+	setTextBorder('sick', 2, '000000')
+	setTextBorder('good', 2, '000000')
+	setTextBorder('bad', 2, '000000')
+	setTextBorder('shit', 2, '000000')
+	setTextBorder('fc', 2, '000000')
+
+	setScrollFactor("combo", 0, 0)
+	setObjectCamera("combo", "hud")
+	setScrollFactor("sick", 0, 0)
+	setObjectCamera("sick", "hud")
+	setScrollFactor("good", 0, 0)
+	setObjectCamera("good", "hud")
+	setScrollFactor("bad", 0, 0)
+	setObjectCamera("bad", "hud")
+	setScrollFactor("shit", 0, 0)
+	setObjectCamera("shit", "hud")
+	setScrollFactor("fc", 0, 0)
+	setObjectCamera("fc", "hud")
+
+	if ratingCounterEnabled then
+		addLuaText('combo', true);
+
 		if marvelousRatingEnabled then
-			makeLuaText('marvelous', 'Marvelous: 0', -1, getProperty('combo.x'), getProperty('combo.y') + getProperty('combo.height'));  
-			setTextSize('marvelous', 22);
-			setTextFont('marvelous', dFont)
-			setTextAlignment('marvelous', 'left')
+			setProperty("marvelous.wordWrap", false)
+			setProperty("marvelous.autoSize", true)
 	
-			makeLuaText('sick', 'Sicks: 0', -1, getProperty('combo.x'), getProperty('marvelous.y') + getProperty('marvelous.height'));  
-			setTextSize('sick', 22);
-			setTextFont('sick', dFont)
-			setTextAlignment('sick', 'left')
-		else
-			makeLuaText('sick', 'Sicks: 0', -1, getProperty('combo.x'), getProperty('combo.y') + getProperty('combo.height'));  
-			setTextSize('sick', 22);
-			setTextFont('sick', dFont)
-			setTextAlignment('sick', 'left')
+			setProperty("marvelous.antialiasing", gAA)
+	
+			setTextBorder('marvelous', 2, '000000')
+	
+			setScrollFactor("marvelous", 0, 0)
+			setObjectCamera("marvelous", "hud")
+	
+			addLuaText('marvelous', true);
 		end
 	
-		makeLuaText('good', 'Goods: 0', -1, getProperty('combo.x'), getProperty('sick.y') + getProperty('sick.height'));    
-		setTextSize('good', 22);
-		setTextFont('good', dFont)
-		setTextAlignment('good', 'left')
-	
-		makeLuaText('bad', 'Bads: 0', -1, getProperty('combo.x'), getProperty('good.y') + getProperty('good.height'));    
-		setTextSize('bad', 22);
-		setTextFont('bad', dFont)
-		setTextAlignment('bad', 'left')
-	
-		makeLuaText('shit', 'Shits: 0', -1, getProperty('combo.x'), getProperty('bad.y') + getProperty('bad.height'));      
-		setTextSize('shit', 22);
-		setTextFont('shit', dFont)
-		setTextAlignment('shit', 'left')
-	
-		makeLuaText('fc', '?', -1, getProperty('combo.x'), getProperty('shit.y') + getProperty('shit.height') * 2);  
-		setTextSize('fc', 22);
-		setTextFont('fc', dFont)
-		setTextAlignment('fc', 'left')
-	
-		setProperty("combo.wordWrap", false)
-		setProperty("combo.autoSize", true)
-		setProperty("sick.wordWrap", false)
-		setProperty("sick.autoSize", true)
-		setProperty("good.wordWrap", false)
-		setProperty("good.autoSize", true)
-		setProperty("bad.wordWrap", false)
-		setProperty("bad.autoSize", true)
-		setProperty("shit.wordWrap", false)
-		setProperty("shit.autoSize", true)
-		setProperty("fc.wordWrap", false)
-		setProperty("fc.autoSize", true)
-		
-		setProperty("combo.antialiasing", gAA)
-		setProperty("sick.antialiasing", gAA)
-		setProperty("good.antialiasing", gAA)
-		setProperty("bad.antialiasing", gAA)
-		setProperty("shit.antialiasing", gAA)
-		setProperty("fc.antialiasing", gAA)
-	
-		setTextBorder('combo', 2, '000000')
-		setTextBorder('sick', 2, '000000')
-		setTextBorder('good', 2, '000000')
-		setTextBorder('bad', 2, '000000')
-		setTextBorder('shit', 2, '000000')
-		setTextBorder('fc', 2, '000000')
-	
-		setScrollFactor("combo", 0, 0)
-		setObjectCamera("combo", "hud")
-		setScrollFactor("sick", 0, 0)
-		setObjectCamera("sick", "hud")
-		setScrollFactor("good", 0, 0)
-		setObjectCamera("good", "hud")
-		setScrollFactor("bad", 0, 0)
-		setObjectCamera("bad", "hud")
-		setScrollFactor("shit", 0, 0)
-		setObjectCamera("shit", "hud")
-		setScrollFactor("fc", 0, 0)
-		setObjectCamera("fc", "hud")
-	
-		if ratingCounterEnabled then
-			addLuaText('combo', true);
-	
-			if marvelousRatingEnabled then
-				setProperty("marvelous.wordWrap", false)
-				setProperty("marvelous.autoSize", true)
-		
-				setProperty("marvelous.antialiasing", gAA)
-		
-				setTextBorder('marvelous', 2, '000000')
-		
-				setScrollFactor("marvelous", 0, 0)
-				setObjectCamera("marvelous", "hud")
-		
-				addLuaText('marvelous', true);
-			end
-		
-			addLuaText('sick', true);
-			addLuaText('good', true);
-			addLuaText('bad', true);
-			addLuaText('shit', true);
-			addLuaText('fc', true);
-		end
+		addLuaText('sick', true);
+		addLuaText('good', true);
+		addLuaText('bad', true);
+		addLuaText('shit', true);
+		addLuaText('fc', true);
 	end
 end
 
-
-if utilEnabled then
 	--[[ NERD TIME! ]]--
 
 	-- formulas from http://www.robertpenner.com/easing
@@ -692,6 +688,18 @@ if utilEnabled then
 		prevShit = shits
 		prevFc = fcTxt
 	end
-end
+
+	function closeIfUtilNotEnabled()
+		local var, debug = getVar("utilEnabled"), getVar("utilLoadDebug")
+	
+		if var == false or var == nil then
+			return close()
+		end
+	
+		if debug == true and debug ~= nil then
+			local sName = 'RC'
+			debugPrint(sName..': OK')
+		end
+	end
 
 -- yes, I'm sorry if this code is spagetti, I have no idea how to simplify it :c
