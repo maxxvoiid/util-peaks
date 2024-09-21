@@ -1,0 +1,20 @@
+[
+    {
+		"save": "master_notes",
+		"name": "Master of notes",
+		"description": "Reach 12 Notes Per Second.",
+		"maxScore": 12,
+		"maxDecimals": 0,
+		"hidden": false
+	},
+    {
+		"save": "accuracy_legend",
+		"name": "Accuracy Legend",
+		"description": "Complete a song with MFC rating."
+	},
+	{
+		"save": "marvelous_chaos",
+		"name": "Marvelous Chaos!",
+		"description": "Complete a song with 'Only Marvelous' Instakill mode."
+	}
+]
