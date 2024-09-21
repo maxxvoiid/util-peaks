@@ -23,6 +23,11 @@ end
 if resumeCountEnabled then
    local isON = false;
 
+   function repeatDashes(num)
+      local dashes = string.rep("-", num)
+      return dashes.. " "..num.. " "..dashes
+  end
+
    function onResume()
       if not isON and curStep > 0 then
          time = 3;
@@ -35,7 +40,7 @@ if resumeCountEnabled then
   function onCustomSubstateCreatePost(name)
       if name == 'countdownOnResume' then
          if not isON then
-            makeLuaText('countdownTxt', time, 0, 0, 0);
+            makeLuaText('countdownTxt', repeatDashes(time), 0, 0, 0);
             setTextSize('countdownTxt', 60);
             setTextBorder('countdownTxt', 3, '000000')
             screenCenter('countdownTxt', 'xy');
@@ -66,7 +71,8 @@ if resumeCountEnabled then
            playSound('metronome');
          end
   
-         setTextString('countdownTxt', time);
+         setTextString('countdownTxt', repeatDashes(time));
+         screenCenter('countdownTxt', 'xy');
          runTimer('pauseCountdown', 0.5);
       end
   end
