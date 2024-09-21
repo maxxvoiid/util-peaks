@@ -146,14 +146,14 @@
 		"save": "onlymarvelous",
 		"name": "Only Marvelous", //Name shown on the mod settings menu
 		"type": "bool",
-		"description": "<<< FLASH WARNING!!! >>>\nIf checked, you can only get Marvelous Rating on songs, otherwise you will get a popup image with a funny sound", //Description shown on the mod settings menu
+		"description": "If checked, you can only get Marvelous Rating on songs, otherwise it will be an event of 'Only Marvelous Event'", //Description shown on the mod settings menu
 		"value": false //This is the default value
 	},
 	{
 		"save": "onlymarveloustype",
-		"name": "Only Marvelous Type:",
+		"name": "Only Marvelous Event:",
 		"type": "string",
-		"description": "Images: A pop-up image will appear with a funny sound.\nInstakill: You will die instantly if not Marvelous or missed note",
+		"description": "Images: A pop-up image will appear with a funny sound.\nInstakill: You will die instantly if not Marvelous or miss",
 		"value": "Images",
 		"format": "%v", //Text formatting, '%v' means 'current value', so if my current value is 'Fri', it wil be shown as 'Friday'. You can also use '%d' to represent the default value
 
