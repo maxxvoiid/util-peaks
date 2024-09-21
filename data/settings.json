@@ -150,6 +150,17 @@
 		"value": false //This is the default value
 	},
 	{
+		"save": "onlymarveloustype",
+		"name": "Only Marvelous Type:",
+		"type": "string",
+		"description": "Images: A pop-up image will appear with a funny sound.\nInstakill: You will die instantly if not Marvelous or missed note",
+		"value": "Images",
+		"format": "%v", //Text formatting, '%v' means 'current value', so if my current value is 'Fri', it wil be shown as 'Friday'. You can also use '%d' to represent the default value
+
+		// String only variables
+		"options": ["Images", "Instakill"] //Available options to choose
+	},
+	{
 		"save": "onlymarvelousvolume",
 		"name": "Funny Sounds Volume:",
 		"type": "percent", //
@@ -248,6 +259,13 @@
 		"name": "Random Botplay Text", //Name shown on the mod settings menu
 		"type": "bool",
 		"description": "If checked, causes the 'Botplay' text to be replaced by random phrases", //Description shown on the mod settings menu
+		"value": true //This is the default value
+	},
+	{
+		"save": "showreasongo",
+		"name": "Show Reason of Game Over", //Name shown on the mod settings menu
+		"type": "bool",
+		"description": "If checked, a text of the cause of the game over will be displayed when you lose", //Description shown on the mod settings menu
 		"value": true //This is the default value
 	},
 	{
