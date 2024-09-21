@@ -11,6 +11,8 @@ This script handles all these functions:
 - Get Bot Score
 - Now Playing Pop-up
 - Random Botplay Text
+- Show Reason of Game Over
+- Achievement: Master of notes
 
 
 This script works as it should, don't touch anything if you don't know what you are doing :)
@@ -46,6 +48,7 @@ local marvelousRatingMs = getModSetting('marvelousms')
 
 local onlyMarvelous = getModSetting('onlymarvelous')
 local onlyMarvelousVolume = getModSetting('onlymarvelousvolume')
+local onlyMarvelousType = getModSetting('onlymarveloustype')
 
 local showNPS = getModSetting('shownps')
 
@@ -58,6 +61,8 @@ local nowPlayingDuration = getModSetting('nowplayingduration')
 local animatedHudEnabled = getModSetting('animatedhudenabled')
 
 local randomBotplayText = getModSetting('randombotplaytext')
+
+local showReasonGO = getModSetting('showreasongo')
 
 local settings = {
     customFont = 'vcr.ttf',
@@ -92,6 +97,7 @@ local barTxtAlpha = 1
 
 local practice = getProperty('practiceMode')
 local playerDied = false
+local usedCheats = false
 
 function onCreate()
 	local blockVersionBeforePrefixes = {'0.3', '0.4', '0.5', '0.6'}
@@ -409,7 +415,7 @@ function onCreatePost()
 	end
 
 	--// extra configs
-	if onlyMarvelous and marvelousRatingEnabled then
+	if onlyMarvelous and marvelousRatingEnabled and onlyMarvelousType == 'Images' then
 		makeLuaSprite('noMarvelousJPG', 'nomarvelous', 0, 0);
         addLuaSprite('noMarvelousJPG', true);
         scaleObject('noMarvelousJPG', 6, 3);
@@ -781,7 +787,7 @@ function getRatingMS(diff)
 end
 
 function addRatingMS(diff, noteTouch)
-	if not onlyMarvelous or not marvelousRatingEnabled then return end
+	if not onlyMarvelous or not marvelousRatingEnabled or onlyMarvelousType ~= 'Images' then return end
 
 	diff = math.abs(diff)
 
@@ -865,6 +871,12 @@ end
 function onUpdate(dt)
 	time = time + dt
 
+	if botPlay or practice then
+        if usedCheats ~= true then
+            usedCheats = true
+        end
+    end
+
 	scaleObject('utilBarFill', barLength * getProperty("songPercent"), barThickness)
 
     if settings.modernTimer then
@@ -938,6 +950,56 @@ function onUpdatePost(dt)
 
     local timerWidth = getProperty('utilTimer.width')
     setProperty('utilTimer.x', (screenWidth - timerWidth) / 2)
+end
+
+function onGameOverStart()
+	--[[ Hey Modders! ✌️
+
+	I have made a variable in case you want to add any text to Show Reason of Game Over:
+	use 'setVar("utilGOReasonExtra", "Custom Reason")' to make the reason text to your liking!
+
+		~ MaxxVoiid
+	]]
+
+	if not showReasonGO then return end
+
+	local extraDeathReason = getVar("utilGOReasonExtra")
+	local deathReason = getVar("utilGOReason")
+	if deathReason == nil then deathReason = 'Died to health' end
+
+	if extraDeathReason ~= nil and extraDeathReason ~= '' then
+		makeLuaText('deathReason', extraDeathReason, screenWidth, 0, 900)
+	else
+		makeLuaText('deathReason', deathReason, screenWidth, 0, 900)
+	end
+
+    setObjectCamera("deathReason", "other")
+    setTextSize('deathReason', 32)
+    addLuaText("deathReason")
+
+    doTweenY('upDeathReason', 'deathReason', 600, 1.5, 'quintOut')
+end
+
+function onGameOverConfirm(retry)
+	if not showReasonGO then return end
+
+    doTweenAlpha("fadeOutReasonText", "deathReason", 0, 1, "linear")
+end
+
+function onEndSong()
+	local progressAchievement = getAchievementScore('master_notes')
+
+    if usedCheats == false then
+		if MaxNps >= 12 then
+			setAchievementScore('master_notes', 12)
+		end
+
+		if MaxNps < 12 and tonumber(progressAchievement) < MaxNps then
+			setAchievementScore('master_notes', MaxNps)
+		end
+    end
+
+	return Function_Continue;
 end
 
 function onTimerCompleted(tag, loops, loopsLeft)
