@@ -6,7 +6,7 @@ This script handles all these functions:
 - Time Bar Styles
 - New Ratings
 - Compact Score Text
-- Only Marvelous
+- Only Marvelous: Images
 - Show NPS
 - Get Bot Score
 - Now Playing Pop-up
