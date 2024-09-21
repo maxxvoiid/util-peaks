@@ -3,6 +3,7 @@
 This script handles all these functions:
 - Rating Counter
 - Full FC Rating Name
+- Achievement: Accuracy Legend
 
 
 This script works as it should, don't touch anything if you don't know what you are doing :)
@@ -24,12 +25,14 @@ local marvelousRatingEnabled = getModSetting('marvelousenabled')
 local marvelousRatingMs = getModSetting('marvelousms')
 local fullFcName = getModSetting('fullfcname')
 
-local usedBotplay = false -- used for cheaters who used botplay at some point in the song >:(
+local usedBotplay = false
+local usedCheats = false -- used for cheaters who used cheats at some point in the song >:(
 
 function onCreatePost()
 	closeIfUtilNotEnabled()
 
 	usedBotplay = false
+	usedCheats = false
 
 	local gAA = getPropertyFromClass("ClientPrefs", "globalAntialiasing")
 
@@ -356,6 +359,7 @@ end
 	local actGood = 0
 	local actBad = 0
 	local actShit = 0
+	local actMisses = 0
 
 	function addRatingMS(diff)
 		diff = math.abs(diff)
@@ -560,6 +564,8 @@ end
 	end
 
 	function noteMissPress(direction)
+		actMisses = actMisses + 1
+
 		local fcTxt = getCFC()
 		if (fcTxt ~= prevFc) then
 			tweenNumber(nil, "fcSX", 1.075, 1, .2, nil, easing.linear)
@@ -568,6 +574,8 @@ end
 	end
 
 	function noteMiss(id, direction, noteType, isSustainNote)
+		actMisses = actMisses + 1
+
 		local fcTxt = getCFC()
 		if (fcTxt ~= prevFc) then
 			tweenNumber(nil, "fcSX", 1.075, 1, .2, nil, easing.linear)
@@ -578,9 +586,21 @@ end
 	function onUpdate(dt)
 		time = time + dt
 
+		local practice = getProperty('practiceMode')
+
 		if botPlay then
 			if usedBotplay ~= true then
 				usedBotplay = true
+			end
+
+			if usedCheats ~= true then
+				usedCheats = true
+			end
+		end
+
+		if practice then
+			if usedCheats ~= true then
+				usedCheats = true
 			end
 		end
 	end
@@ -687,6 +707,16 @@ end
 		prevBad = bads
 		prevShit = shits
 		prevFc = fcTxt
+	end
+
+	function onEndSong()
+		if usedCheats == false then
+			if actSick == 0 and actGood == 0 and actBad == 0 and actShit == 0 and actMisses == 0 then
+				unlockAchievement('accuracy_legend')
+			end
+		end
+	
+		return Function_Continue;
 	end
 
 	function closeIfUtilNotEnabled()
