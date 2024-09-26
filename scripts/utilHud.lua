@@ -12,7 +12,7 @@ This script handles all these functions:
 - Now Playing Pop-up
 - Random Botplay Text
 - Show Reason of Game Over
-- Achievement: Master of notes
+- Smooth Health Bar
 
 
 This script works as it should, don't touch anything if you don't know what you are doing :)
@@ -64,6 +64,8 @@ local randomBotplayText = getModSetting('randombotplaytext')
 
 local showReasonGO = getModSetting('showreasongo')
 
+local smoothHealthBar = getModSetting('smoothhealthbar')
+
 local settings = {
     customFont = 'vcr.ttf',
 	divider = ' • ',
@@ -74,8 +76,6 @@ local settings = {
 
 local Nps = 0
 local MaxNps = 0
-local npsRefresh1 = 0
-local npsRefresh2 = 0
 local bScore = 0
 
 local barThickness = .04
@@ -94,6 +94,8 @@ local barTxtX = screenWidth/2
 local barTxtY = not downscroll and 20 or screenHeight - 42
 local barTxtSize = 30
 local barTxtAlpha = 1
+
+local healthPercent = 50
 
 local practice = getProperty('practiceMode')
 local playerDied = false
@@ -160,7 +162,8 @@ end
 
 function getNewScore()
 	local nps = ''
-	local scoreAndMisses = ''
+	local txtPart1 = ''
+	local txtPart2 = ''
     local rating = ""
     local percent = getProperty('ratingPercent') * 100
 
@@ -170,10 +173,10 @@ function getNewScore()
 
 	if botPlay then
 		if getBotScore then
-			scoreAndMisses = 'Bot Score: '..tostring(formatNumberWithCommas(bScore))
+			txtPart1 = 'Bot Score: '..tostring(formatNumberWithCommas(bScore))
 		end
 	else
-		scoreAndMisses = 'Score: '..tostring(formatNumberWithCommas(getProperty('songScore')))..settings.divider..'Misses: '..getProperty('songMisses')
+		txtPart1 = 'Score: '..tostring(formatNumberWithCommas(getProperty('songScore')))..settings.divider..'Misses: '..getProperty('songMisses')
 	end
 
     if percent > 0 then
@@ -205,13 +208,10 @@ function getNewScore()
 
 		percent = (math.floor(getProperty('ratingPercent') * 10000)/100)..'%'
         rating = rating
+
+		txtPart2 = 'Accuracy: '..percent..settings.divider..rating
     else
-		percent = '100%'
-		if newRatingEnabled then
-			rating = rating..'SSSS'
-		else
-			rating = rating..'Perfect!!'
-		end
+		txtPart2 = '?'
     end
 
 	if practice then
@@ -223,32 +223,28 @@ function getNewScore()
 	if not compactScore then
 		if practice and not botPlay then
 			if not playerDied then
-				setTextString('scoreTxt', scoreAndMisses..nps..settings.divider..'Practice Mode')
+				setTextString('utilScoreTxt', txtPart1..nps..settings.divider..'Practice Mode')
 			else
-				setTextString('scoreTxt', scoreAndMisses..nps..settings.divider..'Practice Mode - Died')
+				setTextString('utilScoreTxt', txtPart1..nps..settings.divider..'Practice Mode - Died')
 			end
 		else
 			if not ratingCounterEnabled then
-				setTextString('scoreTxt', scoreAndMisses..nps..settings.divider..'Accuracy: '..percent..settings.divider..rating..' - '..getProperty('ratingFC'))
+				setTextString('utilScoreTxt', txtPart1..nps..settings.divider..txtPart2..' - '..getProperty('ratingFC'))
 			else
-				setTextString('scoreTxt', scoreAndMisses..nps..settings.divider..'Accuracy: '..percent..settings.divider..rating)
+				setTextString('utilScoreTxt', txtPart1..nps..settings.divider..txtPart2)
 			end
 		end
 	else
 		if practice and not botPlay then
-			setTextString('scoreTxt', scoreAndMisses..nps..settings.divider..'Practice')
+			setTextString('utilScoreTxt', txtPart1..nps..settings.divider..'Practice')
 		else
 			if not ratingCounterEnabled then
-				setTextString('scoreTxt', scoreAndMisses..nps..settings.divider..rating..' - '..getProperty('ratingFC'))
+				setTextString('utilScoreTxt', txtPart1..nps..settings.divider..rating..' - '..getProperty('ratingFC'))
 			else
-				setTextString('scoreTxt', scoreAndMisses..nps..settings.divider..rating)
+				setTextString('utilScoreTxt', txtPart1..nps..settings.divider..rating)
 			end
 		end
 	end
-end
-
-function onUpdateScore()
-	getNewScore()
 end
 
 function onCreatePost()
@@ -265,7 +261,7 @@ function onCreatePost()
 	local oldVisibleBar = getProperty('timeBar.visible') -- this tries to avoid bugs by psych settings
 	local oldVisibleTxt = getProperty('timeTxt.visible')
 	
-	if settings.styleTimer == 'Leather Engine' then
+	if settings.styleTimer == 'Leather Engine' or settings.styleTimer == 'Leather Engine\n(No Gradient)' then
 		if downscroll then
 			barY = 705
 			barTxtY = barY - 25
@@ -309,7 +305,7 @@ function onCreatePost()
 	makeLuaSprite('utilBarBorder', 'spriteSolid', barX - barBorder * 175, barY - barBorder * 165)
 	makeLuaSprite('utilBarEmpty', 'spriteSolid', barX, barY)
 
-	if settings.styleTimer == 'Leather Engine' then
+	if settings.styleTimer == 'Leather Engine' and settings.styleTimer ~= 'Leather Engine\n(No Gradient)' then
 		makeLuaSprite('utilBarFill', 'spriteGradient', barX, barY) -- with gradient :D
 	else
 		makeLuaSprite('utilBarFill', 'spriteSolid', barX, barY) -- without gradient :(
@@ -362,6 +358,28 @@ function onCreatePost()
 	setProperty('utilTimer.visible', oldVisibleTxt)
 
 	setProperty('timeTxt.visible', false)
+
+	--// custom scoreTxt
+	makeLuaText('utilScoreTxt', 'TIME', 1000, screenWidth / 2, getProperty('healthBar.y') + 40);  
+	setTextSize('utilScoreTxt', 20);
+	setTextFont('utilScoreTxt', settings.customFont)
+	setTextAlignment('utilScoreTxt', 'center'); 
+
+	setProperty("utilScoreTxt.wordWrap", false)
+	setProperty("utilScoreTxt.autoSize", true)
+	
+	setProperty("utilScoreTxt.antialiasing", gAA)
+
+	setTextBorder('utilScoreTxt', 2, '000000')
+
+	setScrollFactor("utilScoreTxt", 0, 0)
+	setObjectCamera("utilScoreTxt", "hud")
+
+	addLuaText('utilScoreTxt', true);
+
+	setProperty('scoreTxt.visible', false)
+
+	getNewScore()
 
 	--// now playing popup
 	if nowPlayingPopup then
@@ -429,17 +447,12 @@ function onCreatePost()
 		setProperty('catWuajajajaJPG.alpha', 0)
 	end
 
-	if showNPS then
-		runTimer(npsTimer1, 0.1, 0)
-		runTimer(npsTimer2, 0.5, 0)
-	end
-
 	if animatedHudEnabled then
 		if not downscroll then
 			setProperty('healthBar.y', getProperty('healthBar.y') + 300)
 			setProperty('iconP1.y', getProperty('iconP1.y') + 300)
 			setProperty('iconP2.y', getProperty('iconP2.y') + 300)
-			setProperty('scoreTxt.y', getProperty('scoreTxt.y') + 300)
+			setProperty('utilScoreTxt.y', getProperty('utilScoreTxt.y') + 300)
 		
 			setProperty('utilBarBorder.y', getProperty('utilBarBorder.y') - 300)
 			setProperty('utilBarEmpty.y', getProperty('utilBarEmpty.y') - 300)
@@ -449,7 +462,7 @@ function onCreatePost()
 			setProperty('healthBar.y', getProperty('healthBar.y') - 300)
 			setProperty('iconP1.y', getProperty('iconP1.y') - 300)
 			setProperty('iconP2.y', getProperty('iconP2.y') - 300)
-			setProperty('scoreTxt.y', getProperty('scoreTxt.y') - 300)
+			setProperty('utilScoreTxt.y', getProperty('utilScoreTxt.y') - 300)
 		
 			setProperty('utilBarBorder.y', getProperty('utilBarBorder.y') + 300)
 			setProperty('utilBarEmpty.y', getProperty('utilBarEmpty.y') + 300)
@@ -480,6 +493,14 @@ function onCreatePost()
 		local botTxt = botplayStrings[randomIndex]
 		setTextString("botplayTxt", botTxt)
 	end
+
+	if smoothHealthBar then
+		setProperty('healthBar.numDivisions', 10000)
+	end
+end
+
+function onUpdateScore()
+	getNewScore()
 end
 
 --[[ NERD TIME! ]]--
@@ -677,6 +698,19 @@ function loadBotplayTexts() -- i dont want to change the name every new update, 
     end
 end
 
+function math.lerp(a, b, t)
+    return (b - a) * t + a;
+end
+
+function remap(v, str1, stp1, str2, stp2)
+	return str2 + (v - str1) * ((stp2 - str2) / (stp1 - str1));
+end
+
+
+
+
+
+
 
 
 
@@ -704,7 +738,7 @@ function onSongStart()
 			doTweenY('healthBarTween', 'healthBar', getProperty('healthBar.y') - 300, 1, 'quintOut')
 			doTweenY('healthIconBFTween', 'iconP1', getProperty('iconP1.y') - 300, 1, 'quintOut')
 			doTweenY('healthIconDadTween', 'iconP2', getProperty('iconP2.y') - 300, 1, 'quintOut')
-			doTweenY('scoreTxtTween', 'scoreTxt', getProperty('scoreTxt.y') - 300, 1, 'quintOut')
+			doTweenY('scoreTxtTween', 'utilScoreTxt', getProperty('utilScoreTxt.y') - 300, 1, 'quintOut')
 		
 			doTweenY('utilBarBorderTween', 'utilBarBorder', getProperty('utilBarBorder.y') + 300, 1, 'quintOut')
 			doTweenY('utilBarEmptyTween', 'utilBarEmpty', getProperty('utilBarEmpty.y') + 300, 1, 'quintOut')
@@ -714,7 +748,7 @@ function onSongStart()
 			doTweenY('healthBarTween', 'healthBar', getProperty('healthBar.y') + 300, 1, 'quintOut')
 			doTweenY('healthIconBFTween', 'iconP1', getProperty('iconP1.y') + 300, 1, 'quintOut')
 			doTweenY('healthIconDadTween', 'iconP2', getProperty('iconP2.y') + 300, 1, 'quintOut')
-			doTweenY('scoreTxtTween', 'scoreTxt', getProperty('scoreTxt.y') + 300, 1, 'quintOut')
+			doTweenY('scoreTxtTween', 'utilScoreTxt', getProperty('utilScoreTxt.y') + 300, 1, 'quintOut')
 		
 			doTweenY('utilBarBorderTween', 'utilBarBorder', getProperty('utilBarBorder.y') - 300, 1, 'quintOut')
 			doTweenY('utilBarEmptyTween', 'utilBarEmpty', getProperty('utilBarEmpty.y') - 300, 1, 'quintOut')
@@ -841,14 +875,14 @@ function goodNoteHit(id, direction, noteType, isSustainNote)
 		elseif fRating == 'shit' then
 			bScore = bScore + 50
 		end
-
-		tweenNumber(nil, "scoreTxtSX", 1.075, 1, .2, nil, easing.linear)
-		tweenNumber(nil, "scoreTxtSY", 1.075, 1, .2, nil, easing.linear)
 	end
 
 	getNewScore()
 
 	if (not isSustainNote) then
+		tweenNumber(nil, "scoreTxtSX", 1.075, 1, .2, nil, easing.linear)
+		tweenNumber(nil, "scoreTxtSY", 1.075, 1, .2, nil, easing.linear)
+
 		npsRefresh1 = npsRefresh1 + 1
 
 		local strumTime = getPropertyFromGroup('notes', id, 'strumTime')
@@ -930,17 +964,21 @@ end
 function onUpdatePost(dt)
 	tnTick()
 
-	if showNPS then
-		getNewScore()
+	if smoothHealthBar then
+		healthFlip = getProperty('healthBar.flipX') or getProperty('healthBar.angle') == 180 or getProperty('healthBar.scale.x') == -1
 
-		if MaxNps < Nps then
-			MaxNps = Nps
-		end 
-	end
+		healthPercent = math.lerp(healthPercent, math.max((getProperty('health') * 50), 0), (dt * 10))
+		setProperty('healthBar.percent', healthPercent)
+		if healthPercent > 100 then healthPercent = 100 end
 
-	if botPlay and getBotScore then
-		setProperty("scoreTxt.scale.x", scoreTxtSX)
-		setProperty("scoreTxt.scale.y", scoreTxtSY)
+		local usePer = (healthFlip and healthPercent or remap(healthPercent, 0, 100, 100, 0)) * 0.01
+		local part = getProperty('healthBar.x') + ((getProperty('healthBar.width')) * usePer)
+		local iconParts = {part + (150 * getProperty('iconP1.scale.x') - 150) / 2 - 26, part - (150 * getProperty('iconP2.scale.x')) / 2 - 26 * 2}
+	
+		for i = 1, 2 do
+			setProperty('iconP'..i..'.x', iconParts[healthFlip and ((i % 2) + 1) or i])
+			setProperty('iconP'..i..'.flipX', healthFlip)
+		end
 	end
 
     if settings.timerZoomOnBeat then
@@ -950,6 +988,23 @@ function onUpdatePost(dt)
 
     local timerWidth = getProperty('utilTimer.width')
     setProperty('utilTimer.x', (screenWidth - timerWidth) / 2)
+
+	local scoreWidth = getProperty('utilScoreTxt.width')
+    setProperty('utilScoreTxt.x', (screenWidth - scoreWidth) / 2)
+
+	setProperty("utilScoreTxt.scale.x", scoreTxtSX)
+	setProperty("utilScoreTxt.scale.y", scoreTxtSY)
+
+	if showNPS then
+		Nps = getVar("utilNpsCurrent")
+		MaxNps = getVar("utilNpsMax")
+
+		if MaxNps < Nps then
+			MaxNps = Nps
+		end 
+
+		getNewScore()
+	end
 end
 
 function onGameOverStart()
@@ -984,22 +1039,6 @@ function onGameOverConfirm(retry)
 	if not showReasonGO then return end
 
     doTweenAlpha("fadeOutReasonText", "deathReason", 0, 1, "linear")
-end
-
-function onEndSong()
-	local progressAchievement = getAchievementScore('master_notes')
-
-    if usedCheats == false then
-		if MaxNps >= 12 then
-			setAchievementScore('master_notes', 12)
-		end
-
-		if MaxNps < 12 and tonumber(progressAchievement) < MaxNps then
-			setAchievementScore('master_notes', MaxNps)
-		end
-    end
-
-	return Function_Continue;
 end
 
 function onTimerCompleted(tag, loops, loopsLeft)
@@ -1064,23 +1103,5 @@ function onTimerCompleted(tag, loops, loopsLeft)
 		setProperty('utilPlayingBox.visible', false)
 		setProperty('utilPlayingTxt.visible', false)
 		setProperty('utilPlayingSubTxt.visible', false)
-	end
-
-	if tag == npsTimer1 then
-		npsRefresh2 = npsRefresh1
-		runTimer(npsTimer4, 0.15, 0)
-	end
-
-	if tag == npsTimer2 then
-		Nps = (npsRefresh2)
-		runTimer(npsTimer3, 1.15, 0)
-	end
-
-	if tag == npsTimer3 then
-		npsRefresh2 = 0
-	end
-
-	if tag == npsTimer4 then
-		npsRefresh1 = 0
 	end
 end
