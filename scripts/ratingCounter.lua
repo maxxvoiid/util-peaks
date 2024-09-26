@@ -3,7 +3,6 @@
 This script handles all these functions:
 - Rating Counter
 - Full FC Rating Name
-- Achievement: Accuracy Legend
 
 
 This script works as it should, don't touch anything if you don't know what you are doing :)
@@ -25,14 +24,12 @@ local marvelousRatingEnabled = getModSetting('marvelousenabled')
 local marvelousRatingMs = getModSetting('marvelousms')
 local fullFcName = getModSetting('fullfcname')
 
-local usedBotplay = false
-local usedCheats = false -- used for cheaters who used cheats at some point in the song >:(
+local usedBotplay = false -- used for cheaters who used botplay at some point in the song >:(
 
 function onCreatePost()
 	closeIfUtilNotEnabled()
 
 	usedBotplay = false
-	usedCheats = false
 
 	local gAA = getPropertyFromClass("ClientPrefs", "globalAntialiasing")
 
@@ -423,106 +420,6 @@ end
 		return
 	end
 
-	function getCFC()
-		local misses = getProperty('songMisses')
-
-		if fullFcName then
-			if misses >= 1000 then
-				setProperty('ratingFC', 'Quadruple Digit Combo Break')
-				return 'Quadruple Digit Combo Break'
-			end
-		
-			if misses >= 100 then
-				setProperty('ratingFC', 'Triple Digit Combo Break')
-				return 'Triple Digit Combo Break'
-			end
-		
-			if misses >= 10 then
-				setProperty('ratingFC', 'CLEAR')
-				return 'CLEAR'
-			end
-		
-			if misses > 0 then
-				setProperty('ratingFC', 'Single Digit Combo Break')
-				return 'Single Digit Combo Break'
-			end
-		
-			if (actBad > 0 or actShit > 0) and misses == 0 then
-				setProperty('ratingFC', 'Full Combo')
-				return 'Full Combo'
-			end
-		
-			if actMarvelous > 0 and actSick > 0 and actGood > 0 and actBad == 0 and actShit == 0 then
-				setProperty('ratingFC', 'Good Full Combo')
-				return 'Good Full Combo'
-			end
-		
-			if actMarvelous > 0 and actSick > 0 and actGood == 0 and actBad == 0 and actShit == 0 then
-				setProperty('ratingFC', 'Sick Full Combo')
-				return 'Sick Full Combo'
-			end
-		
-			if actMarvelous > 0 and actSick == 0 and actGood == 0 and actBad == 0 and actShit == 0 then
-				setProperty('ratingFC', 'Marvelous Full Combo')
-				return 'Marvelous Full Combo'
-			end
-
-			if marvelousRatingEnabled then
-				setProperty('ratingFC', 'Marvelous Full Combo')
-			else
-				setProperty('ratingFC', 'Sick Full Combo')
-			end
-		else
-			if misses >= 1000 then
-				setProperty('ratingFC', 'QDCB')
-				return 'QDCB' -- Quadruple Digit Combo Break
-			end
-		
-			if misses >= 100 then
-				setProperty('ratingFC', 'TDCB')
-				return 'TDCB' -- Triple Digit Combo Break
-			end
-		
-			if misses >= 10 then
-				setProperty('ratingFC', 'CLEAR')
-				return 'CLEAR'
-			end
-		
-			if misses > 0 then
-				setProperty('ratingFC', 'SDCB')
-				return 'SDCB' -- Single Digit Combo Break
-			end
-		
-			if (actBad > 0 or actShit > 0) and misses == 0 then
-				setProperty('ratingFC', 'FC')
-				return 'FC' -- Full Combo
-			end
-		
-			if actMarvelous > 0 and actSick > 0 and actGood > 0 and actBad == 0 and actShit == 0 then
-				setProperty('ratingFC', 'GFC')
-				return 'GFC' -- Good Full Combo
-			end
-		
-			if actMarvelous > 0 and actSick > 0 and actGood == 0 and actBad == 0 and actShit == 0 then
-				setProperty('ratingFC', 'SFC')
-				return 'SFC' -- Sick Full Combo
-			end
-		
-			if actMarvelous > 0 and actSick == 0 and actGood == 0 and actBad == 0 and actShit == 0 then
-				setProperty('ratingFC', 'MFC')
-				return 'MFC' -- Marvelous Full Combo
-			end
-
-			if marvelousRatingEnabled then
-				setProperty('ratingFC', 'MFC')
-			else
-				setProperty('ratingFC', 'SFC')
-			end
-		end
-
-		return '' -- Not Play
-	end
-
 	function fcColor(actFc)
 		if actFc == 'MFC' or actFc == 'Marvelous Full Combo' then
 			return 'FFEBBE'
@@ -541,10 +438,6 @@ end
 		end
 	end
 
-	function onUpdateScore()
-		getCFC()
-	end
-
 	function goodNoteHit(id, direction, noteType, isSustainNote)
 		if (not isSustainNote) then
 			local strumTime = getPropertyFromGroup('notes', id, 'strumTime')
@@ -554,53 +447,23 @@ end
 
 			tweenNumber(nil, "comboSX", 1.075, 1, .2, nil, easing.linear)
 			tweenNumber(nil, "comboSY", 1.075, 1, .2, nil, easing.linear)
-
-			local fcTxt = getCFC()
-			if (fcTxt ~= prevFc) then
-				tweenNumber(nil, "fcSX", 1.075, 1, .2, nil, easing.linear)
-				tweenNumber(nil, "fcSY", 1.075, 1, .2, nil, easing.linear)
-			end
 		end
 	end
 
 	function noteMissPress(direction)
 		actMisses = actMisses + 1
-
-		local fcTxt = getCFC()
-		if (fcTxt ~= prevFc) then
-			tweenNumber(nil, "fcSX", 1.075, 1, .2, nil, easing.linear)
-			tweenNumber(nil, "fcSY", 1.075, 1, .2, nil, easing.linear)
-		end 
 	end
 
 	function noteMiss(id, direction, noteType, isSustainNote)
 		actMisses = actMisses + 1
-
-		local fcTxt = getCFC()
-		if (fcTxt ~= prevFc) then
-			tweenNumber(nil, "fcSX", 1.075, 1, .2, nil, easing.linear)
-			tweenNumber(nil, "fcSY", 1.075, 1, .2, nil, easing.linear)
-		end 
 	end
 
 	function onUpdate(dt)
 		time = time + dt
 
-		local practice = getProperty('practiceMode')
-
 		if botPlay then
 			if usedBotplay ~= true then
 				usedBotplay = true
-			end
-
-			if usedCheats ~= true then
-				usedCheats = true
-			end
-		end
-
-		if practice then
-			if usedCheats ~= true then
-				usedCheats = true
 			end
 		end
 	end
@@ -624,7 +487,7 @@ end
 		local goodTxt = "Goods: " ..tostring(formatNumberWithCommas(actGood))
 		local badTxt = "Bads: " ..tostring(formatNumberWithCommas(actBad))
 		local shitTxt = "Shits: " ..tostring(formatNumberWithCommas(actShit))
-		local fcTxt = getCFC() == "" and "?" or getCFC()
+		local fcTxt = getVar("utilCFC")
 
 		if (combo ~= prevCombo) then
 			setTextString("combo", comboTxt)
@@ -685,6 +548,9 @@ end
 
 		if (fcTxt ~= prevFc) then
 			if not usedBotplay then
+				tweenNumber(nil, "fcSX", 1.075, 1, .2, nil, easing.linear)
+				tweenNumber(nil, "fcSY", 1.075, 1, .2, nil, easing.linear)
+
 				setTextString("fc", fcTxt)
 				centerOrigin("fc")
 		
@@ -707,16 +573,6 @@ end
 		prevBad = bads
 		prevShit = shits
 		prevFc = fcTxt
-	end
-
-	function onEndSong()
-		if usedCheats == false then
-			if actSick == 0 and actGood == 0 and actBad == 0 and actShit == 0 and actMisses == 0 then
-				unlockAchievement('accuracy_legend')
-			end
-		end
-	
-		return Function_Continue;
 	end
 
 	function closeIfUtilNotEnabled()
