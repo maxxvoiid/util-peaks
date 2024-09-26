@@ -3,6 +3,7 @@
 This script handles all these functions:
 - Shaking Icons
 - BF Winning Icon
+- Old BF Easter Egg Icon
 
 
 This script works as it should, don't touch anything if you don't know what you are doing :)
@@ -21,6 +22,7 @@ This script works as it should, don't touch anything if you don't know what you 
 local iconsShake = getModSetting('shakingicons')
 local bfWinIcon = getModSetting('bfwinicon')
 local opponentPlay = getModSetting('opponentplay')
+local oldBFIcon = false -- getModSetting('oldbficon')
 
 bfWinningIcons = bfWinIcon
 
@@ -72,6 +74,27 @@ function onTimerCompleted(tag, loops, loopsLeft)
 	end
 end
 
+function onCountdownStarted()
+	if oldBFIcon then
+		setObjectOrder('oldBFNormalIcoPlayer', getObjectOrder('iconP1'))
+		makeLuaSprite('oldBFNormalIcoPlayer', 'icons/icon-bf-old-normal', getProperty('iconP1.x'), getProperty('iconP1.y'))
+		setObjectCamera('oldBFNormalIcoPlayer', 'hud')
+		addLuaSprite('oldBFNormalIcoPlayer', true)
+		setProperty('oldBFNormalIcoPlayer.alpha', 1)
+		setProperty('oldBFNormalIcoPlayer.flipX', true)
+
+		setObjectOrder('oldBFDryingIcoPlayer', getObjectOrder('iconP1'))
+		makeLuaSprite('oldBFDryingIcoPlayer', 'icons/icon-bf-old-drying', getProperty('iconP1.x'), getProperty('iconP1.y'))
+		setObjectCamera('oldBFDryingIcoPlayer', 'hud')
+		addLuaSprite('oldBFDryingIcoPlayer', true)
+		setProperty('oldBFDryingIcoPlayer.alpha', 0)
+		setProperty('oldBFDryingIcoPlayer.flipX', true)
+
+		setProperty('boyfriend.healthColorArray', {233, 255, 72})
+		triggerEvent('Change Character', 'bf', getProperty('boyfriend.curCharacter'))
+	end
+end
+
 function createIcons()
 	--BF
 	if bfWinningIcons == true then
@@ -91,6 +114,24 @@ end
 
 function onUpdatePost(elapsed)
 		local actIconVisible = getProperty('iconP1.visible')
+
+		if oldBFIcon then
+			actIconVisible = false
+			bfWinningIcons = false
+
+			--Set pos
+			setProperty('oldBFNormalIcoPlayer.x', getProperty('iconP1.x'))
+			setProperty('oldBFNormalIcoPlayer.angle', getProperty('iconP1.angle'))
+			setProperty('oldBFNormalIcoPlayer.y', getProperty('iconP1.y'))
+			setProperty('oldBFNormalIcoPlayer.scale.x', getProperty('iconP1.scale.x'))
+			setProperty('oldBFNormalIcoPlayer.scale.y', getProperty('iconP1.scale.y'))
+
+			setProperty('oldBFDryingIcoPlayer.x', getProperty('iconP1.x'))
+			setProperty('oldBFDryingIcoPlayer.angle', getProperty('iconP1.angle'))
+			setProperty('oldBFDryingIcoPlayer.y', getProperty('iconP1.y'))
+			setProperty('oldBFDryingIcoPlayer.scale.x', getProperty('iconP1.scale.x'))
+			setProperty('oldBFDryingIcoPlayer.scale.y', getProperty('iconP1.scale.y'))
+		end
 
 		--BF
 		if bfWinningIcons == true and existsWinning == true then
@@ -123,6 +164,16 @@ function onUpdatePost(elapsed)
 					else
 						setProperty('winIcoPlayer.alpha', 0)
 						setProperty('iconP1.alpha', 1)
+					end
+				end
+
+				if oldBFIcon then
+					if getProperty('health') <= 0.38 then -- Old BF Losing Icon
+						setProperty('oldBFNormalIcoPlayer.alpha', 0)
+						setProperty('oldBFDryingIcoPlayer.alpha', 1)
+					else -- Old BF Normal Icon
+						setProperty('oldBFNormalIcoPlayer.alpha', 1)
+						setProperty('oldBFDryingIcoPlayer.alpha', 0)
 					end
 				end
 			else
