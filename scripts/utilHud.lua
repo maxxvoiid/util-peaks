@@ -360,7 +360,7 @@ function onCreatePost()
 	setProperty('timeTxt.visible', false)
 
 	--// custom scoreTxt
-	makeLuaText('utilScoreTxt', 'TIME', 1000, screenWidth / 2, getProperty('healthBar.y') + 40);  
+	makeLuaText('utilScoreTxt', 'Util Score Txt: something went wrong, did not update properly :c', 1000, screenWidth / 2, getProperty('healthBar.y') + 40);  
 	setTextSize('utilScoreTxt', 20);
 	setTextFont('utilScoreTxt', settings.customFont)
 	setTextAlignment('utilScoreTxt', 'center'); 
