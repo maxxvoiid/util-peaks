@@ -29,7 +29,7 @@
 		"format": "%v", //Text formatting, '%v' means 'current value', so if my current value is 'Fri', it wil be shown as 'Friday'. You can also use '%d' to represent the default value
 
 		// String only variables
-		"options": ["Psych Engine", "Leather Engine", "Kade Engine"] //Available options to choose
+		"options": ["Psych Engine", "Leather Engine", "Leather Engine\n(No Gradient)", "Kade Engine"] //Available options to choose
 	},
     {
 		"save": "shakingicons",
@@ -153,7 +153,7 @@
 		"save": "onlymarveloustype",
 		"name": "Only Marvelous Event:",
 		"type": "string",
-		"description": "Images: A pop-up image will appear with a funny sound.\nInstakill: You will die instantly if not Marvelous or miss",
+		"description": "Images: A image in your screen will appear with a sound\nInstakill: You will die instantly if not Marvelous or miss",
 		"value": "Images",
 		"format": "%v", //Text formatting, '%v' means 'current value', so if my current value is 'Fri', it wil be shown as 'Friday'. You can also use '%d' to represent the default value
 
@@ -162,9 +162,9 @@
 	},
 	{
 		"save": "onlymarvelousvolume",
-		"name": "Funny Sounds Volume:",
+		"name": "Only Marvelous Volume:",
 		"type": "percent", //
-		"description": "If 'Only Marvelous' is checked, you can adjust the volume of the funny sounds by not giving it 'Marvelous'",
+		"description": "If 'Only Marvelous' is checked, you can adjust the volume of the sounds by not giving it 'Marvelous'",
 		"value": 0.6,
 	
 		// Int/Float/Percent only variables
@@ -267,6 +267,20 @@
 		"type": "bool",
 		"description": "If checked, a text of the cause of the game over will be displayed when you lose", //Description shown on the mod settings menu
 		"value": true //This is the default value
+	},
+	{
+		"save": "smoothhealthbar",
+		"name": "Smooth Health Bar", //Name shown on the mod settings menu
+		"type": "bool",
+		"description": "If checked, the health bar will move smoothly when gaining or losing health (as in the original FNF Base)", //Description shown on the mod settings menu
+		"value": true //This is the default value
+	},
+	{
+		"save": "oldbficon",
+		"name": "Old BF Easter Egg Icon", //Name shown on the mod settings menu
+		"type": "bool",
+		"description": "If checked, it will show the old BF easter egg icon", //Description shown on the mod settings menu
+		"value": false //This is the default value
 	},
 	{
 		"save": "opponentplay",
