@@ -22,7 +22,7 @@ This script works as it should, don't touch anything if you don't know what you 
 local iconsShake = getModSetting('shakingicons')
 local bfWinIcon = getModSetting('bfwinicon')
 local opponentPlay = getModSetting('opponentplay')
-local oldBFIcon = false -- getModSetting('oldbficon')
+local oldBFIcon = getModSetting('oldbficon')
 
 bfWinningIcons = bfWinIcon
 
