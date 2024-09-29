@@ -310,7 +310,7 @@ function onEndSong()
             unlockAchievement('accuracy_legend')
         end
 
-        if oMInsta == true then
+        if oMInsta == true or oMCrash == true then
             unlockAchievement('marvelous_chaos')
         end
     end
