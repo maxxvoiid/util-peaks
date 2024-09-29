@@ -1,7 +1,7 @@
 --[[ Hey neds 🤓☝️
 
 This script handles all these functions:
-- Only Marvelous Type: Instakill
+- Only Marvelous Event: Instakill & Crash
 - Achievement: Master of notes, Accuracy Legend & Marvelous Chaos
 
 
@@ -49,6 +49,9 @@ local npsRefresh2 = 0
 local trueHealthLossSus = 0
 local trueHealthLossNor = 0
 
+local oMInsta = false
+local oMCrash = false
+
 function onCreatePost()
     closeIfUtilNotEnabled()
     updCFC(true)
@@ -58,10 +61,12 @@ function onCreatePost()
     trueHealthLossNor = 0.3*healthLossMult
     trueHealthLossSus = 0.1*healthLossMult
 
-    if marvelousRatingEnabled and onlyMarvelousEnabled and onlyMarvelousType == 'Instakill' then
-        onlyMarvelousType = true
-    else
-        onlyMarvelousType = false
+    if marvelousRatingEnabled and onlyMarvelousEnabled then
+        if onlyMarvelousType == 'Instakill' then
+            oMInsta = true
+        elseif onlyMarvelousType == 'Crash' then
+            oMCrash = true
+        end
     end
 
     if showNPS then
@@ -200,10 +205,20 @@ function goodNoteHit(id, direction, noteType, isSustainNote)
         local ms = tostring(ratingData.ms)
         local rating = tostring(ratingData.rating)
 
-        if marvelous == false and onlyMarvelousType == true then
-            setVar("utilGOReason", 'Died to a '..rating..' ('..ms..'ms)')
+        if marvelous == false then
+            if oMCrash == true then
+                addHaxeLibrary('Application', 'lime.app')
 
-            setHealth(-1)
+                runHaxeCode('Application.current.window.alert("You get a '..rating..' ('..ms..'ms)\n\nClick OK to close the game", "No Marvelous");')
+            
+                os.exit();
+            end
+
+            if oMInsta == true then
+                setVar("utilGOReason", 'Died to a '..rating..' ('..ms..'ms)')
+
+                setHealth(-1)
+            end
         end
     end
 end
@@ -221,7 +236,7 @@ function noteMissPress(direction)
 
     actCombo = 0
 
-    if onlyMarvelousType ~= true then return end
+    if oMInsta ~= true then return end
 
     setVar("utilGOReason", 'Died to a missed note')
     setHealth(-1)
@@ -250,7 +265,7 @@ function noteMiss(id, direction, noteType, isSustainNote)
         end
     end
 
-    if onlyMarvelousType ~= true then return end
+    if oMInsta ~= true then return end
 
     setVar("utilGOReason", 'Died to a missed note')
     setHealth(-1)
@@ -295,7 +310,7 @@ function onEndSong()
             unlockAchievement('accuracy_legend')
         end
 
-        if onlyMarvelousType == true then
+        if oMInsta == true then
             unlockAchievement('marvelous_chaos')
         end
     end
