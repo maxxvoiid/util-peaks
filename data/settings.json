@@ -153,12 +153,12 @@
 		"save": "onlymarveloustype",
 		"name": "Only Marvelous Event:",
 		"type": "string",
-		"description": "Images: A image in your screen will appear with a sound\nInstakill: You will die instantly if not Marvelous or miss",
+		"description": "Images: A image in your screen will appear with a sound\nInstakill: You will die instantly if not Marvelous or miss\nCrash: Will crash the game if you do not get Marvelous",
 		"value": "Images",
 		"format": "%v", //Text formatting, '%v' means 'current value', so if my current value is 'Fri', it wil be shown as 'Friday'. You can also use '%d' to represent the default value
 
 		// String only variables
-		"options": ["Images", "Instakill"] //Available options to choose
+		"options": ["Images", "Instakill", "Crash"] //Available options to choose
 	},
 	{
 		"save": "onlymarvelousvolume",
