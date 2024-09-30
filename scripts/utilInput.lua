@@ -236,10 +236,18 @@ function noteMissPress(direction)
 
     actCombo = 0
 
-    if oMInsta ~= true then return end
+    if oMCrash == true then
+        addHaxeLibrary('Application', 'lime.app')
 
-    setVar("utilGOReason", 'Died to a missed note')
-    setHealth(-1)
+        runHaxeCode('Application.current.window.alert("You missed a note\n\nClick OK to close the game", "No Marvelous");')
+    
+        os.exit();
+    end
+
+    if oMInsta == true then 
+        setVar("utilGOReason", 'Died to a missed note')
+        setHealth(-1)
+    end
 end
 
 function noteMiss(id, direction, noteType, isSustainNote)
@@ -265,10 +273,18 @@ function noteMiss(id, direction, noteType, isSustainNote)
         end
     end
 
-    if oMInsta ~= true then return end
+    if oMCrash == true then
+        addHaxeLibrary('Application', 'lime.app')
 
-    setVar("utilGOReason", 'Died to a missed note')
-    setHealth(-1)
+        runHaxeCode('Application.current.window.alert("You missed a note\n\nClick OK to close the game", "No Marvelous");')
+    
+        os.exit();
+    end
+
+    if oMInsta == true then 
+        setVar("utilGOReason", 'Died to a missed note')
+        setHealth(-1)
+    end
 end
 
 function onUpdatePost(elapsed)
