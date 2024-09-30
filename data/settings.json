@@ -29,7 +29,69 @@
 		"format": "%v", //Text formatting, '%v' means 'current value', so if my current value is 'Fri', it wil be shown as 'Friday'. You can also use '%d' to represent the default value
 
 		// String only variables
-		"options": ["Psych Engine", "Leather Engine", "Leather Engine\n(No Gradient)", "Kade Engine"] //Available options to choose
+		"options": ["Psych Engine", "Leather Engine", "Kade Engine"] //Available options to choose
+	},
+	{
+		"save": "timebargradient",
+		"name": "Time Bar Gradient", //Name shown on the mod settings menu
+		"type": "bool",
+		"description": "If checked, the Timer Bar will be displayed with a nice gradient", //Description shown on the mod settings menu
+		"value": false //This is the default value
+	},
+	{
+		"save": "timebaropponentcolor",
+		"name": "Time Bar Opponent Color", //Name shown on the mod settings menu
+		"type": "bool",
+		"description": "If checked, the Timer Bar will be colored with the color of the opponent's icon, but disable the three options below", //Description shown on the mod settings menu
+		"value": true //This is the default value
+	},
+	{
+		"save": "timebarcolorrgbred",
+		"name": "Time Bar Color RED:",
+		"type": "float", //
+		"description": "If 'Time Bar Opponent Color' is not checked, you can cutomize the color of the time bar in RGB.\nYou are selecting RED (R)",
+		"value": 255,
+	
+		// Int/Float/Percent only variables
+		"min": 0, //How low can the value be
+		"max": 255, //How high can the value be
+		"step": 1, //How much is changed at once when you press left/right
+
+		// Float/Percent only variables
+		"decimals": 0, //If your option is type 'float' or 'percent', you should probably make it have atleast 1 decimal places
+		"scroll": 200 //How fast you scroll while holding left/right (in this case, it changes 5 per second)
+	},
+	{
+		"save": "timebarcolorrgbgreen",
+		"name": "Time Bar Color GREEN:",
+		"type": "float", //
+		"description": "If 'Time Bar Opponent Color' is not checked, you can cutomize the color of the time bar in RGB.\nYou are selecting GREEN (G)",
+		"value": 255,
+	
+		// Int/Float/Percent only variables
+		"min": 0, //How low can the value be
+		"max": 255, //How high can the value be
+		"step": 1, //How much is changed at once when you press left/right
+
+		// Float/Percent only variables
+		"decimals": 0, //If your option is type 'float' or 'percent', you should probably make it have atleast 1 decimal places
+		"scroll": 125 //How fast you scroll while holding left/right (in this case, it changes 5 per second)
+	},
+	{
+		"save": "timebarcolorrgbblue",
+		"name": "Time Bar Color BLUE:",
+		"type": "float", //
+		"description": "If 'Time Bar Opponent Color' is not checked, you can cutomize the color of the time bar in RGB.\nYou are selecting BLUE (B)",
+		"value": 255,
+	
+		// Int/Float/Percent only variables
+		"min": 0, //How low can the value be
+		"max": 255, //How high can the value be
+		"step": 1, //How much is changed at once when you press left/right
+
+		// Float/Percent only variables
+		"decimals": 0, //If your option is type 'float' or 'percent', you should probably make it have atleast 1 decimal places
+		"scroll": 125 //How fast you scroll while holding left/right (in this case, it changes 5 per second)
 	},
     {
 		"save": "shakingicons",
