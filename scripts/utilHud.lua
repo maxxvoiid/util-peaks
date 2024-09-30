@@ -1,3 +1,49 @@
+--[[ Hey neds 🤓☝️
+
+This script handles all these functions:
+- Modern Time Text
+- Bouncing Time Text
+- Time Bar Styles
+- Time Bar Gradient
+- Time Bar Opponent Color
+- Time Bar Color RED, GREEN & BLUE
+- New Ratings
+- Compact Score Text
+- Only Marvelous: Images
+- Show NPS
+- Get Bot Score
+- Now Playing Pop-up
+- Random Botplay Text
+- Show Reason of Game Over
+- Smooth Health Bar
+
+
+This script works as it should, don't touch anything if you don't know what you are doing :)
+    ~ MaxxVoiid
+
+
+/!\ For NOTHING IN THE WORLD delete this script, IT BREAK EVERYTHING!!! /!\
+/!\ For NOTHING IN THE WORLD delete this script, IT BREAK EVERYTHING!!! /!\
+/!\ For NOTHING IN THE WORLD delete this script, IT BREAK EVERYTHING!!! /!\
+/!\ For NOTHING IN THE WORLD delete this script, IT BREAK EVERYTHING!!! /!\
+/!\ For NOTHING IN THE WORLD delete this script, IT BREAK EVERYTHING!!! /!\
+
+]]
+
+
+
+
+
+-----------------------------------------------------------------------
+    --- DON'T EDIT ANYTHING IF YOU DON'T KNOW WHAT YOU'RE DOING ---
+-----------------------------------------------------------------------
+
+local timeBarGradient = getModSetting('timebargradient')
+local timeBarOpponentColor = getModSetting('timebaropponentcolor')
+local timeBarColorR = getModSetting('timebarcolorrgbred')
+local timeBarColorG = getModSetting('timebarcolorrgbgreen')
+local timeBarColorB = getModSetting('timebarcolorrgbblue')
+
 local newRatingEnabled = getModSetting('newratings')
 
 local ratingCounterEnabled = getModSetting('ratingcounterenabled')
@@ -11,6 +57,7 @@ local marvelousRatingMs = getModSetting('marvelousms')
 
 local onlyMarvelous = getModSetting('onlymarvelous')
 local onlyMarvelousVolume = getModSetting('onlymarvelousvolume')
+local onlyMarvelousType = getModSetting('onlymarveloustype')
 
 local showNPS = getModSetting('shownps')
 
@@ -22,6 +69,12 @@ local nowPlayingDuration = getModSetting('nowplayingduration')
 
 local animatedHudEnabled = getModSetting('animatedhudenabled')
 
+local randomBotplayText = getModSetting('randombotplaytext')
+
+local showReasonGO = getModSetting('showreasongo')
+
+local smoothHealthBar = getModSetting('smoothhealthbar')
+
 local settings = {
     customFont = 'vcr.ttf',
 	divider = ' • ',
@@ -32,8 +85,6 @@ local settings = {
 
 local Nps = 0
 local MaxNps = 0
-local npsRefresh1 = 0
-local npsRefresh2 = 0
 local bScore = 0
 
 local barThickness = .04
@@ -53,6 +104,58 @@ local barTxtY = not downscroll and 20 or screenHeight - 42
 local barTxtSize = 30
 local barTxtAlpha = 1
 
+local healthPercent = 50
+
+local practice = getProperty('practiceMode')
+local playerDied = false
+local usedCheats = false
+
+function onCreate()
+	local blockVersionBeforePrefixes = {'0.3', '0.4', '0.5', '0.6'}
+	local blockVersionAfterPrefixes = {'1.0'}
+	local minimalVersion = '0.7'
+
+	for k, v in pairs(blockVersionAfterPrefixes) do
+		if version:find('^'..v:gsub("^%s*(.-)%s*$", "%1")) ~= nil then
+			debugPrint("------------------------------------------------------")
+			debugPrint("We are waiting for you!")
+			debugPrint("You can use Util Peaks in version "..minimalVersion)
+			debugPrint("")
+			debugPrint("Your Version: "..version)
+			debugPrint("")
+			debugPrint("we haven't ported everything to it yet!")
+			debugPrint("You have a very updated version of Psych Engine,")
+			debugPrint("")
+			debugPrint("with Util Peaks!")
+			debugPrint("Uh-oh, your version of Psych Engine is not compatible")
+			debugPrint("------------------------------------------------------")
+			setVar("utilEnabled", false)
+			close()
+			return
+		end
+	end
+
+	for k, v in pairs(blockVersionBeforePrefixes) do
+		if version:find('^'..v:gsub("^%s*(.-)%s*$", "%1")) ~= nil then
+			debugPrint("--------------------------------------------------------")
+			debugPrint("Thank you for your interest in Util Peaks!!!")
+			debugPrint("")
+			debugPrint("We require you to have at least version: "..minimalVersion.." or higher")
+			debugPrint("Your Version: "..version)
+			debugPrint("")
+			debugPrint("with Util Peaks!")
+			debugPrint("Uh-oh, your version of Psych Engine is not compatible")
+			debugPrint("--------------------------------------------------------")
+			setVar("utilEnabled", false)
+			close()
+			return
+		end
+	end
+
+	setVar("utilEnabled", true)
+	setVar("utilLoadDebug", true) -- prints debug texts to see if each script loads
+end
+
 function formatNumberWithCommas(number)
 	number = math.floor(number)
 	
@@ -68,7 +171,8 @@ end
 
 function getNewScore()
 	local nps = ''
-	local scoreAndMisses = ''
+	local txtPart1 = ''
+	local txtPart2 = ''
     local rating = ""
     local percent = getProperty('ratingPercent') * 100
 
@@ -78,10 +182,10 @@ function getNewScore()
 
 	if botPlay then
 		if getBotScore then
-			scoreAndMisses = 'Bot Score: '..tostring(formatNumberWithCommas(bScore))
+			txtPart1 = 'Bot Score: '..tostring(formatNumberWithCommas(bScore))
 		end
 	else
-		scoreAndMisses = 'Score: '..tostring(formatNumberWithCommas(getProperty('songScore')))..settings.divider..'Misses: '..getProperty('songMisses')
+		txtPart1 = 'Score: '..tostring(formatNumberWithCommas(getProperty('songScore')))..settings.divider..'Misses: '..getProperty('songMisses')
 	end
 
     if percent > 0 then
@@ -113,32 +217,43 @@ function getNewScore()
 
 		percent = (math.floor(getProperty('ratingPercent') * 10000)/100)..'%'
         rating = rating
+
+		txtPart2 = 'Accuracy: '..percent..settings.divider..rating
     else
-		percent = '100%'
-		if newRatingEnabled then
-			rating = rating..'SSSS'
-		else
-			rating = rating..'Perfect!!'
-		end
+		txtPart2 = '?'
     end
 
-	if not compactScore then
-		if not ratingCounterEnabled then
-			setTextString('scoreTxt', scoreAndMisses..nps..settings.divider..'Accuracy: '..percent..settings.divider..rating..' - '..getProperty('ratingFC'))
-		else
-			setTextString('scoreTxt', scoreAndMisses..nps..settings.divider..'Accuracy: '..percent..settings.divider..rating)
-		end
-	else
-		if not ratingCounterEnabled then
-			setTextString('scoreTxt', scoreAndMisses..nps..settings.divider..rating..' - '..getProperty('ratingFC'))
-		else
-			setTextString('scoreTxt', scoreAndMisses..nps..settings.divider..rating)
+	if practice then
+		if getProperty('health') <= 0 and playerDied == false then
+			playerDied = true
 		end
 	end
-end
 
-function onUpdateScore()
-	getNewScore()
+	if not compactScore then
+		if practice and not botPlay then
+			if not playerDied then
+				setTextString('utilScoreTxt', txtPart1..nps..settings.divider..'Practice Mode')
+			else
+				setTextString('utilScoreTxt', txtPart1..nps..settings.divider..'Practice Mode - Died')
+			end
+		else
+			if not ratingCounterEnabled then
+				setTextString('utilScoreTxt', txtPart1..nps..settings.divider..txtPart2..' - '..getProperty('ratingFC'))
+			else
+				setTextString('utilScoreTxt', txtPart1..nps..settings.divider..txtPart2)
+			end
+		end
+	else
+		if practice and not botPlay then
+			setTextString('utilScoreTxt', txtPart1..nps..settings.divider..'Practice')
+		else
+			if not ratingCounterEnabled then
+				setTextString('utilScoreTxt', txtPart1..nps..settings.divider..rating..' - '..getProperty('ratingFC'))
+			else
+				setTextString('utilScoreTxt', txtPart1..nps..settings.divider..rating)
+			end
+		end
+	end
 end
 
 function onCreatePost()
@@ -170,14 +285,12 @@ function onCreatePost()
 		barBorder = .025
 		barX = 345
 		barThickness = .035
-		barFillColor = dadColFinal
 		barTxtSize = 16
 	elseif settings.styleTimer == 'Kade Engine' then
 		if downscroll then
 			barY = 695
 		end
 
-		barEmptyColor = '828282'
 		barTxtBefore = songName
 		barTxtY = barY - 5
 		barTxtSize = 20
@@ -188,7 +301,6 @@ function onCreatePost()
 			barY = 31
 		end
 
-		barFillColor = 'FFFFFF'
 		barLength = 1.18
 		barBorder = .023
 		barX = 443.5
@@ -199,7 +311,13 @@ function onCreatePost()
 	makeLuaSprite('utilBarBorder', 'spriteSolid', barX - barBorder * 175, barY - barBorder * 165)
 	makeLuaSprite('utilBarEmpty', 'spriteSolid', barX, barY)
 
-	if settings.styleTimer == 'Leather Engine' then
+	if timeBarOpponentColor then
+		barFillColor = dadColFinal
+	else
+		barFillColor = string.format('%02x%02x%02x', timeBarColorR, timeBarColorG, timeBarColorB)
+	end
+
+	if timeBarGradient then
 		makeLuaSprite('utilBarFill', 'spriteGradient', barX, barY) -- with gradient :D
 	else
 		makeLuaSprite('utilBarFill', 'spriteSolid', barX, barY) -- without gradient :(
@@ -253,6 +371,28 @@ function onCreatePost()
 
 	setProperty('timeTxt.visible', false)
 
+	--// custom scoreTxt
+	makeLuaText('utilScoreTxt', 'Util Score Txt: something went wrong, did not update properly :c', 1000, screenWidth / 2, getProperty('healthBar.y') + 40);  
+	setTextSize('utilScoreTxt', 20);
+	setTextFont('utilScoreTxt', settings.customFont)
+	setTextAlignment('utilScoreTxt', 'center'); 
+
+	setProperty("utilScoreTxt.wordWrap", false)
+	setProperty("utilScoreTxt.autoSize", true)
+	
+	setProperty("utilScoreTxt.antialiasing", gAA)
+
+	setTextBorder('utilScoreTxt', 2, '000000')
+
+	setScrollFactor("utilScoreTxt", 0, 0)
+	setObjectCamera("utilScoreTxt", "hud")
+
+	addLuaText('utilScoreTxt', true);
+
+	setProperty('scoreTxt.visible', false)
+
+	getNewScore()
+
 	--// now playing popup
 	if nowPlayingPopup then
 		boxX = -305
@@ -305,7 +445,7 @@ function onCreatePost()
 	end
 
 	--// extra configs
-	if onlyMarvelous and marvelousRatingEnabled then
+	if onlyMarvelous and marvelousRatingEnabled and onlyMarvelousType == 'Images' then
 		makeLuaSprite('noMarvelousJPG', 'nomarvelous', 0, 0);
         addLuaSprite('noMarvelousJPG', true);
         scaleObject('noMarvelousJPG', 6, 3);
@@ -319,17 +459,12 @@ function onCreatePost()
 		setProperty('catWuajajajaJPG.alpha', 0)
 	end
 
-	if showNPS then
-		runTimer(npsTimer1, 0.1, 0)
-		runTimer(npsTimer2, 0.5, 0)
-	end
-
 	if animatedHudEnabled then
 		if not downscroll then
 			setProperty('healthBar.y', getProperty('healthBar.y') + 300)
 			setProperty('iconP1.y', getProperty('iconP1.y') + 300)
 			setProperty('iconP2.y', getProperty('iconP2.y') + 300)
-			setProperty('scoreTxt.y', getProperty('scoreTxt.y') + 300)
+			setProperty('utilScoreTxt.y', getProperty('utilScoreTxt.y') + 300)
 		
 			setProperty('utilBarBorder.y', getProperty('utilBarBorder.y') - 300)
 			setProperty('utilBarEmpty.y', getProperty('utilBarEmpty.y') - 300)
@@ -339,7 +474,7 @@ function onCreatePost()
 			setProperty('healthBar.y', getProperty('healthBar.y') - 300)
 			setProperty('iconP1.y', getProperty('iconP1.y') - 300)
 			setProperty('iconP2.y', getProperty('iconP2.y') - 300)
-			setProperty('scoreTxt.y', getProperty('scoreTxt.y') - 300)
+			setProperty('utilScoreTxt.y', getProperty('utilScoreTxt.y') - 300)
 		
 			setProperty('utilBarBorder.y', getProperty('utilBarBorder.y') + 300)
 			setProperty('utilBarEmpty.y', getProperty('utilBarEmpty.y') + 300)
@@ -360,6 +495,24 @@ function onCreatePost()
 			end
 		end
 	end
+
+	if randomBotplayText then
+		loadBotplayTexts()
+
+		math.randomseed(os.time()) -- it's amazing how this piece makes something “““randomized””” work
+
+		local randomIndex = math.random(1, #botplayStrings)
+		local botTxt = botplayStrings[randomIndex]
+		setTextString("botplayTxt", botTxt)
+	end
+
+	if smoothHealthBar then
+		setProperty('healthBar.numDivisions', 10000)
+	end
+end
+
+function onUpdateScore()
+	getNewScore()
 end
 
 --[[ NERD TIME! ]]--
@@ -535,6 +688,46 @@ function formatNumberWithCommas(number)
     return formatted
 end
 
+botplayStrings = {}
+
+function loadBotplayTexts() -- i dont want to change the name every new update, so even if you change the name of the mod folder it works
+    local scriptPath = debug.getinfo(2, "S").source:sub(2)
+    local currentDirectory = scriptPath:match("(.*/)")
+
+	local modsDirectory = currentDirectory:match("(.*/).*/")
+
+    local file = io.open(modsDirectory.."/data/botplayText.txt", "r") 
+
+    if file then
+        for line in file:lines() do
+			if line ~= '' then
+				table.insert(botplayStrings, line)
+			end
+        end
+        file:close()
+    else
+        table.insert(botplayStrings, "BOTPLAY") -- this is for when the txt disappears for some reason
+    end
+end
+
+function math.lerp(a, b, t)
+    return (b - a) * t + a;
+end
+
+function remap(v, str1, stp1, str2, stp2)
+	return str2 + (v - str1) * ((stp2 - str2) / (stp1 - str1));
+end
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -557,7 +750,7 @@ function onSongStart()
 			doTweenY('healthBarTween', 'healthBar', getProperty('healthBar.y') - 300, 1, 'quintOut')
 			doTweenY('healthIconBFTween', 'iconP1', getProperty('iconP1.y') - 300, 1, 'quintOut')
 			doTweenY('healthIconDadTween', 'iconP2', getProperty('iconP2.y') - 300, 1, 'quintOut')
-			doTweenY('scoreTxtTween', 'scoreTxt', getProperty('scoreTxt.y') - 300, 1, 'quintOut')
+			doTweenY('scoreTxtTween', 'utilScoreTxt', getProperty('utilScoreTxt.y') - 300, 1, 'quintOut')
 		
 			doTweenY('utilBarBorderTween', 'utilBarBorder', getProperty('utilBarBorder.y') + 300, 1, 'quintOut')
 			doTweenY('utilBarEmptyTween', 'utilBarEmpty', getProperty('utilBarEmpty.y') + 300, 1, 'quintOut')
@@ -567,7 +760,7 @@ function onSongStart()
 			doTweenY('healthBarTween', 'healthBar', getProperty('healthBar.y') + 300, 1, 'quintOut')
 			doTweenY('healthIconBFTween', 'iconP1', getProperty('iconP1.y') + 300, 1, 'quintOut')
 			doTweenY('healthIconDadTween', 'iconP2', getProperty('iconP2.y') + 300, 1, 'quintOut')
-			doTweenY('scoreTxtTween', 'scoreTxt', getProperty('scoreTxt.y') + 300, 1, 'quintOut')
+			doTweenY('scoreTxtTween', 'utilScoreTxt', getProperty('utilScoreTxt.y') + 300, 1, 'quintOut')
 		
 			doTweenY('utilBarBorderTween', 'utilBarBorder', getProperty('utilBarBorder.y') - 300, 1, 'quintOut')
 			doTweenY('utilBarEmptyTween', 'utilBarEmpty', getProperty('utilBarEmpty.y') - 300, 1, 'quintOut')
@@ -640,7 +833,7 @@ function getRatingMS(diff)
 end
 
 function addRatingMS(diff, noteTouch)
-	if not onlyMarvelous or not marvelousRatingEnabled then return end
+	if not onlyMarvelous or not marvelousRatingEnabled or onlyMarvelousType ~= 'Images' then return end
 
 	diff = math.abs(diff)
 
@@ -694,14 +887,16 @@ function goodNoteHit(id, direction, noteType, isSustainNote)
 		elseif fRating == 'shit' then
 			bScore = bScore + 50
 		end
-
-		tweenNumber(nil, "scoreTxtSX", 1.075, 1, .2, nil, easing.linear)
-		tweenNumber(nil, "scoreTxtSY", 1.075, 1, .2, nil, easing.linear)
 	end
 
 	getNewScore()
 
 	if (not isSustainNote) then
+		tweenNumber(nil, "scoreTxtSX", 1.075, 1, .2, nil, easing.linear)
+		tweenNumber(nil, "scoreTxtSY", 1.075, 1, .2, nil, easing.linear)
+
+--		callScript('scripts/usefulFunctions', 'tweenNumber', { 1.075, 1, 0.2, {onUpdate = 'changeTweenScore'} })
+
 		npsRefresh1 = npsRefresh1 + 1
 
 		local strumTime = getPropertyFromGroup('notes', id, 'strumTime')
@@ -721,8 +916,21 @@ function noteMiss(id, direction, noteType, isSustainNote)
 	addRatingMS(1500, false)
 end
 
+function changeTweenScore(value)
+	debugPrint(value)
+
+	scoreTxtSX = value
+	scoreTxtSY = value
+end
+
 function onUpdate(dt)
 	time = time + dt
+
+	if botPlay or practice then
+        if usedCheats ~= true then
+            usedCheats = true
+        end
+    end
 
 	scaleObject('utilBarFill', barLength * getProperty("songPercent"), barThickness)
 
@@ -777,17 +985,21 @@ end
 function onUpdatePost(dt)
 	tnTick()
 
-	if showNPS then
-		getNewScore()
+	if smoothHealthBar then
+		healthFlip = getProperty('healthBar.flipX') or getProperty('healthBar.angle') == 180 or getProperty('healthBar.scale.x') == -1
 
-		if MaxNps < Nps then
-			MaxNps = Nps
-		end 
-	end
+		healthPercent = math.lerp(healthPercent, math.max((getProperty('health') * 50), 0), (dt * 10))
+		setProperty('healthBar.percent', healthPercent)
+		if healthPercent > 100 then healthPercent = 100 end
 
-	if botPlay and getBotScore then
-		setProperty("scoreTxt.scale.x", scoreTxtSX)
-		setProperty("scoreTxt.scale.y", scoreTxtSY)
+		local usePer = (healthFlip and healthPercent or remap(healthPercent, 0, 100, 100, 0)) * 0.01
+		local part = getProperty('healthBar.x') + ((getProperty('healthBar.width')) * usePer)
+		local iconParts = {part + (150 * getProperty('iconP1.scale.x') - 150) / 2 - 26, part - (150 * getProperty('iconP2.scale.x')) / 2 - 26 * 2}
+	
+		for i = 1, 2 do
+			setProperty('iconP'..i..'.x', iconParts[healthFlip and ((i % 2) + 1) or i])
+			setProperty('iconP'..i..'.flipX', healthFlip)
+		end
 	end
 
     if settings.timerZoomOnBeat then
@@ -797,6 +1009,57 @@ function onUpdatePost(dt)
 
     local timerWidth = getProperty('utilTimer.width')
     setProperty('utilTimer.x', (screenWidth - timerWidth) / 2)
+
+	local scoreWidth = getProperty('utilScoreTxt.width')
+    setProperty('utilScoreTxt.x', (screenWidth - scoreWidth) / 2)
+
+	setProperty("utilScoreTxt.scale.x", scoreTxtSX)
+	setProperty("utilScoreTxt.scale.y", scoreTxtSY)
+
+	if showNPS then
+		Nps = getVar("utilNpsCurrent")
+		MaxNps = getVar("utilNpsMax")
+
+		if MaxNps < Nps then
+			MaxNps = Nps
+		end 
+
+		getNewScore()
+	end
+end
+
+function onGameOverStart()
+	--[[ Hey Modders! ✌️
+
+	I have made a variable in case you want to add any text to Show Reason of Game Over:
+	use 'setVar("utilGOReasonExtra", "Custom Reason")' to make the reason text to your liking!
+
+		~ MaxxVoiid
+	]]
+
+	if not showReasonGO then return end
+
+	local extraDeathReason = getVar("utilGOReasonExtra")
+	local deathReason = getVar("utilGOReason")
+	if deathReason == nil then deathReason = 'Died to health' end
+
+	if extraDeathReason ~= nil and extraDeathReason ~= '' then
+		makeLuaText('deathReason', extraDeathReason, screenWidth, 0, 900)
+	else
+		makeLuaText('deathReason', deathReason, screenWidth, 0, 900)
+	end
+
+    setObjectCamera("deathReason", "other")
+    setTextSize('deathReason', 32)
+    addLuaText("deathReason")
+
+    doTweenY('upDeathReason', 'deathReason', 600, 1.5, 'quintOut')
+end
+
+function onGameOverConfirm(retry)
+	if not showReasonGO then return end
+
+    doTweenAlpha("fadeOutReasonText", "deathReason", 0, 1, "linear")
 end
 
 function onTimerCompleted(tag, loops, loopsLeft)
@@ -861,23 +1124,5 @@ function onTimerCompleted(tag, loops, loopsLeft)
 		setProperty('utilPlayingBox.visible', false)
 		setProperty('utilPlayingTxt.visible', false)
 		setProperty('utilPlayingSubTxt.visible', false)
-	end
-
-	if tag == npsTimer1 then
-		npsRefresh2 = npsRefresh1
-		runTimer(npsTimer4, 0.15, 0)
-	end
-
-	if tag == npsTimer2 then
-		Nps = (npsRefresh2)
-		runTimer(npsTimer3, 1.15, 0)
-	end
-
-	if tag == npsTimer3 then
-		npsRefresh2 = 0
-	end
-
-	if tag == npsTimer4 then
-		npsRefresh1 = 0
 	end
 end
