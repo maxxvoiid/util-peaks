@@ -4,6 +4,9 @@ This script handles all these functions:
 - Modern Time Text
 - Bouncing Time Text
 - Time Bar Styles
+- Time Bar Gradient
+- Time Bar Opponent Color
+- Time Bar Color RED, GREEN & BLUE
 - New Ratings
 - Compact Score Text
 - Only Marvelous: Images
@@ -34,6 +37,12 @@ This script works as it should, don't touch anything if you don't know what you 
 -----------------------------------------------------------------------
     --- DON'T EDIT ANYTHING IF YOU DON'T KNOW WHAT YOU'RE DOING ---
 -----------------------------------------------------------------------
+
+local timeBarGradient = getModSetting('timebargradient')
+local timeBarOpponentColor = getModSetting('timebaropponentcolor')
+local timeBarColorR = getModSetting('timebarcolorrgbred')
+local timeBarColorG = getModSetting('timebarcolorrgbgreen')
+local timeBarColorB = getModSetting('timebarcolorrgbblue')
 
 local newRatingEnabled = getModSetting('newratings')
 
@@ -261,7 +270,7 @@ function onCreatePost()
 	local oldVisibleBar = getProperty('timeBar.visible') -- this tries to avoid bugs by psych settings
 	local oldVisibleTxt = getProperty('timeTxt.visible')
 	
-	if settings.styleTimer == 'Leather Engine' or settings.styleTimer == 'Leather Engine\n(No Gradient)' then
+	if settings.styleTimer == 'Leather Engine' then
 		if downscroll then
 			barY = 705
 			barTxtY = barY - 25
@@ -276,14 +285,12 @@ function onCreatePost()
 		barBorder = .025
 		barX = 345
 		barThickness = .035
-		barFillColor = dadColFinal
 		barTxtSize = 16
 	elseif settings.styleTimer == 'Kade Engine' then
 		if downscroll then
 			barY = 695
 		end
 
-		barEmptyColor = '828282'
 		barTxtBefore = songName
 		barTxtY = barY - 5
 		barTxtSize = 20
@@ -294,7 +301,6 @@ function onCreatePost()
 			barY = 31
 		end
 
-		barFillColor = 'FFFFFF'
 		barLength = 1.18
 		barBorder = .023
 		barX = 443.5
@@ -305,7 +311,13 @@ function onCreatePost()
 	makeLuaSprite('utilBarBorder', 'spriteSolid', barX - barBorder * 175, barY - barBorder * 165)
 	makeLuaSprite('utilBarEmpty', 'spriteSolid', barX, barY)
 
-	if settings.styleTimer == 'Leather Engine' and settings.styleTimer ~= 'Leather Engine\n(No Gradient)' then
+	if timeBarOpponentColor then
+		barFillColor = dadColFinal
+	else
+		barFillColor = string.format('%02x%02x%02x', timeBarColorR, timeBarColorG, timeBarColorB)
+	end
+
+	if timeBarGradient then
 		makeLuaSprite('utilBarFill', 'spriteGradient', barX, barY) -- with gradient :D
 	else
 		makeLuaSprite('utilBarFill', 'spriteSolid', barX, barY) -- without gradient :(
@@ -883,6 +895,8 @@ function goodNoteHit(id, direction, noteType, isSustainNote)
 		tweenNumber(nil, "scoreTxtSX", 1.075, 1, .2, nil, easing.linear)
 		tweenNumber(nil, "scoreTxtSY", 1.075, 1, .2, nil, easing.linear)
 
+--		callScript('scripts/usefulFunctions', 'tweenNumber', { 1.075, 1, 0.2, {onUpdate = 'changeTweenScore'} })
+
 		npsRefresh1 = npsRefresh1 + 1
 
 		local strumTime = getPropertyFromGroup('notes', id, 'strumTime')
@@ -900,6 +914,13 @@ function noteMiss(id, direction, noteType, isSustainNote)
 	getNewScore()
 
 	addRatingMS(1500, false)
+end
+
+function changeTweenScore(value)
+	debugPrint(value)
+
+	scoreTxtSX = value
+	scoreTxtSY = value
 end
 
 function onUpdate(dt)
