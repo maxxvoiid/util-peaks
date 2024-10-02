@@ -50,6 +50,7 @@ local ratingCounterEnabled = getModSetting('ratingcounterenabled')
 
 local fullFcName = getModSetting('fullfcname')
 
+local scoreSize = getModSetting('scoresize')
 local compactScore = getModSetting('compactscore')
 
 local marvelousRatingEnabled = getModSetting('marvelousenabled')
@@ -348,7 +349,7 @@ function onCreatePost()
 
 
 	--// creating the custom timetxt
-	makeLuaText('utilTimer', 'TIME', 300, barTxtX, barTxtY);  
+	makeLuaText('utilTimer', 'Util Time Txt: something went wrong, did not update properly :c', 300, barTxtX, barTxtY);  
 	setTextSize('utilTimer', barTxtSize);
 	setTextFont('utilTimer', settings.customFont)
 	setTextAlignment('utilTimer', 'center'); 
@@ -373,7 +374,7 @@ function onCreatePost()
 
 	--// custom scoreTxt
 	makeLuaText('utilScoreTxt', 'Util Score Txt: something went wrong, did not update properly :c', 1000, screenWidth / 2, getProperty('healthBar.y') + 40);  
-	setTextSize('utilScoreTxt', 20);
+	setTextSize('utilScoreTxt', scoreSize);
 	setTextFont('utilScoreTxt', settings.customFont)
 	setTextAlignment('utilScoreTxt', 'center'); 
 
