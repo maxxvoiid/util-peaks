@@ -6,6 +6,18 @@
 	// percent - Similar to float, but the displayed value is multiplied by 100 (ex. 1.1 will be displayed as "110%")
 	// string - A text instead of numbers/false and true, you gotta set up "options" variable to it
 
+
+	{
+		"save": "_separatortb",
+		"name": "------>",
+		"type": "string",
+		"description": "Time Bar Section",
+		"value": "Time Bar  <------",
+		"format": "%v", //Text formatting, '%v' means 'current value', so if my current value is 'Fri', it wil be shown as 'Friday'. You can also use '%d' to represent the default value
+
+		// String only variables
+		"options": ["Time Bar  <------"] //Available options to choose
+	},
     {
 		"save": "moderntimetext",
 		"name": "Modern Time Text", //Name shown on the mod settings menu
@@ -93,6 +105,45 @@
 		"decimals": 0, //If your option is type 'float' or 'percent', you should probably make it have atleast 1 decimal places
 		"scroll": 125 //How fast you scroll while holding left/right (in this case, it changes 5 per second)
 	},
+	{
+		"save": "_separatorhb",
+		"name": "------>",
+		"type": "string",
+		"description": "Health Bar Section",
+		"value": "Health Bar  <------",
+		"format": "%v", //Text formatting, '%v' means 'current value', so if my current value is 'Fri', it wil be shown as 'Friday'. You can also use '%d' to represent the default value
+
+		// String only variables
+		"options": ["Health Bar  <------"] //Available options to choose
+	},
+	{
+		"save": "smoothhealthbar",
+		"name": "Smooth Health Bar", //Name shown on the mod settings menu
+		"type": "bool",
+		"description": "If checked, the health bar will move smoothly when gaining or losing health (as in the original FNF Base)", //Description shown on the mod settings menu
+		"value": true //This is the default value
+	},
+	{
+		"save": "bfwinicon",
+		"name": "BF Winning Icon", //Name shown on the mod settings menu
+		"type": "bool",
+		"description": "If checked, Boyfriend will display a winning icon when the opponent has low health", //Description shown on the mod settings menu
+		"value": true //This is the default value
+	},
+	{
+		"save": "opponentwinicon",
+		"name": "Opponent Winning Icon", //Name shown on the mod settings menu
+		"type": "bool",
+		"description": "If checked, opponent will display a winning icon when Boyfriend has low health", //Description shown on the mod settings menu
+		"value": true //This is the default value
+	},
+	{
+		"save": "oldbficon",
+		"name": "Old BF Easter Egg Icon", //Name shown on the mod settings menu
+		"type": "bool",
+		"description": "If checked, it will show the old BF easter egg icon", //Description shown on the mod settings menu
+		"value": false //This is the default value
+	},
     {
 		"save": "shakingicons",
 		"name": "Shaking Icons:",
@@ -104,11 +155,36 @@
 		// String only variables
 		"options": ["Opponent & BF", "Only Opponent", "Only BF", "None"] //Available options to choose
 	},
-    {
-		"save": "bfwinicon",
-		"name": "BF Winning Icon", //Name shown on the mod settings menu
+	{
+		"save": "_separatorif",
+		"name": "------>",
+		"type": "string",
+		"description": "Interface Section",
+		"value": "Interface  <------",
+		"format": "%v", //Text formatting, '%v' means 'current value', so if my current value is 'Fri', it wil be shown as 'Friday'. You can also use '%d' to represent the default value
+
+		// String only variables
+		"options": ["Interface  <------"] //Available options to choose
+	},
+	{
+		"save": "animatedhudenabled",
+		"name": "Animated HUD Transition", //Name shown on the mod settings menu
 		"type": "bool",
-		"description": "If checked, Boyfriend will display a winning icon when the opponent has low health", //Description shown on the mod settings menu
+		"description": "If checked, the HUD elements (score text, health bar, etc.) will transition at the start of a song", //Description shown on the mod settings menu
+		"value": true //This is the default value
+	},
+	{
+		"save": "randombotplaytext",
+		"name": "Random Botplay Text", //Name shown on the mod settings menu
+		"type": "bool",
+		"description": "If checked, causes the 'Botplay' text to be replaced by random phrases", //Description shown on the mod settings menu
+		"value": true //This is the default value
+	},
+	{
+		"save": "showreasongo",
+		"name": "Show Reason of Game Over", //Name shown on the mod settings menu
+		"type": "bool",
+		"description": "If checked, a text of the cause of the game over will be displayed when you lose", //Description shown on the mod settings menu
 		"value": true //This is the default value
 	},
     {
@@ -132,25 +208,34 @@
 		"description": "If checked, the Score Text will be compacted to display information more concisely", //Description shown on the mod settings menu
 		"value": false //This is the default value
 	},
+	{
+		"save": "scoresize",
+		"name": "Score Text Size:",
+		"type": "float", //
+		"description": "Customize the size of the Score Text to your liking",
+		"value": 20,
+	
+		// Int/Float/Percent only variables
+		"min": 16, //How low can the value be
+		"max": 32, //How high can the value be
+		"step": 1, //How much is changed at once when you press left/right
+
+		// Float/Percent only variables
+		"decimals": 0, //If your option is type 'float' or 'percent', you should probably make it have atleast 1 decimal places
+		"scroll": 25 //How fast you scroll while holding left/right (in this case, it changes 5 per second)
+	},
+	{
+		"save": "showratingms",
+		"name": "Show MS Rating", //Name shown on the mod settings menu
+		"type": "bool",
+		"description": "If checked, hitting a note will display the milliseconds it took you to hit it", //Description shown on the mod settings menu
+		"value": true //This is the default value
+	},
     {
 		"save": "newratings",
 		"name": "New Ratings", //Name shown on the mod settings menu
 		"type": "bool",
 		"description": "If checked, 'Perfect!!' will change to 'SSSS', 'Sick!' will change to 'SSS', and so on", //Description shown on the mod settings menu
-		"value": true //This is the default value
-	},
-	{
-		"save": "colorfulratings",
-		"name": "Colorful Ratings", //Name shown on the mod settings menu
-		"type": "bool",
-		"description": "If checked, the 'Sick' rating will be light blue, 'Good' will be green, and so on", //Description shown on the mod settings menu
-		"value": true //This is the default value
-	},
-    {
-		"save": "showratingms",
-		"name": "Show MS Rating", //Name shown on the mod settings menu
-		"type": "bool",
-		"description": "If checked, hitting a note will display the milliseconds it took you to hit it", //Description shown on the mod settings menu
 		"value": true //This is the default value
 	},
 	{
@@ -160,85 +245,7 @@
 		"description": "If checked, the game will show your Notes Per Second in the score text", //Description shown on the mod settings menu
 		"value": false //This is the default value
 	},
-    {
-		"save": "missenabled",
-		"name": "Miss Rating", //Name shown on the mod settings menu
-		"type": "bool",
-		"description": "If checked, losing a combo greater than 10 will display a 'Miss...' rating (does not affect gameplay)", //Description shown on the mod settings menu
-		"value": true //This is the default value
-	},
 	{
-		"save": "removeinitialzeros",
-		"name": "Remove Initial Zeros Combo", //Name shown on the mod settings menu
-		"type": "bool",
-		"description": "If checked, leading zeros in the combo count will be removed (e.g., '005' will become '5' and '018' will become '18')", //Description shown on the mod settings menu
-		"value": false //This is the default value
-	},
-    {
-		"save": "showlesscombo",
-		"name": "Show Combo Lower Than 10", //Name shown on the mod settings menu
-		"type": "bool",
-		"description": "If checked, it will display the combo even if it is less than 10", //Description shown on the mod settings menu
-		"value": false //This is the default value
-	},
-	{
-		"save": "marvelousenabled",
-		"name": "Marvelous Rating", //Name shown on the mod settings menu
-		"type": "bool",
-		"description": "If checked, it will toggle an additional rating when achieving higher accuracy than 'Sick!'", //Description shown on the mod settings menu
-		"value": true //This is the default value
-	},
-	{
-		"save": "marvelousms",
-		"name": "Marvelous Hit Windows (ms):",
-		"type": "float", //
-		"description": "If 'Marvelous Rating' is checked, you can adjust the amount of the time you have to press a Marvelous in milliseconds",
-		"value": 25,
-	
-		// Int/Float/Percent only variables
-		"min": 5, //How low can the value be
-		"max": 25, //How high can the value be
-		"step": 1, //How much is changed at once when you press left/right
-
-		// Float/Percent only variables
-		"decimals": 0, //If your option is type 'float' or 'percent', you should probably make it have atleast 1 decimal places
-		"scroll": 50 //How fast you scroll while holding left/right (in this case, it changes 5 per second)
-	},
-	{
-		"save": "onlymarvelous",
-		"name": "Only Marvelous", //Name shown on the mod settings menu
-		"type": "bool",
-		"description": "If checked, you can only get Marvelous Rating on songs, otherwise it will be an event of 'Only Marvelous Event'", //Description shown on the mod settings menu
-		"value": false //This is the default value
-	},
-	{
-		"save": "onlymarveloustype",
-		"name": "Only Marvelous Event:",
-		"type": "string",
-		"description": "Images: A image in your screen will appear with a sound\nInstakill: You will die instantly if not Marvelous or miss\nCrash: Will crash the game if you do not get Marvelous",
-		"value": "Images",
-		"format": "%v", //Text formatting, '%v' means 'current value', so if my current value is 'Fri', it wil be shown as 'Friday'. You can also use '%d' to represent the default value
-
-		// String only variables
-		"options": ["Images", "Instakill", "Crash"] //Available options to choose
-	},
-	{
-		"save": "onlymarvelousvolume",
-		"name": "Only Marvelous Volume:",
-		"type": "percent", //
-		"description": "If 'Only Marvelous' is checked, you can adjust the volume of the sounds by not giving it 'Marvelous'",
-		"value": 0.6,
-	
-		// Int/Float/Percent only variables
-		"min": 0, //How low can the value be
-		"max": 1, //How high can the value be
-		"step": 0.1, //How much is changed at once when you press left/right
-
-		// Float/Percent only variables
-		"decimals": 1, //If your option is type 'float' or 'percent', you should probably make it have atleast 1 decimal places
-		"scroll": 2.5 //How fast you scroll while holding left/right (in this case, it changes 5 per second)
-	},
-    {
 		"save": "resumecountenabled",
 		"name": "Resume Countdown", //Name shown on the mod settings menu
 		"type": "bool",
@@ -246,33 +253,17 @@
 		"value": true //This is the default value
 	},
 	{
-		"save": "misssound",
-		"name": "Scratch Disk on Combo Break", //Name shown on the mod settings menu
-		"type": "bool",
-		"description": "If checked, losing a combo of more than 10 will trigger the original scratched disk sound (the psych guys removed it :c)", //Description shown on the mod settings menu
-		"value": true //This is the default value
-	},
-	{
-		"save": "missvolume",
-		"name": "Scratch Disk Volume:",
-		"type": "percent", //
-		"description": "If 'Sound of Scratched Disk on Combo Break' is checked, you can adjust the volume of the scratched disk sound when the combo is broken",
-		"value": 0.5,
-	
-		// Int/Float/Percent only variables
-		"min": 0, //How low can the value be
-		"max": 1, //How high can the value be
-		"step": 0.1, //How much is changed at once when you press left/right
-
-		// Float/Percent only variables
-		"decimals": 1, //If your option is type 'float' or 'percent', you should probably make it have atleast 1 decimal places
-		"scroll": 2.5 //How fast you scroll while holding left/right (in this case, it changes 5 per second)
-	},
-	{
 		"save": "getbotscore",
 		"name": "Get Bot Score", //Name shown on the mod settings menu
 		"type": "bool",
 		"description": "If checked, the game will count the Bot's score in the Score Text (it will not replace the player's score)", //Description shown on the mod settings menu
+		"value": true //This is the default value
+	},
+    {
+		"save": "missenabled",
+		"name": "Miss Rating", //Name shown on the mod settings menu
+		"type": "bool",
+		"description": "If checked, losing a combo greater than 10 will display a 'Miss...' rating (does not affect gameplay)", //Description shown on the mod settings menu
 		"value": true //This is the default value
 	},
 	{
@@ -310,39 +301,127 @@
 		"scroll": 10.1 //How fast you scroll while holding left/right (in this case, it changes 5 per second)
 	},
 	{
-		"save": "animatedhudenabled",
-		"name": "Animated HUD Transition", //Name shown on the mod settings menu
-		"type": "bool",
-		"description": "If checked, the HUD elements (score text, health bar, etc.) will transition at the start of a song", //Description shown on the mod settings menu
-		"value": true //This is the default value
+		"save": "_separatorrt",
+		"name": "------>",
+		"type": "string",
+		"description": "Ratings Section",
+		"value": "Ratings  <------",
+		"format": "%v", //Text formatting, '%v' means 'current value', so if my current value is 'Fri', it wil be shown as 'Friday'. You can also use '%d' to represent the default value
+
+		// String only variables
+		"options": ["Ratings  <------"] //Available options to choose
 	},
 	{
-		"save": "randombotplaytext",
-		"name": "Random Botplay Text", //Name shown on the mod settings menu
+		"save": "showlesscombo",
+		"name": "Show Combo Lower Than 10", //Name shown on the mod settings menu
 		"type": "bool",
-		"description": "If checked, causes the 'Botplay' text to be replaced by random phrases", //Description shown on the mod settings menu
-		"value": true //This is the default value
-	},
-	{
-		"save": "showreasongo",
-		"name": "Show Reason of Game Over", //Name shown on the mod settings menu
-		"type": "bool",
-		"description": "If checked, a text of the cause of the game over will be displayed when you lose", //Description shown on the mod settings menu
-		"value": true //This is the default value
-	},
-	{
-		"save": "smoothhealthbar",
-		"name": "Smooth Health Bar", //Name shown on the mod settings menu
-		"type": "bool",
-		"description": "If checked, the health bar will move smoothly when gaining or losing health (as in the original FNF Base)", //Description shown on the mod settings menu
-		"value": true //This is the default value
-	},
-	{
-		"save": "oldbficon",
-		"name": "Old BF Easter Egg Icon", //Name shown on the mod settings menu
-		"type": "bool",
-		"description": "If checked, it will show the old BF easter egg icon", //Description shown on the mod settings menu
+		"description": "If checked, it will display the combo even if it is less than 10", //Description shown on the mod settings menu
 		"value": false //This is the default value
+	},
+	{
+		"save": "removeinitialzeros",
+		"name": "Remove Initial Zeros Combo", //Name shown on the mod settings menu
+		"type": "bool",
+		"description": "If checked, leading zeros in the combo count will be removed (e.g., '005' will become '5' and '018' will become '18')", //Description shown on the mod settings menu
+		"value": false //This is the default value
+	},
+	{
+		"save": "colorfulratings",
+		"name": "Colorful Ratings", //Name shown on the mod settings menu
+		"type": "bool",
+		"description": "If checked, the 'Sick' rating will be light blue, 'Good' will be green, and so on", //Description shown on the mod settings menu
+		"value": true //This is the default value
+	},
+	{
+		"save": "marvelousenabled",
+		"name": "Marvelous Rating", //Name shown on the mod settings menu
+		"type": "bool",
+		"description": "If checked, it will toggle an additional rating when achieving higher accuracy than 'Sick!'", //Description shown on the mod settings menu
+		"value": true //This is the default value
+	},
+	{
+		"save": "marvelousms",
+		"name": "Marvelous Hit Windows (ms):",
+		"type": "float", //
+		"description": "If 'Marvelous Rating' is checked, you can adjust the amount of the time you have to press a Marvelous in milliseconds",
+		"value": 25,
+	
+		// Int/Float/Percent only variables
+		"min": 5, //How low can the value be
+		"max": 25, //How high can the value be
+		"step": 1, //How much is changed at once when you press left/right
+
+		// Float/Percent only variables
+		"decimals": 0, //If your option is type 'float' or 'percent', you should probably make it have atleast 1 decimal places
+		"scroll": 50 //How fast you scroll while holding left/right (in this case, it changes 5 per second)
+	},
+	{
+		"save": "_separatorgp",
+		"name": "------>",
+		"type": "string",
+		"description": "Gameplay Section",
+		"value": "Gameplay  <------",
+		"format": "%v", //Text formatting, '%v' means 'current value', so if my current value is 'Fri', it wil be shown as 'Friday'. You can also use '%d' to represent the default value
+
+		// String only variables
+		"options": ["Gameplay  <------"] //Available options to choose
+	},
+	{
+		"save": "onlymarvelous",
+		"name": "Only Marvelous", //Name shown on the mod settings menu
+		"type": "bool",
+		"description": "If checked, you can only get Marvelous Rating on songs, otherwise it will be an event of 'Only Marvelous Event'", //Description shown on the mod settings menu
+		"value": false //This is the default value
+	},
+	{
+		"save": "onlymarveloustype",
+		"name": "Only Marvelous Event:",
+		"type": "string",
+		"description": "Images: A image in your screen will appear with a sound\nInstakill: You will die instantly if not Marvelous or miss\nCrash: Will crash the game if you do not get Marvelous",
+		"value": "Images",
+		"format": "%v", //Text formatting, '%v' means 'current value', so if my current value is 'Fri', it wil be shown as 'Friday'. You can also use '%d' to represent the default value
+
+		// String only variables
+		"options": ["Images", "Instakill", "Crash"] //Available options to choose
+	},
+	{
+		"save": "onlymarvelousvolume",
+		"name": "Only Marvelous Volume:",
+		"type": "percent", //
+		"description": "If 'Only Marvelous' is checked, you can adjust the volume of the sounds by not giving it 'Marvelous'",
+		"value": 0.6,
+	
+		// Int/Float/Percent only variables
+		"min": 0, //How low can the value be
+		"max": 1, //How high can the value be
+		"step": 0.1, //How much is changed at once when you press left/right
+
+		// Float/Percent only variables
+		"decimals": 1, //If your option is type 'float' or 'percent', you should probably make it have atleast 1 decimal places
+		"scroll": 2.5 //How fast you scroll while holding left/right (in this case, it changes 5 per second)
+	},
+	{
+		"save": "misssound",
+		"name": "Scratch Disk on Combo Break", //Name shown on the mod settings menu
+		"type": "bool",
+		"description": "If checked, losing a combo of more than 10 will trigger the original scratched disk sound (the psych guys removed it :c)", //Description shown on the mod settings menu
+		"value": true //This is the default value
+	},
+	{
+		"save": "missvolume",
+		"name": "Scratch Disk Volume:",
+		"type": "percent", //
+		"description": "If 'Sound of Scratched Disk on Combo Break' is checked, you can adjust the volume of the scratched disk sound when the combo is broken",
+		"value": 0.5,
+	
+		// Int/Float/Percent only variables
+		"min": 0, //How low can the value be
+		"max": 1, //How high can the value be
+		"step": 0.1, //How much is changed at once when you press left/right
+
+		// Float/Percent only variables
+		"decimals": 1, //If your option is type 'float' or 'percent', you should probably make it have atleast 1 decimal places
+		"scroll": 2.5 //How fast you scroll while holding left/right (in this case, it changes 5 per second)
 	},
 	{
 		"save": "opponentplay",
@@ -350,5 +429,24 @@
 		"type": "bool",
 		"description": "If checked, you will play as the opponent instead of Boyfriend", //Description shown on the mod settings menu
 		"value": false //This is the default value
+	},
+	{
+		"save": "_separatorck",
+		"name": "--->",
+		"type": "string",
+		"description": "Custom Keybinds Section",
+		"value": "Custom Keybinds  <---",
+		"format": "%v", //Text formatting, '%v' means 'current value', so if my current value is 'Fri', it wil be shown as 'Friday'. You can also use '%d' to represent the default value
+
+		// String only variables
+		"options": ["Custom Keybinds  <---"] //Available options to choose
+	},
+	{
+		"save": "keyenablebot",
+		"name": "Enable Botplay Key:",
+		"type": "keybind",
+		"description": "Choose a key to activate / deactivate Botplay at any time",
+		"keyboard": "6",
+		"gamepad": "" // gamepad is not used, I have no idea how to get the input
 	}
 ]
