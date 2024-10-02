@@ -3,6 +3,7 @@
 This script handles all these functions:
 - Only Marvelous Event: Instakill & Crash
 - Achievement: Master of notes, Accuracy Legend & Marvelous Chaos
+- Enable Botplay Keybind
 
 
 This script works as it should, don't touch anything if you don't know what you are doing :)
@@ -27,6 +28,8 @@ local onlyMarvelousEnabled = getModSetting('onlymarvelous')
 local onlyMarvelousType = getModSetting('onlymarveloustype')
 
 local showNPS = getModSetting('shownps')
+
+local keyBotplay = getModSetting('keyenablebot')
 
 local usedCheats = false
 local cheerGfCombo = true -- makes gf celebrate if you reach 50 combo
@@ -292,6 +295,13 @@ function onUpdatePost(elapsed)
 
     if keyJustPressed('reset') then
         setVar("utilGOReason", 'Reset button pressed')
+    end
+
+    if getPropertyFromClass('flixel.FlxG', 'keys.justPressed.'..keyBotplay.keyboard) then
+        local changeBotplay = not botPlay
+
+        setProperty('cpuControlled', changeBotplay)
+        setProperty('botplayTxt.visible', changeBotplay)
     end
 
     if botPlay or practice then
