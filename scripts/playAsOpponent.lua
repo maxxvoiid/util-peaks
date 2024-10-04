@@ -171,41 +171,24 @@ if enabled == true then
 	end
 	
 	function onUpdatePost()
-		setHealthBarColors(rgbToHex(getProperty('boyfriend.healthColorArray')[1], getProperty('boyfriend.healthColorArray')[2], getProperty('boyfriend.healthColorArray')[3]), rgbToHex(getProperty('dad.healthColorArray')[1], getProperty('dad.healthColorArray')[2], getProperty('dad.healthColorArray')[3]))
-	
+		setHealthBarColors(
+			rgbToHex(getProperty('boyfriend.healthColorArray')[1], getProperty('boyfriend.healthColorArray')[2], getProperty('boyfriend.healthColorArray')[3]), 
+			rgbToHex(getProperty('dad.healthColorArray')[1], getProperty('dad.healthColorArray')[2], getProperty('dad.healthColorArray')[3])
+		)
+
 		local health = getProperty('health')
-		local baseX = getProperty('healthBar.x')
-		local baseXScale = getProperty('healthBar.scale.x') / 2
+	
 		if health >= 2 then
-			health = 2
-		elseif health <= 0.001 then
-			health = 0.001
+			setProperty('iconP1.animation.curAnim.curFrame', 0)
+			setProperty('iconP2.animation.curAnim.curFrame', 0)
+		elseif health <= 0.37599 then
+			setProperty('iconP1.animation.curAnim.curFrame', 0)
+			setProperty('iconP2.animation.curAnim.curFrame', 1)
+		elseif health >= 1.55 then
+			setProperty('iconP1.animation.curAnim.curFrame', 1)
+			setProperty('iconP2.animation.curAnim.curFrame', 0)
 		end
-		local moveAlong = health * 225
-		
-		setProperty('iconP1.x', baseX + baseXScale + 60 + moveAlong)
-		setProperty('iconP2.x', baseX+ baseXScale - 60 + moveAlong)
-	
-	if health >= 2 then
-	
-	setProperty('iconP1.animation.curAnim.curFrame',0)
-	
-	setProperty('iconP2.animation.curAnim.curFrame', 0)
-	
-	elseif health <= 0.37599 then
-	
-	setProperty('iconP1.animation.curAnim.curFrame', 0)
-	
-	setProperty('iconP2.animation.curAnim.curFrame', 1)
-	
-	elseif health >= 1.55 then
-	
-	setProperty('iconP1.animation.curAnim.curFrame', 1)
-	
-	setProperty('iconP2.animation.curAnim.curFrame', 0)
-	
-	end
-	
+
 		setProperty('healthBar.flipX', true)
 	end
 end
