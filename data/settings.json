@@ -260,6 +260,13 @@
 		"value": true //This is the default value
 	},
 	{
+		"save": "susnotessplash",
+		"name": "Sustain Notes Splash", //Name shown on the mod settings menu
+		"type": "bool",
+		"description": "If checked, when you are pressing a sustain note it will make a long note effect as in the Base FNF", //Description shown on the mod settings menu
+		"value": true //This is the default value
+	},
+	{
 		"save": "nowplayingpopup",
 		"name": "Now Playing Pop-up", //Name shown on the mod settings menu
 		"type": "bool",
