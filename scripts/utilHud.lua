@@ -16,6 +16,8 @@ This script handles all these functions:
 - Random Botplay Text
 - Show Reason of Game Over
 - Smooth Health Bar
+- Hide Score Text
+- Score Text Size
 
 
 This script works as it should, don't touch anything if you don't know what you are doing :)
@@ -51,6 +53,7 @@ local ratingCounterEnabled = getModSetting('ratingcounterenabled')
 local fullFcName = getModSetting('fullfcname')
 
 local scoreSize = getModSetting('scoresize')
+local scoreVisible = not getModSetting('hidescore')
 local compactScore = getModSetting('compactscore')
 
 local marvelousRatingEnabled = getModSetting('marvelousenabled')
@@ -75,6 +78,8 @@ local randomBotplayText = getModSetting('randombotplaytext')
 local showReasonGO = getModSetting('showreasongo')
 
 local smoothHealthBar = getModSetting('smoothhealthbar')
+
+local opponentPlay = getModSetting('opponentplay')
 
 local settings = {
     customFont = 'vcr.ttf',
@@ -259,6 +264,7 @@ end
 
 function onCreatePost()
 	local gAA = getPropertyFromClass("ClientPrefs", "globalAntialiasing")
+	scoreHitSizeEnabled = getPropertyFromClass('backend.ClientPrefs', 'data.scoreZoom')
 
 	--// getting dad health bar color
 	local dadColR = getProperty('dad.healthColorArray[0]')
@@ -374,7 +380,7 @@ function onCreatePost()
 
 	--// custom scoreTxt
 	makeLuaText('utilScoreTxt', 'Util Score Txt: something went wrong, did not update properly :c', 1000, screenWidth / 2, getProperty('healthBar.y') + 40);  
-	setTextSize('utilScoreTxt', scoreSize);
+	setTextSize('utilScoreTxt', scoreSize + 20);
 	setTextFont('utilScoreTxt', settings.customFont)
 	setTextAlignment('utilScoreTxt', 'center'); 
 
@@ -389,6 +395,8 @@ function onCreatePost()
 	setObjectCamera("utilScoreTxt", "hud")
 
 	addLuaText('utilScoreTxt', true);
+
+	setProperty('utilScoreTxt.visible', scoreVisible)
 
 	setProperty('scoreTxt.visible', false)
 
@@ -893,8 +901,10 @@ function goodNoteHit(id, direction, noteType, isSustainNote)
 	getNewScore()
 
 	if (not isSustainNote) then
-		tweenNumber(nil, "scoreTxtSX", 1.075, 1, .2, nil, easing.linear)
-		tweenNumber(nil, "scoreTxtSY", 1.075, 1, .2, nil, easing.linear)
+		if scoreHitSizeEnabled == true then
+			tweenNumber(nil, "scoreTxtSX", 1.075, 1, .2, nil, easing.linear)
+			tweenNumber(nil, "scoreTxtSY", 1.075, 1, .2, nil, easing.linear)
+		end
 
 --		callScript('scripts/usefulFunctions', 'tweenNumber', { 1.075, 1, 0.2, {onUpdate = 'changeTweenScore'} })
 
@@ -987,19 +997,29 @@ function onUpdatePost(dt)
 	tnTick()
 
 	if smoothHealthBar then
-		healthFlip = getProperty('healthBar.flipX') or getProperty('healthBar.angle') == 180 or getProperty('healthBar.scale.x') == -1
+		local healthFlip = getProperty('healthBar.flipX') or getProperty('healthBar.angle') == 180 or getProperty('healthBar.scale.x') == -1
 
 		healthPercent = math.lerp(healthPercent, math.max((getProperty('health') * 50), 0), (dt * 10))
-		setProperty('healthBar.percent', healthPercent)
-		if healthPercent > 100 then healthPercent = 100 end
+		healthPercent = math.min(healthPercent, 100)
 
 		local usePer = (healthFlip and healthPercent or remap(healthPercent, 0, 100, 100, 0)) * 0.01
-		local part = getProperty('healthBar.x') + ((getProperty('healthBar.width')) * usePer)
-		local iconParts = {part + (150 * getProperty('iconP1.scale.x') - 150) / 2 - 26, part - (150 * getProperty('iconP2.scale.x')) / 2 - 26 * 2}
-	
-		for i = 1, 2 do
-			setProperty('iconP'..i..'.x', iconParts[healthFlip and ((i % 2) + 1) or i])
-			setProperty('iconP'..i..'.flipX', healthFlip)
+		local part = getProperty('healthBar.x') + (getProperty('healthBar.width') * usePer)
+
+		local iconParts = {
+			part + (150 * getProperty('iconP1.scale.x') - 150) / 2 - 26, 
+			part - (150 * getProperty('iconP2.scale.x')) / 2 - 52
+		}
+
+		if not opponentPlay then
+			for i = 1, 2 do
+				setProperty('iconP'..i..'.x', iconParts[healthFlip and ((i % 2) + 1) or i])
+				setProperty('iconP'..i..'.flipX', healthFlip)
+			end
+		else
+			for i = 1, 2 do
+				setProperty('iconP'..i..'.x', iconParts[i])
+				setProperty('iconP'..i..'.flipX', false)
+			end
 		end
 	end
 
