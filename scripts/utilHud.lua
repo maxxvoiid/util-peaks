@@ -159,7 +159,7 @@ function onCreate()
 	end
 
 	setVar("utilEnabled", true)
-	setVar("utilLoadDebug", true) -- prints debug texts to see if each script loads
+	setVar("utilLoadDebug", false) -- prints debug texts to see if each script loads
 end
 
 function formatNumberWithCommas(number)
