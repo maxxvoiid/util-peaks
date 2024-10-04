@@ -207,7 +207,7 @@ function onUpdatePost(elapsed)
 			setObjectCamera('winIcoOpponent', 'hud')
 			addLuaSprite('winIcoOpponent', true)
 			setProperty('winIcoOpponent.flipX', false)
-			setProperty('winIcoOpponent.visible', false)
+			setProperty('winIcoOpponent.alpha', 0)
 
 			--Set pos
 			setProperty('winIcoOpponent.x', getProperty('iconP2.x'))
