@@ -18,6 +18,7 @@ This script handles all these functions:
 - Smooth Health Bar
 - Hide Score Text
 - Score Text Size
+- Sustain Notes Splash
 
 
 This script works as it should, don't touch anything if you don't know what you are doing :)
@@ -81,6 +82,8 @@ local smoothHealthBar = getModSetting('smoothhealthbar')
 
 local opponentPlay = getModSetting('opponentplay')
 
+local susNotesSplash = getModSetting('susnotessplash')
+
 local settings = {
     customFont = 'vcr.ttf',
 	divider = ' • ',
@@ -115,6 +118,11 @@ local healthPercent = 50
 local practice = getProperty('practiceMode')
 local playerDied = false
 local usedCheats = false
+
+local frameRate = 24
+local noteR = {0, 7}
+local colors = {"Purple", "Blue", "Green", "Red", "Purple", "Blue", "Green", "Red"}
+local HSpashes = {}
 
 function onCreate()
 	local blockVersionBeforePrefixes = {'0.3', '0.4', '0.5', '0.6'}
@@ -454,6 +462,19 @@ function onCreatePost()
 	end
 
 	--// extra configs
+	if susNotesSplash then
+        for i = noteR[1], noteR[2], 1 do
+            local i_s = tostring(i)
+            makeAnimatedLuaSprite(i_s, "HoldNoteEffect/holdCover"..colors[i+1])
+            setObjectCamera(i_s, "hud")
+            addAnimationByPrefix(i_s, i_s, "holdCover"..colors[i+1], frameRate, true)
+            addAnimationByPrefix(i_s, i_s.."p", "holdCoverEnd"..colors[i+1], frameRate, false)
+            addLuaSprite(i_s, true)
+            setProperty(i_s..".visible", false)
+            HSpashes["note"..i_s] = {color=colors[i+1], isPlaying=false, Boom=false}
+        end
+    end
+	
 	if onlyMarvelous and marvelousRatingEnabled and onlyMarvelousType == 'Images' then
 		makeLuaSprite('noMarvelousJPG', 'nomarvelous', 0, 0);
         addLuaSprite('noMarvelousJPG', true);
@@ -878,7 +899,7 @@ function addRatingMS(diff, noteTouch)
 	return
 end
 
-function goodNoteHit(id, direction, noteType, isSustainNote)
+function goodNoteHit(id, noteData, noteType, isSustainNote)
 	if botPlay and getBotScore and not isSustainNote then
 		local strumTime = getPropertyFromGroup('notes', id, 'strumTime')
 		isEarly = strumTime < getSongPosition() and '' or '-'
@@ -913,6 +934,40 @@ function goodNoteHit(id, direction, noteType, isSustainNote)
 		local strumTime = getPropertyFromGroup('notes', id, 'strumTime')
 		addRatingMS((strumTime - getSongPosition() + getPropertyFromClass('backend.ClientPrefs', 'data.ratingOffset')) / playbackRate, true)
 	end
+
+	if isSustainNote and susNotesSplash then
+        for i = noteR[1], noteR[2], 1 do
+            if i > 3 then
+                if noteData == (i-4) then
+                    local i_s = tostring(i)
+                    setProperty(i_s..".visible", true)
+                    runTimer(i_s, stepCrochet/1000)
+                    if not HSpashes["note"..i_s]["isPlaying"] then
+                        playAnim(i_s, i_s)
+                        HSpashes["note"..i_s]["isPlaying"] = false
+                    end
+                end
+            end
+        end
+    end
+end
+
+function opponentNoteHit(membersIndex, noteData, noteType, isSustainNote)
+    if isSustainNote and susNotesSplash then
+        for i = noteR[1], noteR[2], 1 do
+            if i < 4 then
+                if noteData == (i) then
+                    local i_s = tostring(i)
+                    setProperty(i_s..".visible", true)
+                    runTimer(i_s, stepCrochet/1000)
+                    if not HSpashes["note"..i_s]["isPlaying"] then
+                        playAnim(i_s, i_s)
+                        HSpashes["note"..i_s]["isPlaying"] = false
+                    end
+                end
+            end
+        end
+    end
 end
 
 function noteMissPress(direction)
@@ -990,6 +1045,31 @@ function onUpdate(dt)
 				end
 			end
 		end
+    end
+
+	if susNotesSplash then
+        if BoomRed then
+            if getProperty('3.animation.curAnim.finished') then
+                setProperty("3.visible", false)
+                BoomRed = false
+            end
+        end
+        for i = noteR[1], noteR[2], 1 do
+            local i_s = tostring(i)
+            setObjectOrder(i_s, getObjectOrder(strumLineNotes)+999)
+            if getProperty(i_s..".x") ~= ni(i, "x") - 110 then
+                setProperty(i_s..'.x', ni(i, "x") - 110)
+            end
+            if getProperty(i_s..".y") ~= ni(i, "y") - 100 then
+                setProperty(i_s..'.y', ni(i, "y") - 100)
+            end
+            if HSpashes["note"..i_s]["Boom"] then
+                if getProperty(i_s..'.animation.curAnim.finished') then
+                    setProperty(i_s..".visible", false)
+                    HSpashes["note"..i_s]["Boom"] = false
+                end
+            end
+        end
     end
 end
 
@@ -1146,4 +1226,22 @@ function onTimerCompleted(tag, loops, loopsLeft)
 		setProperty('utilPlayingTxt.visible', false)
 		setProperty('utilPlayingSubTxt.visible', false)
 	end
+
+	for i = noteR[1], noteR[2], 1 do
+        local i_s = tostring(i)
+        if tag == i_s then
+            HSpashes["note"..i_s]["isPlaying"] = false
+            HSpashes["note"..i_s]["Boom"] = true
+            if i > 3 then
+                playAnim(i_s, i_s.."p")
+            else
+                setProperty(i_s..".visible", false)
+                HSpashes["note"..i_s]["Boom"] = false
+            end  
+        end
+    end
+end
+
+function ni(note, info)
+    return getPropertyFromGroup('strumLineNotes', note, info)
 end
