@@ -462,11 +462,7 @@ function onCreatePost()
 	end
 
 	--// extra configs
-	debugPrint(onlyMarvelousType)
-
 	if onlyMarvelous and marvelousRatingEnabled and onlyMarvelousType == 'Images' then
-		debugPrint('yey!')
-
 		makeLuaSprite('noMarvelousJPG', 'nomarvelous', 0, 0);
         addLuaSprite('noMarvelousJPG', true);
         scaleObject('noMarvelousJPG', 6, 3);
