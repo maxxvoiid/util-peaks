@@ -462,20 +462,11 @@ function onCreatePost()
 	end
 
 	--// extra configs
-	if susNotesSplash then
-        for i = noteR[1], noteR[2], 1 do
-            local i_s = tostring(i)
-            makeAnimatedLuaSprite(i_s, "HoldNoteEffect/holdCover"..colors[i+1])
-            setObjectCamera(i_s, "hud")
-            addAnimationByPrefix(i_s, i_s, "holdCover"..colors[i+1], frameRate, true)
-            addAnimationByPrefix(i_s, i_s.."p", "holdCoverEnd"..colors[i+1], frameRate, false)
-            addLuaSprite(i_s, true)
-            setProperty(i_s..".visible", false)
-            HSpashes["note"..i_s] = {color=colors[i+1], isPlaying=false, Boom=false}
-        end
-    end
-	
+	debugPrint(onlyMarvelousType)
+
 	if onlyMarvelous and marvelousRatingEnabled and onlyMarvelousType == 'Images' then
+		debugPrint('yey!')
+
 		makeLuaSprite('noMarvelousJPG', 'nomarvelous', 0, 0);
         addLuaSprite('noMarvelousJPG', true);
         scaleObject('noMarvelousJPG', 6, 3);
@@ -488,6 +479,19 @@ function onCreatePost()
         setObjectCamera('catWuajajajaJPG', 'other');
 		setProperty('catWuajajajaJPG.alpha', 0)
 	end
+
+	if susNotesSplash then
+        for i = noteR[1], noteR[2], 1 do
+            local i_s = tostring(i)
+            makeAnimatedLuaSprite(i_s, "HoldNoteEffect/holdCover"..colors[i+1])
+            setObjectCamera(i_s, "hud")
+            addAnimationByPrefix(i_s, i_s, "holdCover"..colors[i+1], frameRate, true)
+            addAnimationByPrefix(i_s, i_s.."p", "holdCoverEnd"..colors[i+1], frameRate, false)
+            addLuaSprite(i_s, true)
+            setProperty(i_s..".visible", false)
+            HSpashes["note"..i_s] = {color=colors[i+1], isPlaying=false, Boom=false}
+        end
+    end
 
 	if animatedHudEnabled then
 		if not downscroll then
@@ -900,6 +904,20 @@ function addRatingMS(diff, noteTouch)
 end
 
 function goodNoteHit(id, noteData, noteType, isSustainNote)
+	if not isSustainNote then
+		local strumTime = getPropertyFromGroup('notes', id, 'strumTime')
+		addRatingMS((strumTime - getSongPosition() + getPropertyFromClass('backend.ClientPrefs', 'data.ratingOffset')) / playbackRate, true)
+
+		if scoreHitSizeEnabled == true then
+			tweenNumber(nil, "scoreTxtSX", 1.075, 1, .2, nil, easing.linear)
+			tweenNumber(nil, "scoreTxtSY", 1.075, 1, .2, nil, easing.linear)
+		end
+
+--		callScript('scripts/usefulFunctions', 'tweenNumber', { 1.075, 1, 0.2, {onUpdate = 'changeTweenScore'} })
+
+		npsRefresh1 = npsRefresh1 + 1
+	end
+	
 	if botPlay and getBotScore and not isSustainNote then
 		local strumTime = getPropertyFromGroup('notes', id, 'strumTime')
 		isEarly = strumTime < getSongPosition() and '' or '-'
@@ -920,20 +938,6 @@ function goodNoteHit(id, noteData, noteType, isSustainNote)
 	end
 
 	getNewScore()
-
-	if (not isSustainNote) then
-		if scoreHitSizeEnabled == true then
-			tweenNumber(nil, "scoreTxtSX", 1.075, 1, .2, nil, easing.linear)
-			tweenNumber(nil, "scoreTxtSY", 1.075, 1, .2, nil, easing.linear)
-		end
-
---		callScript('scripts/usefulFunctions', 'tweenNumber', { 1.075, 1, 0.2, {onUpdate = 'changeTweenScore'} })
-
-		npsRefresh1 = npsRefresh1 + 1
-
-		local strumTime = getPropertyFromGroup('notes', id, 'strumTime')
-		addRatingMS((strumTime - getSongPosition() + getPropertyFromClass('backend.ClientPrefs', 'data.ratingOffset')) / playbackRate, true)
-	end
 
 	if isSustainNote and susNotesSplash then
         for i = noteR[1], noteR[2], 1 do
