@@ -127,14 +127,14 @@
 		"save": "bfwinicon",
 		"name": "BF Winning Icon", //Name shown on the mod settings menu
 		"type": "bool",
-		"description": "If checked, Boyfriend will display a winning icon when the opponent has low health", //Description shown on the mod settings menu
+		"description": "If checked, Boyfriend will display a winning icon when the opponent has low health (only if available)", //Description shown on the mod settings menu
 		"value": true //This is the default value
 	},
 	{
 		"save": "opponentwinicon",
 		"name": "Opponent Winning Icon", //Name shown on the mod settings menu
 		"type": "bool",
-		"description": "If checked, opponent will display a winning icon when Boyfriend has low health", //Description shown on the mod settings menu
+		"description": "If checked, opponent will display a winning icon when Boyfriend has low health (only if available)", //Description shown on the mod settings menu
 		"value": true //This is the default value
 	},
 	{
