@@ -194,11 +194,25 @@
 		"description": "If checked, you can see how many Sicks, Goods, Bads, etc; you've hit on the left", //Description shown on the mod settings menu
 		"value": true //This is the default value
 	},
+	{
+		"save": "ratingcounterzoom",
+		"name": "Rating Counter Zoom on Hit", //Name shown on the mod settings menu
+		"type": "bool",
+		"description": "If checked, the Rating Counter will do a text zooming depending on the rating of your Note Rating", //Description shown on the mod settings menu
+		"value": true //This is the default value
+	},
     {
 		"save": "fullfcname",
 		"name": "Full FC Rating Name", //Name shown on the mod settings menu
 		"type": "bool",
 		"description": "If checked, FC ratings will use their full names instead of abbreviations (e.g., 'SFC' will become 'Sick Full Combo')", //Description shown on the mod settings menu
+		"value": false //This is the default value
+	},
+	{
+		"save": "hidescore",
+		"name": "Hide Score Text", //Name shown on the mod settings menu
+		"type": "bool",
+		"description": "If checked, hides the Score Text. Idk why you would want to activate it, but ok", //Description shown on the mod settings menu
 		"value": false //This is the default value
 	},
 	{
@@ -212,31 +226,17 @@
 		"save": "scoresize",
 		"name": "Score Text Size:",
 		"type": "float", //
-		"description": "Customize the size of the Score Text to your liking",
-		"value": 20,
+		"description": "Customize the size of the Score Text. Logically a high value would be that the Score Text is bigger.\nIf set to 0, the default size will be used.",
+		"value": 0,
 	
 		// Int/Float/Percent only variables
-		"min": 16, //How low can the value be
-		"max": 32, //How high can the value be
+		"min": 0, //How low can the value be
+		"max": 100, //How high can the value be
 		"step": 1, //How much is changed at once when you press left/right
 
 		// Float/Percent only variables
 		"decimals": 0, //If your option is type 'float' or 'percent', you should probably make it have atleast 1 decimal places
-		"scroll": 25 //How fast you scroll while holding left/right (in this case, it changes 5 per second)
-	},
-	{
-		"save": "showratingms",
-		"name": "Show MS Rating", //Name shown on the mod settings menu
-		"type": "bool",
-		"description": "If checked, hitting a note will display the milliseconds it took you to hit it", //Description shown on the mod settings menu
-		"value": true //This is the default value
-	},
-    {
-		"save": "newratings",
-		"name": "New Ratings", //Name shown on the mod settings menu
-		"type": "bool",
-		"description": "If checked, 'Perfect!!' will change to 'SSSS', 'Sick!' will change to 'SSS', and so on", //Description shown on the mod settings menu
-		"value": true //This is the default value
+		"scroll": 35 //How fast you scroll while holding left/right (in this case, it changes 5 per second)
 	},
 	{
 		"save": "shownps",
@@ -257,13 +257,6 @@
 		"name": "Get Bot Score", //Name shown on the mod settings menu
 		"type": "bool",
 		"description": "If checked, the game will count the Bot's score in the Score Text (it will not replace the player's score)", //Description shown on the mod settings menu
-		"value": true //This is the default value
-	},
-    {
-		"save": "missenabled",
-		"name": "Miss Rating", //Name shown on the mod settings menu
-		"type": "bool",
-		"description": "If checked, losing a combo greater than 10 will display a 'Miss...' rating (does not affect gameplay)", //Description shown on the mod settings menu
 		"value": true //This is the default value
 	},
 	{
@@ -312,6 +305,20 @@
 		"options": ["Ratings  <------"] //Available options to choose
 	},
 	{
+		"save": "newratings",
+		"name": "New Ratings", //Name shown on the mod settings menu
+		"type": "bool",
+		"description": "If checked, 'Perfect!!' will change to 'SSSS', 'Sick!' will change to 'SSS', and so on", //Description shown on the mod settings menu
+		"value": true //This is the default value
+	},
+	{
+		"save": "showratingms",
+		"name": "Show MS Rating", //Name shown on the mod settings menu
+		"type": "bool",
+		"description": "If checked, hitting a note will display the milliseconds it took you to hit it", //Description shown on the mod settings menu
+		"value": true //This is the default value
+	},
+	{
 		"save": "showlesscombo",
 		"name": "Show Combo Lower Than 10", //Name shown on the mod settings menu
 		"type": "bool",
@@ -330,6 +337,13 @@
 		"name": "Colorful Ratings", //Name shown on the mod settings menu
 		"type": "bool",
 		"description": "If checked, the 'Sick' rating will be light blue, 'Good' will be green, and so on", //Description shown on the mod settings menu
+		"value": true //This is the default value
+	},
+	{
+		"save": "missenabled",
+		"name": "Miss Rating", //Name shown on the mod settings menu
+		"type": "bool",
+		"description": "If checked, losing a combo greater than 10 will display a 'Miss...' rating", //Description shown on the mod settings menu
 		"value": true //This is the default value
 	},
 	{
