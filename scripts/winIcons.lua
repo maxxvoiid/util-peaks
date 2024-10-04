@@ -3,6 +3,7 @@
 This script handles all these functions:
 - Shaking Icons
 - BF Winning Icon
+- Opponent Winning Icon
 - Old BF Easter Egg Icon
 
 
@@ -51,6 +52,8 @@ end
 local previousBeatTime = 0
 local existsBFWinning = true
 local existsDadWinning = true
+local pathWinningBF = ''
+local pathWinningDad = ''
 
 function onCreatePost()
 	closeIfUtilNotEnabled()
@@ -101,10 +104,21 @@ end
 function createIcons()
 	--BF
 	if bfWinningIcons == true then
+		customWinningBFFile = checkFileExists('images/icons/custom_winning/win-'..getProperty('boyfriend.healthIcon')..'.png')
 		winningBFFile = checkFileExists('images/icons/win-'..getProperty('boyfriend.healthIcon')..'.png')
 
-		if winningBFFile then
-			makeLuaSprite('winIcoPlayer', 'icons/win-'..getProperty('boyfriend.healthIcon'), getProperty('iconP1.x'), getProperty('iconP1.y'))
+		if customWinningBFFile then
+			pathWinningBF = 'icons/custom_winning/win-'..getProperty('boyfriend.healthIcon')
+
+			makeLuaSprite('winIcoPlayer', pathWinningBF, getProperty('iconP1.x'), getProperty('iconP1.y'))
+			setObjectCamera('winIcoPlayer', 'hud')
+			addLuaSprite('winIcoPlayer', true)
+			setProperty('winIcoPlayer.flipX', true)
+			setProperty('winIcoPlayer.alpha', 0)
+		elseif winningBFFile then
+			pathWinningBF = 'icons/win-'..getProperty('boyfriend.healthIcon')
+
+			makeLuaSprite('winIcoPlayer', pathWinningBF, getProperty('iconP1.x'), getProperty('iconP1.y'))
 			setObjectCamera('winIcoPlayer', 'hud')
 			addLuaSprite('winIcoPlayer', true)
 			setProperty('winIcoPlayer.flipX', true)
@@ -116,10 +130,21 @@ function createIcons()
 
 	--Opponent
 	if dadWinningIcons == true then
+		customWinningDadFile = checkFileExists('images/icons/win-'..getProperty('dad.healthIcon')..'.png')
 		winningDadFile = checkFileExists('images/icons/win-'..getProperty('dad.healthIcon')..'.png')
 
-		if winningBFFile then
-			makeLuaSprite('winIcoOpponent', 'icons/win-'..getProperty('dad.healthIcon'), getProperty('iconP2.x'), getProperty('iconP2.y'))
+		if customWinningDadFile then
+			pathWinningDad = 'icons/custom_winning/win-'..getProperty('dad.healthIcon')
+
+			makeLuaSprite('winIcoOpponent', pathWinningDad, getProperty('iconP2.x'), getProperty('iconP2.y'))
+			setObjectCamera('winIcoOpponent', 'hud')
+			addLuaSprite('winIcoOpponent', true)
+			setProperty('winIcoOpponent.flipX', false)
+			setProperty('winIcoOpponent.alpha', 0)
+		elseif winningDadFile then
+			pathWinningDad = 'icons/win-'..getProperty('dad.healthIcon')
+
+			makeLuaSprite('winIcoOpponent', pathWinningDad, getProperty('iconP2.x'), getProperty('iconP2.y'))
 			setObjectCamera('winIcoOpponent', 'hud')
 			addLuaSprite('winIcoOpponent', true)
 			setProperty('winIcoOpponent.flipX', false)
@@ -156,7 +181,7 @@ function onUpdatePost(elapsed)
 		if bfWinningIcons == true and existsBFWinning == true then
 			--Set sprite and things
 			setObjectOrder('winIcoPlayer', getObjectOrder('iconP1') - 1)
-			makeLuaSprite('winIcoPlayer', 'icons/win-'..getProperty('boyfriend.healthIcon'), getProperty('iconP1.x'), getProperty('iconP1.y'))
+			makeLuaSprite('winIcoPlayer', pathWinningBF, getProperty('iconP1.x'), getProperty('iconP1.y'))
 			setObjectCamera('winIcoPlayer', 'hud')
 			addLuaSprite('winIcoPlayer', true)
 			setProperty('winIcoPlayer.flipX', true)
@@ -174,7 +199,7 @@ function onUpdatePost(elapsed)
 		if dadWinningIcons == true and existsDadWinning == true then
 			--Set sprite and things
 			setObjectOrder('winIcoOpponent', getObjectOrder('iconP2') - 1)
-			makeLuaSprite('winIcoOpponent', 'icons/win-'..getProperty('dad.healthIcon'), getProperty('iconP2.x'), getProperty('iconP2.y'))
+			makeLuaSprite('winIcoOpponent', pathWinningDad, getProperty('iconP2.x'), getProperty('iconP2.y'))
 			setObjectCamera('winIcoOpponent', 'hud')
 			addLuaSprite('winIcoOpponent', true)
 			setProperty('winIcoOpponent.flipX', false)
@@ -242,10 +267,20 @@ function onUpdatePost(elapsed)
 						setProperty('iconP1.alpha', 1)
 					end
 				else
-					if getProperty('health') >= 1.62 then -- BF Losing Icon
-						setProperty('iconP1.animation.curAnim.curFrame', 1)
-					else -- BF Normal Icon
-						setProperty('iconP1.animation.curAnim.curFrame', 0)
+					if oldBFIcon then
+						if getProperty('health') >= 1.62 then -- Old BF Losing Icon
+							setProperty('oldBFNormalIcoPlayer.alpha', 0)
+							setProperty('oldBFDryingIcoPlayer.alpha', 1)
+						else -- Old BF Normal Icon
+							setProperty('oldBFNormalIcoPlayer.alpha', 1)
+							setProperty('oldBFDryingIcoPlayer.alpha', 0)
+						end
+					else
+						if getProperty('health') >= 1.62 then -- BF Losing Icon
+							setProperty('iconP1.animation.curAnim.curFrame', 1)
+						else -- BF Normal Icon
+							setProperty('iconP1.animation.curAnim.curFrame', 0)
+						end
 					end
 				end
 			end
