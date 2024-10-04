@@ -19,7 +19,7 @@ and more with this modpack!
 
 <br><br>Check out some amazing images of what Util Peaks looks like!
 <br><img src="./for_github/images/utilpeakscover0826.png" alt="Util Peaks Cover" width="360"/>
-<img src="./for_github/images/inthegameplay.png" alt="Util Peaks Gameplay" width="360"/>
+<img src="./for_github/images/gameplay.png" alt="Util Peaks Gameplay" width="360"/>
 <br><img src="./for_github/images/manyoptions.png" alt="Util Peaks Settings" width="360"/>
 
 <br><br><b>To install Util Peaks</b>
