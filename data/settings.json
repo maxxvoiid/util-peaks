@@ -156,6 +156,109 @@
 		"options": ["Opponent & BF", "Only Opponent", "Only BF", "None"] //Available options to choose
 	},
 	{
+		"save": "customhbcolors",
+		"name": "Custom Health Bar Colors", //Name shown on the mod settings menu
+		"type": "bool",
+		"description": "If checked, you will have the possibility to change the colors of the Health Bar to your liking and enable the 6 options below", //Description shown on the mod settings menu
+		"value": false //This is the default value
+	},
+	{
+		"save": "healthcolorp1rgbred",
+		"name": "Health P1 Color RED:",
+		"type": "float", //
+		"description": "If 'Custom Health Bar Colors' is checked, you can cutomize the player's health bar color (BF) in RGB.\nYou are selecting RED (R)",
+		"value": 102,
+	
+		// Int/Float/Percent only variables
+		"min": 0, //How low can the value be
+		"max": 255, //How high can the value be
+		"step": 1, //How much is changed at once when you press left/right
+
+		// Float/Percent only variables
+		"decimals": 0, //If your option is type 'float' or 'percent', you should probably make it have atleast 1 decimal places
+		"scroll": 200 //How fast you scroll while holding left/right (in this case, it changes 5 per second)
+	},
+	{
+		"save": "healthcolorp1rgbgreen",
+		"name": "Health P1 Color GREEN:",
+		"type": "float", //
+		"description": "If 'Custom Health Bar Colors' is checked, you can cutomize the player's health bar color (BF) in RGB.\nYou are selecting GREEN (G)",
+		"value": 255,
+	
+		// Int/Float/Percent only variables
+		"min": 0, //How low can the value be
+		"max": 255, //How high can the value be
+		"step": 1, //How much is changed at once when you press left/right
+
+		// Float/Percent only variables
+		"decimals": 0, //If your option is type 'float' or 'percent', you should probably make it have atleast 1 decimal places
+		"scroll": 125 //How fast you scroll while holding left/right (in this case, it changes 5 per second)
+	},
+	{
+		"save": "healthcolorp1rgbblue",
+		"name": "Health P1 Color BLUE:",
+		"type": "float", //
+		"description": "If 'Custom Health Bar Colors' is checked, you can cutomize the player's health bar color (BF) in RGB.\nYou are selecting BLUE (B)",
+		"value": 51,
+	
+		// Int/Float/Percent only variables
+		"min": 0, //How low can the value be
+		"max": 255, //How high can the value be
+		"step": 1, //How much is changed at once when you press left/right
+
+		// Float/Percent only variables
+		"decimals": 0, //If your option is type 'float' or 'percent', you should probably make it have atleast 1 decimal places
+		"scroll": 125 //How fast you scroll while holding left/right (in this case, it changes 5 per second)
+	},
+	{
+		"save": "healthcolorp2rgbred",
+		"name": "Health P2 Color RED:",
+		"type": "float", //
+		"description": "If 'Custom Health Bar Colors' is checked, you can cutomize the opponent's health bar color in RGB.\nYou are selecting RED (R)",
+		"value": 255,
+	
+		// Int/Float/Percent only variables
+		"min": 0, //How low can the value be
+		"max": 255, //How high can the value be
+		"step": 1, //How much is changed at once when you press left/right
+
+		// Float/Percent only variables
+		"decimals": 0, //If your option is type 'float' or 'percent', you should probably make it have atleast 1 decimal places
+		"scroll": 200 //How fast you scroll while holding left/right (in this case, it changes 5 per second)
+	},
+	{
+		"save": "healthcolorp2rgbgreen",
+		"name": "Health P2 Color GREEN:",
+		"type": "float", //
+		"description": "If 'Custom Health Bar Colors' is checked, you can cutomize the opponent's health bar color in RGB.\nYou are selecting GREEN (G)",
+		"value": 0,
+	
+		// Int/Float/Percent only variables
+		"min": 0, //How low can the value be
+		"max": 255, //How high can the value be
+		"step": 1, //How much is changed at once when you press left/right
+
+		// Float/Percent only variables
+		"decimals": 0, //If your option is type 'float' or 'percent', you should probably make it have atleast 1 decimal places
+		"scroll": 125 //How fast you scroll while holding left/right (in this case, it changes 5 per second)
+	},
+	{
+		"save": "healthcolorp2rgbblue",
+		"name": "Health P2 Color BLUE:",
+		"type": "float", //
+		"description": "If 'Custom Health Bar Colors' is checked, you can cutomize the opponent's health bar color in RGB.\nYou are selecting BLUE (B)",
+		"value": 0,
+	
+		// Int/Float/Percent only variables
+		"min": 0, //How low can the value be
+		"max": 255, //How high can the value be
+		"step": 1, //How much is changed at once when you press left/right
+
+		// Float/Percent only variables
+		"decimals": 0, //If your option is type 'float' or 'percent', you should probably make it have atleast 1 decimal places
+		"scroll": 125 //How fast you scroll while holding left/right (in this case, it changes 5 per second)
+	},
+	{
 		"save": "_separatorif",
 		"name": "------>",
 		"type": "string",
