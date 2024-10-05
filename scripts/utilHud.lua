@@ -7,6 +7,9 @@ This script handles all these functions:
 - Time Bar Gradient
 - Time Bar Opponent Color
 - Time Bar Color RED, GREEN & BLUE
+- Custom Health Bar Colors
+- Health P1 Color RED, GREEN & BLUE
+- Health P2 Color RED, GREEN & BLUE
 - New Ratings
 - Compact Score Text
 - Only Marvelous: Images
@@ -46,6 +49,14 @@ local timeBarOpponentColor = getModSetting('timebaropponentcolor')
 local timeBarColorR = getModSetting('timebarcolorrgbred')
 local timeBarColorG = getModSetting('timebarcolorrgbgreen')
 local timeBarColorB = getModSetting('timebarcolorrgbblue')
+
+local customHBColors = getModSetting('customhbcolors')
+local hbP1ColorR = getModSetting('healthcolorp1rgbred')
+local hbP1ColorG = getModSetting('healthcolorp1rgbgreen')
+local hbP1ColorB = getModSetting('healthcolorp1rgbblue')
+local hbP2ColorR = getModSetting('healthcolorp2rgbred')
+local hbP2ColorG = getModSetting('healthcolorp2rgbgreen')
+local hbP2ColorB = getModSetting('healthcolorp2rgbblue')
 
 local newRatingEnabled = getModSetting('newratings')
 
@@ -114,6 +125,10 @@ local barTxtSize = 30
 local barTxtAlpha = 1
 
 local healthPercent = 50
+
+local dadColR = 0
+local dadColG = 0
+local dadColB = 0
 
 local practice = getProperty('practiceMode')
 local playerDied = false
@@ -275,10 +290,6 @@ function onCreatePost()
 	scoreHitSizeEnabled = getPropertyFromClass('backend.ClientPrefs', 'data.scoreZoom')
 
 	--// getting dad health bar color
-	local dadColR = getProperty('dad.healthColorArray[0]')
-	local dadColG = getProperty('dad.healthColorArray[1]')
-	local dadColB = getProperty('dad.healthColorArray[2]')
-
 	local dadColFinal = string.format('%02x%02x%02x', dadColR, dadColG, dadColB)
 
 	--// creating the custom timebar
@@ -774,6 +785,28 @@ scoreTxtSY = 1
 
 local hudArray = {'noMarvelousJPG', 'catWuajajajaJPG'}
 
+function onCountdownStarted()
+	dadColR = getProperty('dad.healthColorArray[0]')
+	dadColG = getProperty('dad.healthColorArray[1]')
+	dadColB = getProperty('dad.healthColorArray[2]')
+
+	if customHBColors then
+		local dadCustomColFinal = string.format('%02x%02x%02x', hbP2ColorR, hbP2ColorG, hbP2ColorB)
+		local bfCustomColFinal = string.format('%02x%02x%02x', hbP1ColorR, hbP1ColorG, hbP1ColorB)
+
+		setHealthBarColors(dadCustomColFinal, bfCustomColFinal)
+	end
+end
+
+function onEvent(name, v1, v2)
+	if name == 'Change Character' then -- this works better than onUpdatePost, bc then we don't explode the ram
+		local dadCustomColFinal = string.format('%02x%02x%02x', hbP2ColorR, hbP2ColorG, hbP2ColorB)
+		local bfCustomColFinal = string.format('%02x%02x%02x', hbP1ColorR, hbP1ColorG, hbP1ColorB)
+
+		setHealthBarColors(dadCustomColFinal, bfCustomColFinal)
+	end
+end
+
 function onSongStart()
 	if animatedHudEnabled then
 		if not downscroll then
@@ -900,20 +933,6 @@ function addRatingMS(diff, noteTouch)
 end
 
 function goodNoteHit(id, noteData, noteType, isSustainNote)
-	if not isSustainNote then
-		local strumTime = getPropertyFromGroup('notes', id, 'strumTime')
-		addRatingMS((strumTime - getSongPosition() + getPropertyFromClass('backend.ClientPrefs', 'data.ratingOffset')) / playbackRate, true)
-
-		if scoreHitSizeEnabled == true then
-			tweenNumber(nil, "scoreTxtSX", 1.075, 1, .2, nil, easing.linear)
-			tweenNumber(nil, "scoreTxtSY", 1.075, 1, .2, nil, easing.linear)
-		end
-
---		callScript('scripts/usefulFunctions', 'tweenNumber', { 1.075, 1, 0.2, {onUpdate = 'changeTweenScore'} })
-
-		npsRefresh1 = npsRefresh1 + 1
-	end
-	
 	if botPlay and getBotScore and not isSustainNote then
 		local strumTime = getPropertyFromGroup('notes', id, 'strumTime')
 		isEarly = strumTime < getSongPosition() and '' or '-'
@@ -931,6 +950,20 @@ function goodNoteHit(id, noteData, noteType, isSustainNote)
 		elseif fRating == 'shit' then
 			bScore = bScore + 50
 		end
+	end
+
+	if not isSustainNote then
+		local strumTime = getPropertyFromGroup('notes', id, 'strumTime')
+		addRatingMS((strumTime - getSongPosition() + getPropertyFromClass('backend.ClientPrefs', 'data.ratingOffset')) / playbackRate, true)
+
+		if scoreHitSizeEnabled == true then
+			tweenNumber(nil, "scoreTxtSX", 1.075, 1, .2, nil, easing.linear)
+			tweenNumber(nil, "scoreTxtSY", 1.075, 1, .2, nil, easing.linear)
+		end
+
+--		callScript('scripts/usefulFunctions', 'tweenNumber', { 1.075, 1, 0.2, {onUpdate = 'changeTweenScore'} })
+
+		npsRefresh1 = npsRefresh1 + 1
 	end
 
 	getNewScore()
