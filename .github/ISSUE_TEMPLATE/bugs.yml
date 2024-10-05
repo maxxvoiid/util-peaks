@@ -6,13 +6,15 @@ body:
     id: description
     attributes:
       label: "Describe your bug here."
+      description: 'Tell us in as much detail as you can!'
     validations:
       required: true
 
   - type: textarea
     id: toproduce
     attributes:
-      label: "Do you know how you reproduced the bug? If so, tell us as much detail as possible so we can verify it."
+      label: "Do you know how you reproduced the bug?"
+      description: 'You can include videos for much more detail!'
     validations:
       required: true
 
