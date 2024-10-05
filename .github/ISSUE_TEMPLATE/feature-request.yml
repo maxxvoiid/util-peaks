@@ -1,0 +1,18 @@
+name: Feature Request
+description: Ask for features that may be added to Util Peaks!
+labels: [enhancement]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: "Describe your feature here."
+      description: 'Tell us in as much detail as you can!'
+    validations:
+      required: true
+
+  - type: textarea
+    id: why
+    attributes:
+      label: "Why should it be added to Util Peaks?"
+    validations:
+      required: true
