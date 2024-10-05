@@ -1,0 +1,24 @@
+name: Bug report
+description: Report Util Peaks bugs here
+labels: [bug]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: "Describe your bug here."
+    validations:
+      required: true
+
+  - type: textarea
+    id: toproduce
+    attributes:
+      label: "Do you know how you reproduced the bug? If so, tell us as much detail as possible so we can verify it."
+    validations:
+      required: true
+
+  - type: textarea
+    id: version
+    attributes:
+      label: "In which version does the bug occur?"
+    validations:
+      required: true
