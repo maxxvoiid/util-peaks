@@ -16,6 +16,9 @@ This script handles all these functions:
 - Random Botplay Text
 - Show Reason of Game Over
 - Smooth Health Bar
+- Hide Score Text
+- Score Text Size
+- Sustain Notes Splash
 
 
 This script works as it should, don't touch anything if you don't know what you are doing :)
@@ -50,6 +53,8 @@ local ratingCounterEnabled = getModSetting('ratingcounterenabled')
 
 local fullFcName = getModSetting('fullfcname')
 
+local scoreSize = getModSetting('scoresize')
+local scoreVisible = not getModSetting('hidescore')
 local compactScore = getModSetting('compactscore')
 
 local marvelousRatingEnabled = getModSetting('marvelousenabled')
@@ -74,6 +79,10 @@ local randomBotplayText = getModSetting('randombotplaytext')
 local showReasonGO = getModSetting('showreasongo')
 
 local smoothHealthBar = getModSetting('smoothhealthbar')
+
+local opponentPlay = getModSetting('opponentplay')
+
+local susNotesSplash = getModSetting('susnotessplash')
 
 local settings = {
     customFont = 'vcr.ttf',
@@ -109,6 +118,11 @@ local healthPercent = 50
 local practice = getProperty('practiceMode')
 local playerDied = false
 local usedCheats = false
+
+local frameRate = 24
+local noteR = {0, 7}
+local colors = {"Purple", "Blue", "Green", "Red", "Purple", "Blue", "Green", "Red"}
+local HSpashes = {}
 
 function onCreate()
 	local blockVersionBeforePrefixes = {'0.3', '0.4', '0.5', '0.6'}
@@ -153,7 +167,7 @@ function onCreate()
 	end
 
 	setVar("utilEnabled", true)
-	setVar("utilLoadDebug", true) -- prints debug texts to see if each script loads
+	setVar("utilLoadDebug", false) -- prints debug texts to see if each script loads
 end
 
 function formatNumberWithCommas(number)
@@ -258,6 +272,7 @@ end
 
 function onCreatePost()
 	local gAA = getPropertyFromClass("ClientPrefs", "globalAntialiasing")
+	scoreHitSizeEnabled = getPropertyFromClass('backend.ClientPrefs', 'data.scoreZoom')
 
 	--// getting dad health bar color
 	local dadColR = getProperty('dad.healthColorArray[0]')
@@ -348,7 +363,7 @@ function onCreatePost()
 
 
 	--// creating the custom timetxt
-	makeLuaText('utilTimer', 'TIME', 300, barTxtX, barTxtY);  
+	makeLuaText('utilTimer', 'Util Time Txt: something went wrong, did not update properly :c', 300, barTxtX, barTxtY);  
 	setTextSize('utilTimer', barTxtSize);
 	setTextFont('utilTimer', settings.customFont)
 	setTextAlignment('utilTimer', 'center'); 
@@ -373,7 +388,7 @@ function onCreatePost()
 
 	--// custom scoreTxt
 	makeLuaText('utilScoreTxt', 'Util Score Txt: something went wrong, did not update properly :c', 1000, screenWidth / 2, getProperty('healthBar.y') + 40);  
-	setTextSize('utilScoreTxt', 20);
+	setTextSize('utilScoreTxt', scoreSize + 20);
 	setTextFont('utilScoreTxt', settings.customFont)
 	setTextAlignment('utilScoreTxt', 'center'); 
 
@@ -388,6 +403,8 @@ function onCreatePost()
 	setObjectCamera("utilScoreTxt", "hud")
 
 	addLuaText('utilScoreTxt', true);
+
+	setProperty('utilScoreTxt.visible', scoreVisible)
 
 	setProperty('scoreTxt.visible', false)
 
@@ -458,6 +475,19 @@ function onCreatePost()
         setObjectCamera('catWuajajajaJPG', 'other');
 		setProperty('catWuajajajaJPG.alpha', 0)
 	end
+
+	if susNotesSplash then
+        for i = noteR[1], noteR[2], 1 do
+            local i_s = tostring(i)
+            makeAnimatedLuaSprite(i_s, "HoldNoteEffect/holdCover"..colors[i+1])
+            setObjectCamera(i_s, "hud")
+            addAnimationByPrefix(i_s, i_s, "holdCover"..colors[i+1], frameRate, true)
+            addAnimationByPrefix(i_s, i_s.."p", "holdCoverEnd"..colors[i+1], frameRate, false)
+            addLuaSprite(i_s, true)
+            setProperty(i_s..".visible", false)
+            HSpashes["note"..i_s] = {color=colors[i+1], isPlaying=false, Boom=false}
+        end
+    end
 
 	if animatedHudEnabled then
 		if not downscroll then
@@ -869,7 +899,21 @@ function addRatingMS(diff, noteTouch)
 	return
 end
 
-function goodNoteHit(id, direction, noteType, isSustainNote)
+function goodNoteHit(id, noteData, noteType, isSustainNote)
+	if not isSustainNote then
+		local strumTime = getPropertyFromGroup('notes', id, 'strumTime')
+		addRatingMS((strumTime - getSongPosition() + getPropertyFromClass('backend.ClientPrefs', 'data.ratingOffset')) / playbackRate, true)
+
+		if scoreHitSizeEnabled == true then
+			tweenNumber(nil, "scoreTxtSX", 1.075, 1, .2, nil, easing.linear)
+			tweenNumber(nil, "scoreTxtSY", 1.075, 1, .2, nil, easing.linear)
+		end
+
+--		callScript('scripts/usefulFunctions', 'tweenNumber', { 1.075, 1, 0.2, {onUpdate = 'changeTweenScore'} })
+
+		npsRefresh1 = npsRefresh1 + 1
+	end
+	
 	if botPlay and getBotScore and not isSustainNote then
 		local strumTime = getPropertyFromGroup('notes', id, 'strumTime')
 		isEarly = strumTime < getSongPosition() and '' or '-'
@@ -891,17 +935,39 @@ function goodNoteHit(id, direction, noteType, isSustainNote)
 
 	getNewScore()
 
-	if (not isSustainNote) then
-		tweenNumber(nil, "scoreTxtSX", 1.075, 1, .2, nil, easing.linear)
-		tweenNumber(nil, "scoreTxtSY", 1.075, 1, .2, nil, easing.linear)
+	if isSustainNote and susNotesSplash then
+        for i = noteR[1], noteR[2], 1 do
+            if i > 3 then
+                if noteData == (i-4) then
+                    local i_s = tostring(i)
+                    setProperty(i_s..".visible", true)
+                    runTimer(i_s, stepCrochet/1000)
+                    if not HSpashes["note"..i_s]["isPlaying"] then
+                        playAnim(i_s, i_s)
+                        HSpashes["note"..i_s]["isPlaying"] = false
+                    end
+                end
+            end
+        end
+    end
+end
 
---		callScript('scripts/usefulFunctions', 'tweenNumber', { 1.075, 1, 0.2, {onUpdate = 'changeTweenScore'} })
-
-		npsRefresh1 = npsRefresh1 + 1
-
-		local strumTime = getPropertyFromGroup('notes', id, 'strumTime')
-		addRatingMS((strumTime - getSongPosition() + getPropertyFromClass('backend.ClientPrefs', 'data.ratingOffset')) / playbackRate, true)
-	end
+function opponentNoteHit(membersIndex, noteData, noteType, isSustainNote)
+    if isSustainNote and susNotesSplash then
+        for i = noteR[1], noteR[2], 1 do
+            if i < 4 then
+                if noteData == (i) then
+                    local i_s = tostring(i)
+                    setProperty(i_s..".visible", true)
+                    runTimer(i_s, stepCrochet/1000)
+                    if not HSpashes["note"..i_s]["isPlaying"] then
+                        playAnim(i_s, i_s)
+                        HSpashes["note"..i_s]["isPlaying"] = false
+                    end
+                end
+            end
+        end
+    end
 end
 
 function noteMissPress(direction)
@@ -980,25 +1046,60 @@ function onUpdate(dt)
 			end
 		end
     end
+
+	if susNotesSplash then
+        if BoomRed then
+            if getProperty('3.animation.curAnim.finished') then
+                setProperty("3.visible", false)
+                BoomRed = false
+            end
+        end
+        for i = noteR[1], noteR[2], 1 do
+            local i_s = tostring(i)
+            setObjectOrder(i_s, getObjectOrder(strumLineNotes)+999)
+            if getProperty(i_s..".x") ~= ni(i, "x") - 110 then
+                setProperty(i_s..'.x', ni(i, "x") - 110)
+            end
+            if getProperty(i_s..".y") ~= ni(i, "y") - 100 then
+                setProperty(i_s..'.y', ni(i, "y") - 100)
+            end
+            if HSpashes["note"..i_s]["Boom"] then
+                if getProperty(i_s..'.animation.curAnim.finished') then
+                    setProperty(i_s..".visible", false)
+                    HSpashes["note"..i_s]["Boom"] = false
+                end
+            end
+        end
+    end
 end
 
 function onUpdatePost(dt)
 	tnTick()
 
 	if smoothHealthBar then
-		healthFlip = getProperty('healthBar.flipX') or getProperty('healthBar.angle') == 180 or getProperty('healthBar.scale.x') == -1
+		local healthFlip = getProperty('healthBar.flipX') or getProperty('healthBar.angle') == 180 or getProperty('healthBar.scale.x') == -1
 
 		healthPercent = math.lerp(healthPercent, math.max((getProperty('health') * 50), 0), (dt * 10))
-		setProperty('healthBar.percent', healthPercent)
-		if healthPercent > 100 then healthPercent = 100 end
+		healthPercent = math.min(healthPercent, 100)
 
 		local usePer = (healthFlip and healthPercent or remap(healthPercent, 0, 100, 100, 0)) * 0.01
-		local part = getProperty('healthBar.x') + ((getProperty('healthBar.width')) * usePer)
-		local iconParts = {part + (150 * getProperty('iconP1.scale.x') - 150) / 2 - 26, part - (150 * getProperty('iconP2.scale.x')) / 2 - 26 * 2}
-	
-		for i = 1, 2 do
-			setProperty('iconP'..i..'.x', iconParts[healthFlip and ((i % 2) + 1) or i])
-			setProperty('iconP'..i..'.flipX', healthFlip)
+		local part = getProperty('healthBar.x') + (getProperty('healthBar.width') * usePer)
+
+		local iconParts = {
+			part + (150 * getProperty('iconP1.scale.x') - 150) / 2 - 26, 
+			part - (150 * getProperty('iconP2.scale.x')) / 2 - 52
+		}
+
+		if not opponentPlay then
+			for i = 1, 2 do
+				setProperty('iconP'..i..'.x', iconParts[healthFlip and ((i % 2) + 1) or i])
+				setProperty('iconP'..i..'.flipX', healthFlip)
+			end
+		else
+			for i = 1, 2 do
+				setProperty('iconP'..i..'.x', iconParts[i])
+				setProperty('iconP'..i..'.flipX', false)
+			end
 		end
 	end
 
@@ -1125,4 +1226,22 @@ function onTimerCompleted(tag, loops, loopsLeft)
 		setProperty('utilPlayingTxt.visible', false)
 		setProperty('utilPlayingSubTxt.visible', false)
 	end
+
+	for i = noteR[1], noteR[2], 1 do
+        local i_s = tostring(i)
+        if tag == i_s then
+            HSpashes["note"..i_s]["isPlaying"] = false
+            HSpashes["note"..i_s]["Boom"] = true
+            if i > 3 then
+                playAnim(i_s, i_s.."p")
+            else
+                setProperty(i_s..".visible", false)
+                HSpashes["note"..i_s]["Boom"] = false
+            end  
+        end
+    end
+end
+
+function ni(note, info)
+    return getPropertyFromGroup('strumLineNotes', note, info)
 end

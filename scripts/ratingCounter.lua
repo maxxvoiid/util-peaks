@@ -2,6 +2,7 @@
 
 This script handles all these functions:
 - Rating Counter
+- Rating Counter Zoom on Hit
 - Full FC Rating Name
 
 
@@ -20,6 +21,7 @@ This script works as it should, don't touch anything if you don't know what you 
 
 local dFont = 'vcr.ttf'
 local ratingCounterEnabled = getModSetting('ratingcounterenabled')
+local ratingCounterZoom = getModSetting('ratingcounterzoom')
 local marvelousRatingEnabled = getModSetting('marvelousenabled')
 local marvelousRatingMs = getModSetting('marvelousms')
 local fullFcName = getModSetting('fullfcname')
@@ -366,8 +368,10 @@ end
 		local windowBad = getProperty('ratingsData[2].hitWindow')
 
 		if marvelousRatingEnabled and diff <= marvelousRatingMs then
-			tweenNumber(nil, "marvelousSX", 1.075, 1, .2, nil, easing.linear)
-			tweenNumber(nil, "marvelousSY", 1.075, 1, .2, nil, easing.linear)
+			if ratingCounterZoom then
+				tweenNumber(nil, "marvelousSX", 1.075, 1, .2, nil, easing.linear)
+				tweenNumber(nil, "marvelousSY", 1.075, 1, .2, nil, easing.linear)
+			end
 
 			actMarvelous = actMarvelous + 1
 
@@ -377,8 +381,10 @@ end
 		end
 
 		if diff <= windowSick then
-			tweenNumber(nil, "sickSX", 1.075, 1, .2, nil, easing.linear)
-			tweenNumber(nil, "sickSY", 1.075, 1, .2, nil, easing.linear)
+			if ratingCounterZoom then
+				tweenNumber(nil, "sickSX", 1.075, 1, .2, nil, easing.linear)
+				tweenNumber(nil, "sickSY", 1.075, 1, .2, nil, easing.linear)
+			end
 
 			actSick = actSick + 1
 
@@ -388,8 +394,10 @@ end
 		end
 
 		if diff <= windowGood then
-			tweenNumber(nil, "goodSX", 1.075, 1, .2, nil, easing.linear)
-			tweenNumber(nil, "goodSY", 1.075, 1, .2, nil, easing.linear)
+			if ratingCounterZoom then
+				tweenNumber(nil, "goodSX", 1.075, 1, .2, nil, easing.linear)
+				tweenNumber(nil, "goodSY", 1.075, 1, .2, nil, easing.linear)
+			end
 
 			actGood = actGood + 1
 
@@ -399,8 +407,10 @@ end
 		end
 
 		if diff <= windowBad then
-			tweenNumber(nil, "badSX", 1.075, 1, .2, nil, easing.linear)
-			tweenNumber(nil, "badSY", 1.075, 1, .2, nil, easing.linear)
+			if ratingCounterZoom then
+				tweenNumber(nil, "badSX", 1.075, 1, .2, nil, easing.linear)
+				tweenNumber(nil, "badSY", 1.075, 1, .2, nil, easing.linear)
+			end
 
 			actBad = actBad + 1
 
@@ -409,9 +419,10 @@ end
 			return
 		end
 
-
-		tweenNumber(nil, "shitSX", 1.075, 1, .2, nil, easing.linear)
-		tweenNumber(nil, "shitSY", 1.075, 1, .2, nil, easing.linear)
+		if ratingCounterZoom then
+			tweenNumber(nil, "shitSX", 1.075, 1, .2, nil, easing.linear)
+			tweenNumber(nil, "shitSY", 1.075, 1, .2, nil, easing.linear)
+		end
 
 		actShit = actShit + 1
 
@@ -445,8 +456,10 @@ end
 
 			local curRating = addRatingMS((strumTime - getSongPosition() + getPropertyFromClass('backend.ClientPrefs', 'data.ratingOffset')) / playbackRate)
 
-			tweenNumber(nil, "comboSX", 1.075, 1, .2, nil, easing.linear)
-			tweenNumber(nil, "comboSY", 1.075, 1, .2, nil, easing.linear)
+			if ratingCounterZoom then
+				tweenNumber(nil, "comboSX", 1.075, 1, .2, nil, easing.linear)
+				tweenNumber(nil, "comboSY", 1.075, 1, .2, nil, easing.linear)
+			end
 		end
 	end
 
@@ -548,8 +561,10 @@ end
 
 		if (fcTxt ~= prevFc) then
 			if not usedBotplay then
-				tweenNumber(nil, "fcSX", 1.075, 1, .2, nil, easing.linear)
-				tweenNumber(nil, "fcSY", 1.075, 1, .2, nil, easing.linear)
+				if ratingCounterZoom then
+					tweenNumber(nil, "fcSX", 1.075, 1, .2, nil, easing.linear)
+					tweenNumber(nil, "fcSY", 1.075, 1, .2, nil, easing.linear)
+				end
 
 				setTextString("fc", fcTxt)
 				centerOrigin("fc")
