@@ -179,6 +179,8 @@ function onUpdatePost(elapsed)
 			setProperty('oldBFDryingIcoPlayer.y', getProperty('iconP1.y'))
 			setProperty('oldBFDryingIcoPlayer.scale.x', getProperty('iconP1.scale.x'))
 			setProperty('oldBFDryingIcoPlayer.scale.y', getProperty('iconP1.scale.y'))
+
+			setProperty('iconP1.visible', false)
 		end
 
 		--BF
@@ -251,6 +253,16 @@ function onUpdatePost(elapsed)
 			end
 		else
 			-- This here fixes bugs with icons in Play As Opponent
+
+			if dadWinningIcons == true then
+				if getProperty('health') >= 1.62 and existsDadWinning == true then
+					setProperty('iconP2.alpha', 0)
+					setProperty('winIcoOpponent.alpha', 1)
+				else
+					setProperty('iconP2.alpha', 1)
+					setProperty('winIcoOpponent.alpha', 0)
+				end
+			end
 
 			if bfWinningIcons == true then
 				if getProperty('health') <= 0.38 and existsBFWinning == true then -- BF Winning Icon
