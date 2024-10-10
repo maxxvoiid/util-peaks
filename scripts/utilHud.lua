@@ -799,7 +799,7 @@ function onCountdownStarted()
 end
 
 function onEvent(name, v1, v2)
-	if name == 'Change Character' then -- this works better than onUpdatePost, bc then we don't explode the ram
+	if name == 'Change Character' and customHBColors then -- this works better than onUpdatePost, bc then we don't explode the ram
 		local dadCustomColFinal = string.format('%02x%02x%02x', hbP2ColorR, hbP2ColorG, hbP2ColorB)
 		local bfCustomColFinal = string.format('%02x%02x%02x', hbP1ColorR, hbP1ColorG, hbP1ColorB)
 
