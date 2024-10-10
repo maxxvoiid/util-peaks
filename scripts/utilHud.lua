@@ -22,6 +22,7 @@ This script handles all these functions:
 - Hide Score Text
 - Score Text Size
 - Sustain Notes Splash
+- Result Screen
 
 
 This script works as it should, don't touch anything if you don't know what you are doing :)
@@ -95,6 +96,8 @@ local opponentPlay = getModSetting('opponentplay')
 
 local susNotesSplash = getModSetting('susnotessplash')
 
+local resultScreen = getModSetting('resultscreen')
+
 local settings = {
     customFont = 'vcr.ttf',
 	divider = ' • ',
@@ -138,6 +141,22 @@ local frameRate = 24
 local noteR = {0, 7}
 local colors = {"Purple", "Blue", "Green", "Red", "Purple", "Blue", "Green", "Red"}
 local HSpashes = {}
+
+local rsPTE = false
+local rsLMO = false
+local rsEBA = false
+local rsPT = 0
+local rsGU = true
+
+local actHighCombo = 0
+local actMarvelous = 0
+local actSick = 0
+local actGood = 0
+local actBad = 0
+local actShit = 0
+local actMisses = 0
+
+local rating = ""
 
 function onCreate()
 	local blockVersionBeforePrefixes = {'0.3', '0.4', '0.5', '0.6'}
@@ -202,7 +221,6 @@ function getNewScore()
 	local nps = ''
 	local txtPart1 = ''
 	local txtPart2 = ''
-    local rating = ""
     local percent = getProperty('ratingPercent') * 100
 
 	if showNPS then
@@ -220,32 +238,31 @@ function getNewScore()
     if percent > 0 then
 		if newRatingEnabled then
 			if percent >= 100 then
-				rating = rating..'SSSS'
+				rating = 'SSSS'
 			elseif percent >= 97.50 then
-				rating = rating..'SSS'
+				rating = 'SSS'
 			elseif percent >= 95 then
-				rating = rating..'SS'
+				rating = 'SS'
 			elseif percent >= 90 then
-				rating = rating..'S'
+				rating = 'S'
 			elseif percent >= 85 then
-				rating = rating..'A'
+				rating = 'A'
 			elseif percent >= 75 then
-				rating = rating..'B'
+				rating = 'B'
 			elseif percent >= 60 then
-				rating = rating..'C'
+				rating = 'C'
 			elseif percent >= 45 then
-				rating = rating..'D'
+				rating = 'D'
 			elseif percent >= 30 then
-				rating = rating..'E'
+				rating = 'E'
 			else
-				rating = rating..'F'
+				rating = 'F'
 			end
 		else
-			rating = rating..ratingName
+			rating = ratingName
 		end
 
 		percent = (math.floor(getProperty('ratingPercent') * 10000)/100)..'%'
-        rating = rating
 
 		txtPart2 = 'Accuracy: '..percent..settings.divider..rating
     else
@@ -499,6 +516,165 @@ function onCreatePost()
             HSpashes["note"..i_s] = {color=colors[i+1], isPlaying=false, Boom=false}
         end
     end
+
+	if resultScreen then
+		local rsTitleSize = 40
+		local rsContentSize = 30
+
+		makeLuaSprite('utilRSBackground', 'spriteSolid', 0, 0);
+		makeGraphic('utilRSBackground', 300, 100, '000000')
+        addLuaSprite('utilRSBackground', true);
+        scaleObject('utilRSBackground', 6, 8);
+        setObjectCamera('utilRSBackground', 'other');
+
+		setProperty('utilRSBackground.alpha', 0)
+
+		makeLuaText('utilRSTsc', 'Song Cleared!', -1, 25, 25);  
+		setTextSize('utilRSTsc', rsTitleSize);
+		setTextFont('utilRSTsc', settings.customFont)
+		setTextAlignment('utilRSTsc', 'left')
+		setTextBorder('utilRSTsc', 2, '000000')
+		setObjectCamera("utilRSTsc", "other")
+		addLuaText('utilRSTsc', true)
+
+		setProperty('utilRSTsc.alpha', 0)
+
+
+		makeLuaText('utilRSSj', 'Judgements:', -1, getProperty('utilRSTsc.x'), getProperty('utilRSTsc.y') + getProperty('utilRSTsc.height') * 3);  
+		setTextSize('utilRSSj', rsContentSize);
+		setTextFont('utilRSSj', settings.customFont)
+		setTextAlignment('utilRSSj', 'left')
+		setTextBorder('utilRSSj', 2, '000000')
+		setObjectCamera("utilRSSj", "other")
+		addLuaText('utilRSSj', true)
+
+		setProperty('utilRSSj.alpha', 0)
+
+
+		if marvelousRatingEnabled then
+			makeLuaText('utilRSJm', 'Marvelous - 0', -1, getProperty('utilRSSj.x'), getProperty('utilRSSj.y') + getProperty('utilRSSj.height'));  
+			setTextSize('utilRSJm', rsContentSize);
+			setTextFont('utilRSJm', settings.customFont)
+			setTextAlignment('utilRSJm', 'left')
+			setTextBorder('utilRSJm', 2, '000000')
+			setObjectCamera("utilRSJm", "other")
+			addLuaText('utilRSJm', true)
+
+			setProperty('utilRSJm.alpha', 0)
+
+			makeLuaText('utilRSJs', 'Sicks - 0', -1, getProperty('utilRSJm.x'), getProperty('utilRSJm.y') + getProperty('utilRSJm.height'));  
+			setTextSize('utilRSJs', rsContentSize);
+			setTextFont('utilRSJs', settings.customFont)
+			setTextAlignment('utilRSJs', 'left')
+			setTextBorder('utilRSJs', 2, '000000')
+			setObjectCamera("utilRSJs", "other")
+			addLuaText('utilRSJs', true)
+		else
+			makeLuaText('utilRSJs', 'Sicks - 0', -1, getProperty('utilRSSj.x'), getProperty('utilRSSj.y') + getProperty('utilRSSj.height'));  
+			setTextSize('utilRSJs', rsContentSize);
+			setTextFont('utilRSJs', settings.customFont)
+			setTextAlignment('utilRSJs', 'left')
+			setTextBorder('utilRSJs', 2, '000000')
+			setObjectCamera("utilRSJs", "other")
+			addLuaText('utilRSJs', true)
+		end
+
+		setProperty('utilRSJs.alpha', 0)
+
+		makeLuaText('utilRSJg', 'Goods - 0', -1, getProperty('utilRSJs.x'), getProperty('utilRSJs.y') + getProperty('utilRSJs.height'));  
+		setTextSize('utilRSJg', rsContentSize);
+		setTextFont('utilRSJg', settings.customFont)
+		setTextAlignment('utilRSJg', 'left')
+		setTextBorder('utilRSJg', 2, '000000')
+		setObjectCamera("utilRSJg", "other")
+		addLuaText('utilRSJg', true)
+
+		setProperty('utilRSJg.alpha', 0)
+
+		makeLuaText('utilRSJb', 'Bads - 0', -1, getProperty('utilRSJg.x'), getProperty('utilRSJg.y') + getProperty('utilRSJg.height'));  
+		setTextSize('utilRSJb', rsContentSize);
+		setTextFont('utilRSJb', settings.customFont)
+		setTextAlignment('utilRSJb', 'left')
+		setTextBorder('utilRSJb', 2, '000000')
+		setObjectCamera("utilRSJb", "other")
+		addLuaText('utilRSJb', true)
+
+		setProperty('utilRSJb.alpha', 0)
+
+		makeLuaText('utilRSJsh', 'Shits - 0', -1, getProperty('utilRSJb.x'), getProperty('utilRSJb.y') + getProperty('utilRSJb.height'));  
+		setTextSize('utilRSJsh', rsContentSize);
+		setTextFont('utilRSJsh', settings.customFont)
+		setTextAlignment('utilRSJsh', 'left')
+		setTextBorder('utilRSJsh', 2, '000000')
+		setObjectCamera("utilRSJsh", "other")
+		addLuaText('utilRSJsh', true)
+
+		setProperty('utilRSJsh.alpha', 0)
+
+
+		makeLuaText('utilRSSTm', 'Misses: 0', -1, getProperty('utilRSJsh.x'), getProperty('utilRSJsh.y') + getProperty('utilRSJsh.height') * 3);  
+		setTextSize('utilRSSTm', rsContentSize);
+		setTextFont('utilRSSTm', settings.customFont)
+		setTextAlignment('utilRSSTm', 'left')
+		setTextBorder('utilRSSTm', 2, '000000')
+		setObjectCamera("utilRSSTm", "other")
+		addLuaText('utilRSSTm', true)
+
+		setProperty('utilRSSTm.alpha', 0)
+
+		makeLuaText('utilRSSThc', 'Highest Combo: 0', -1, getProperty('utilRSSTm.x'), getProperty('utilRSSTm.y') + getProperty('utilRSSTm.height'));  
+		setTextSize('utilRSSThc', rsContentSize);
+		setTextFont('utilRSSThc', settings.customFont)
+		setTextAlignment('utilRSSThc', 'left')
+		setTextBorder('utilRSSThc', 2, '000000')
+		setObjectCamera("utilRSSThc", "other")
+		addLuaText('utilRSSThc', true)
+
+		setProperty('utilRSSThc.alpha', 0)
+
+
+		makeLuaText('utilRSSs', 'Score: 0', -1, getProperty('utilRSSThc.x'), getProperty('utilRSSThc.y') + getProperty('utilRSSThc.height') * 3);  
+		setTextSize('utilRSSs', rsContentSize);
+		setTextFont('utilRSSs', settings.customFont)
+		setTextAlignment('utilRSSs', 'left')
+		setTextBorder('utilRSSs', 2, '000000')
+		setObjectCamera("utilRSSs", "other")
+		addLuaText('utilRSSs', true)
+
+		setProperty('utilRSSs.alpha', 0)
+
+		makeLuaText('utilRSSa', 'Accuracy: 0%', -1, getProperty('utilRSSs.x'), getProperty('utilRSSs.y') + getProperty('utilRSSs.height'));  
+		setTextSize('utilRSSa', rsContentSize);
+		setTextFont('utilRSSa', settings.customFont)
+		setTextAlignment('utilRSSa', 'left')
+		setTextBorder('utilRSSa', 2, '000000')
+		setObjectCamera("utilRSSa", "other")
+		addLuaText('utilRSSa', true)
+
+		setProperty('utilRSSa.alpha', 0)
+
+
+		makeLuaText('utilRSSr', 'SSSS (MFC)', -1, getProperty('utilRSSa.x'), getProperty('utilRSSa.y') + getProperty('utilRSSa.height') * 3);  
+		setTextSize('utilRSSr', rsContentSize);
+		setTextFont('utilRSSr', settings.customFont)
+		setTextAlignment('utilRSSr', 'left')
+		setTextBorder('utilRSSr', 2, '000000')
+		setObjectCamera("utilRSSr", "other")
+		addLuaText('utilRSSr', true)
+
+		setProperty('utilRSSr.alpha', 0)
+
+
+		makeLuaText('utilRSTp', 'Press ENTER to continue', -1, 700, getProperty('utilRSSr.y'));  
+		setTextSize('utilRSTp', rsTitleSize);
+		setTextFont('utilRSTp', settings.customFont)
+		setTextAlignment('utilRSTp', 'left')
+		setTextBorder('utilRSTp', 2, '000000')
+		setObjectCamera("utilRSTp", "other")
+		addLuaText('utilRSTp', true)
+
+		setProperty('utilRSTp.alpha', 0)
+	end
 
 	if animatedHudEnabled then
 		if not downscroll then
@@ -877,21 +1053,26 @@ function getRatingMS(diff)
 	local windowBad = getProperty('ratingsData[2].hitWindow')
 
 	if marvelousRatingEnabled and diff <= marvelousRatingMs then
+		actMarvelous = actMarvelous + 1
 		return 'marvelous'
 	end
 
 	if diff <= windowSick then
+		actSick = actSick + 1
 		return 'sick'
 	end
 
 	if diff <= windowGood then
+		actGood = actGood + 1
 		return 'good'
 	end
 
 	if diff <= windowBad then
+		actBad = actBad + 1
 		return 'bad'
 	end
 
+	actShit = actShit + 1
 	return 'shit'
 end
 
@@ -933,27 +1114,26 @@ function addRatingMS(diff, noteTouch)
 end
 
 function goodNoteHit(id, noteData, noteType, isSustainNote)
-	if botPlay and getBotScore and not isSustainNote then
-		local strumTime = getPropertyFromGroup('notes', id, 'strumTime')
-		isEarly = strumTime < getSongPosition() and '' or '-'
+	if not isSustainNote then
+		getNewScore()
 
+		local strumTime = getPropertyFromGroup('notes', id, 'strumTime')
 		local fRating = getRatingMS((strumTime - getSongPosition() + getPropertyFromClass('backend.ClientPrefs', 'data.ratingOffset')) / playbackRate)
 
-		if fRating == 'marvelous' then
-			bScore = bScore + 500
-		elseif fRating == 'sick' then
-			bScore = bScore + 350
-		elseif fRating == 'good' then
-			bScore = bScore + 200
-		elseif fRating == 'bad' then
-			bScore = bScore + 100
-		elseif fRating == 'shit' then
-			bScore = bScore + 50
+		if botPlay and getBotScore then
+			if fRating == 'marvelous' then
+				bScore = bScore + 500
+			elseif fRating == 'sick' then
+				bScore = bScore + 350
+			elseif fRating == 'good' then
+				bScore = bScore + 200
+			elseif fRating == 'bad' then
+				bScore = bScore + 100
+			elseif fRating == 'shit' then
+				bScore = bScore + 50
+			end
 		end
-	end
 
-	if not isSustainNote then
-		local strumTime = getPropertyFromGroup('notes', id, 'strumTime')
 		addRatingMS((strumTime - getSongPosition() + getPropertyFromClass('backend.ClientPrefs', 'data.ratingOffset')) / playbackRate, true)
 
 		if scoreHitSizeEnabled == true then
@@ -961,12 +1141,8 @@ function goodNoteHit(id, noteData, noteType, isSustainNote)
 			tweenNumber(nil, "scoreTxtSY", 1.075, 1, .2, nil, easing.linear)
 		end
 
---		callScript('scripts/usefulFunctions', 'tweenNumber', { 1.075, 1, 0.2, {onUpdate = 'changeTweenScore'} })
-
 		npsRefresh1 = npsRefresh1 + 1
 	end
-
-	getNewScore()
 
 	if isSustainNote and susNotesSplash then
         for i = noteR[1], noteR[2], 1 do
@@ -1004,22 +1180,19 @@ function opponentNoteHit(membersIndex, noteData, noteType, isSustainNote)
 end
 
 function noteMissPress(direction)
+	actMisses = actMisses + 1
+
 	getNewScore()
 
 	addRatingMS(1500, false)
 end
 
 function noteMiss(id, direction, noteType, isSustainNote)
+	actMisses = actMisses + 1
+
 	getNewScore()
 
 	addRatingMS(1500, false)
-end
-
-function changeTweenScore(value)
-	debugPrint(value)
-
-	scoreTxtSX = value
-	scoreTxtSY = value
 end
 
 function onUpdate(dt)
@@ -1080,6 +1253,29 @@ function onUpdate(dt)
 		end
     end
 
+	if rsPTE == true then
+		if keyJustPressed('accept') then -- Finish the Song
+			rsLMO = true
+			endSong()
+		end
+	end
+
+	if rsEBA == true then
+		setProperty('utilRSTp.alpha', 0 + (rsPT / 100))
+
+		if rsPT >= 0 and rsPT <= 300 then
+			if rsPT == 0 then
+				rsGU = true
+			end
+
+			rsPT = rsPT + (rsGU and 1 or -1)
+
+			if rsPT == 300 then
+				rsGU, rsPT = false, 100
+			end
+		end
+	end
+
 	if susNotesSplash then
         if BoomRed then
             if getProperty('3.animation.curAnim.finished') then
@@ -1108,6 +1304,14 @@ end
 
 function onUpdatePost(dt)
 	tnTick()
+
+	local combo = getProperty('combo')
+
+	if combo < 0 then combo = 0 end
+
+	if combo > actHighCombo then
+		actHighCombo = combo
+	end
 
 	if smoothHealthBar then
 		local healthFlip = getProperty('healthBar.flipX') or getProperty('healthBar.angle') == 180 or getProperty('healthBar.scale.x') == -1
@@ -1196,6 +1400,40 @@ function onGameOverConfirm(retry)
     doTweenAlpha("fadeOutReasonText", "deathReason", 0, 1, "linear")
 end
 
+local rsArray = {'utilRSTsc', 'utilRSSj', 'utilRSJm', 'utilRSJs', 'utilRSJg', 'utilRSJb', 'utilRSJsh', 'utilRSSTm', 'utilRSSThc', 'utilRSSs', 'utilRSSa', 'utilRSSr', 'utilRSTp'}
+
+function onEndSong()
+	if resultScreen and not usedCheats and not rsLMO then
+		local percent = getProperty('ratingPercent') * 100
+		local fc = getVar("utilCFC")
+		percent = (math.floor(getProperty('ratingPercent') * 10000)/100)..'%'
+
+		setTextString("utilRSJm", 'Marvelous - '..tostring(formatNumberWithCommas(actMarvelous)))
+		setTextString("utilRSJs", 'Sicks - '..tostring(formatNumberWithCommas(actSick)))
+		setTextString("utilRSJg", 'Goods - '..tostring(formatNumberWithCommas(actGood)))
+		setTextString("utilRSJb", 'Bads - '..tostring(formatNumberWithCommas(actBad)))
+		setTextString("utilRSJsh", 'Shits - '..tostring(formatNumberWithCommas(actShit)))
+		setTextString("utilRSSTm", 'Misses: '..tostring(formatNumberWithCommas(actMisses)))
+		setTextString("utilRSSThc", 'Highest Combo: '..tostring(formatNumberWithCommas(actHighCombo)))
+		setTextString("utilRSSs", 'Score: '..tostring(formatNumberWithCommas(getProperty('songScore'))))
+		setTextString("utilRSSa", 'Accuracy: '..percent)
+		setTextString("utilRSSr", rating..' ('..fc..')')
+
+		doTweenAlpha('utilRSBackgroundAlpha', 'utilRSBackground', 0.7, 0.5, 'linear')
+		doTweenAlpha('HUDTweenAlpha', 'camHUD', 0, 0.5, 'linear')
+		for i, hud in pairs(rsArray) do
+			doTweenAlpha(hud..'Alpha', hud, 1, 0.5, 'linear')
+		end
+
+		rsPTE = true
+
+		runTimer('utilRSEBA', 1, 1)
+
+		return Function_Stop;
+	end
+	return Function_Continue;
+end
+
 function onTimerCompleted(tag, loops, loopsLeft)
 	if nowPlayingPosition == 'Top Left' or nowPlayingPosition == 'Bottom Left' then
 
@@ -1251,6 +1489,10 @@ function onTimerCompleted(tag, loops, loopsLeft)
 			runTimer('utilPlayingNonVisible', 1, 1)
 		end
 
+	end
+
+	if tag == 'utilRSEBA' then
+		rsEBA = true
 	end
 
 	if tag == 'utilPlayingNonVisible' then
