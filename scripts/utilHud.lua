@@ -520,39 +520,38 @@ function onCreatePost()
 	if resultScreen then
 		local rsTitleSize = 40
 		local rsContentSize = 30
+		local rsInitialAlpha = 0
+		local rsNewLineMutliplier = 2.8
 
 		makeLuaSprite('utilRSBackground', 'spriteSolid', 0, 0);
 		makeGraphic('utilRSBackground', 300, 100, '000000')
         addLuaSprite('utilRSBackground', true);
         scaleObject('utilRSBackground', 6, 8);
         setObjectCamera('utilRSBackground', 'other');
+		setProperty('utilRSBackground.alpha', rsInitialAlpha)
 
-		setProperty('utilRSBackground.alpha', 0)
-
-		makeLuaText('utilRSTsc', 'Song Cleared!', -1, 25, 25);  
+		makeLuaText('utilRSTsc', 'Song Completed! - '..songName, -1, 25, 25);  
 		setTextSize('utilRSTsc', rsTitleSize);
 		setTextFont('utilRSTsc', settings.customFont)
 		setTextAlignment('utilRSTsc', 'left')
 		setTextBorder('utilRSTsc', 2, '000000')
 		setObjectCamera("utilRSTsc", "other")
 		addLuaText('utilRSTsc', true)
+		setProperty('utilRSTsc.alpha', rsInitialAlpha)
 
-		setProperty('utilRSTsc.alpha', 0)
 
-
-		makeLuaText('utilRSSj', 'Judgements:', -1, getProperty('utilRSTsc.x'), getProperty('utilRSTsc.y') + getProperty('utilRSTsc.height') * 3);  
+		makeLuaText('utilRSSj', 'Judgements:', -1, getProperty('utilRSTsc.x'), getProperty('utilRSTsc.y') + getProperty('utilRSTsc.height') * rsNewLineMutliplier);  
 		setTextSize('utilRSSj', rsContentSize);
 		setTextFont('utilRSSj', settings.customFont)
 		setTextAlignment('utilRSSj', 'left')
 		setTextBorder('utilRSSj', 2, '000000')
 		setObjectCamera("utilRSSj", "other")
 		addLuaText('utilRSSj', true)
-
-		setProperty('utilRSSj.alpha', 0)
+		setProperty('utilRSSj.alpha', rsInitialAlpha)
 
 
 		if marvelousRatingEnabled then
-			makeLuaText('utilRSJm', 'Marvelous - 0', -1, getProperty('utilRSSj.x'), getProperty('utilRSSj.y') + getProperty('utilRSSj.height'));  
+			makeLuaText('utilRSJm', 'Marvelous - ', -1, getProperty('utilRSSj.x'), getProperty('utilRSSj.y') + getProperty('utilRSSj.height'));  
 			setTextSize('utilRSJm', rsContentSize);
 			setTextFont('utilRSJm', settings.customFont)
 			setTextAlignment('utilRSJm', 'left')
@@ -560,9 +559,9 @@ function onCreatePost()
 			setObjectCamera("utilRSJm", "other")
 			addLuaText('utilRSJm', true)
 
-			setProperty('utilRSJm.alpha', 0)
+			setProperty('utilRSJm.alpha', rsInitialAlpha)
 
-			makeLuaText('utilRSJs', 'Sicks - 0', -1, getProperty('utilRSJm.x'), getProperty('utilRSJm.y') + getProperty('utilRSJm.height'));  
+			makeLuaText('utilRSJs', 'Sicks - ', -1, getProperty('utilRSJm.x'), getProperty('utilRSJm.y') + getProperty('utilRSJm.height'));  
 			setTextSize('utilRSJs', rsContentSize);
 			setTextFont('utilRSJs', settings.customFont)
 			setTextAlignment('utilRSJs', 'left')
@@ -570,7 +569,7 @@ function onCreatePost()
 			setObjectCamera("utilRSJs", "other")
 			addLuaText('utilRSJs', true)
 		else
-			makeLuaText('utilRSJs', 'Sicks - 0', -1, getProperty('utilRSSj.x'), getProperty('utilRSSj.y') + getProperty('utilRSSj.height'));  
+			makeLuaText('utilRSJs', 'Sicks - ', -1, getProperty('utilRSSj.x'), getProperty('utilRSSj.y') + getProperty('utilRSSj.height'));  
 			setTextSize('utilRSJs', rsContentSize);
 			setTextFont('utilRSJs', settings.customFont)
 			setTextAlignment('utilRSJs', 'left')
@@ -579,90 +578,91 @@ function onCreatePost()
 			addLuaText('utilRSJs', true)
 		end
 
-		setProperty('utilRSJs.alpha', 0)
+		setProperty('utilRSJs.alpha', rsInitialAlpha)
 
-		makeLuaText('utilRSJg', 'Goods - 0', -1, getProperty('utilRSJs.x'), getProperty('utilRSJs.y') + getProperty('utilRSJs.height'));  
+		makeLuaText('utilRSJg', 'Goods - ', -1, getProperty('utilRSJs.x'), getProperty('utilRSJs.y') + getProperty('utilRSJs.height'));  
 		setTextSize('utilRSJg', rsContentSize);
 		setTextFont('utilRSJg', settings.customFont)
 		setTextAlignment('utilRSJg', 'left')
 		setTextBorder('utilRSJg', 2, '000000')
 		setObjectCamera("utilRSJg", "other")
 		addLuaText('utilRSJg', true)
+		setProperty('utilRSJg.alpha', rsInitialAlpha)
 
-		setProperty('utilRSJg.alpha', 0)
-
-		makeLuaText('utilRSJb', 'Bads - 0', -1, getProperty('utilRSJg.x'), getProperty('utilRSJg.y') + getProperty('utilRSJg.height'));  
+		makeLuaText('utilRSJb', 'Bads - ', -1, getProperty('utilRSJg.x'), getProperty('utilRSJg.y') + getProperty('utilRSJg.height'));  
 		setTextSize('utilRSJb', rsContentSize);
 		setTextFont('utilRSJb', settings.customFont)
 		setTextAlignment('utilRSJb', 'left')
 		setTextBorder('utilRSJb', 2, '000000')
 		setObjectCamera("utilRSJb", "other")
 		addLuaText('utilRSJb', true)
+		setProperty('utilRSJb.alpha', rsInitialAlpha)
 
-		setProperty('utilRSJb.alpha', 0)
-
-		makeLuaText('utilRSJsh', 'Shits - 0', -1, getProperty('utilRSJb.x'), getProperty('utilRSJb.y') + getProperty('utilRSJb.height'));  
+		makeLuaText('utilRSJsh', 'Shits - ', -1, getProperty('utilRSJb.x'), getProperty('utilRSJb.y') + getProperty('utilRSJb.height'));  
 		setTextSize('utilRSJsh', rsContentSize);
 		setTextFont('utilRSJsh', settings.customFont)
 		setTextAlignment('utilRSJsh', 'left')
 		setTextBorder('utilRSJsh', 2, '000000')
 		setObjectCamera("utilRSJsh", "other")
 		addLuaText('utilRSJsh', true)
+		setProperty('utilRSJsh.alpha', rsInitialAlpha)
 
-		setProperty('utilRSJsh.alpha', 0)
 
-
-		makeLuaText('utilRSSTm', 'Misses: 0', -1, getProperty('utilRSJsh.x'), getProperty('utilRSJsh.y') + getProperty('utilRSJsh.height') * 3);  
+		makeLuaText('utilRSSTm', 'Misses: ', -1, getProperty('utilRSJsh.x'), getProperty('utilRSJsh.y') + getProperty('utilRSJsh.height') * rsNewLineMutliplier);  
 		setTextSize('utilRSSTm', rsContentSize);
 		setTextFont('utilRSSTm', settings.customFont)
 		setTextAlignment('utilRSSTm', 'left')
 		setTextBorder('utilRSSTm', 2, '000000')
 		setObjectCamera("utilRSSTm", "other")
 		addLuaText('utilRSSTm', true)
+		setProperty('utilRSSTm.alpha', rsInitialAlpha)
 
-		setProperty('utilRSSTm.alpha', 0)
-
-		makeLuaText('utilRSSThc', 'Highest Combo: 0', -1, getProperty('utilRSSTm.x'), getProperty('utilRSSTm.y') + getProperty('utilRSSTm.height'));  
+		makeLuaText('utilRSSThc', 'Highest Combo: ', -1, getProperty('utilRSSTm.x'), getProperty('utilRSSTm.y') + getProperty('utilRSSTm.height'));  
 		setTextSize('utilRSSThc', rsContentSize);
 		setTextFont('utilRSSThc', settings.customFont)
 		setTextAlignment('utilRSSThc', 'left')
 		setTextBorder('utilRSSThc', 2, '000000')
 		setObjectCamera("utilRSSThc", "other")
 		addLuaText('utilRSSThc', true)
+		setProperty('utilRSSThc.alpha', rsInitialAlpha)
 
-		setProperty('utilRSSThc.alpha', 0)
 
-
-		makeLuaText('utilRSSs', 'Score: 0', -1, getProperty('utilRSSThc.x'), getProperty('utilRSSThc.y') + getProperty('utilRSSThc.height') * 3);  
+		makeLuaText('utilRSSs', 'Score: ', -1, getProperty('utilRSSThc.x'), getProperty('utilRSSThc.y') + getProperty('utilRSSThc.height') * rsNewLineMutliplier);  
 		setTextSize('utilRSSs', rsContentSize);
 		setTextFont('utilRSSs', settings.customFont)
 		setTextAlignment('utilRSSs', 'left')
 		setTextBorder('utilRSSs', 2, '000000')
 		setObjectCamera("utilRSSs", "other")
 		addLuaText('utilRSSs', true)
+		setProperty('utilRSSs.alpha', rsInitialAlpha)
 
-		setProperty('utilRSSs.alpha', 0)
-
-		makeLuaText('utilRSSa', 'Accuracy: 0%', -1, getProperty('utilRSSs.x'), getProperty('utilRSSs.y') + getProperty('utilRSSs.height'));  
+		makeLuaText('utilRSSa', 'Accuracy: ', -1, getProperty('utilRSSs.x'), getProperty('utilRSSs.y') + getProperty('utilRSSs.height'));  
 		setTextSize('utilRSSa', rsContentSize);
 		setTextFont('utilRSSa', settings.customFont)
 		setTextAlignment('utilRSSa', 'left')
 		setTextBorder('utilRSSa', 2, '000000')
 		setObjectCamera("utilRSSa", "other")
 		addLuaText('utilRSSa', true)
+		setProperty('utilRSSa.alpha', rsInitialAlpha)
 
-		setProperty('utilRSSa.alpha', 0)
+		makeLuaText('utilRSSmn', 'Max Notes Per Second: ', -1, getProperty('utilRSSa.x'), getProperty('utilRSSa.y') + getProperty('utilRSSa.height'));  
+		setTextSize('utilRSSmn', rsContentSize);
+		setTextFont('utilRSSmn', settings.customFont)
+		setTextAlignment('utilRSSmn', 'left')
+		setTextBorder('utilRSSmn', 2, '000000')
+		setObjectCamera("utilRSSmn", "other")
+		addLuaText('utilRSSmn', true)
+		setProperty('utilRSSmn.alpha', rsInitialAlpha)
 
 
-		makeLuaText('utilRSSr', 'SSSS (MFC)', -1, getProperty('utilRSSa.x'), getProperty('utilRSSa.y') + getProperty('utilRSSa.height') * 3);  
+		makeLuaText('utilRSSr', 'NA', -1, getProperty('utilRSSmn.x'), getProperty('utilRSSmn.y') + getProperty('utilRSSmn.height') * rsNewLineMutliplier);  
 		setTextSize('utilRSSr', rsContentSize);
 		setTextFont('utilRSSr', settings.customFont)
 		setTextAlignment('utilRSSr', 'left')
 		setTextBorder('utilRSSr', 2, '000000')
 		setObjectCamera("utilRSSr", "other")
 		addLuaText('utilRSSr', true)
-
-		setProperty('utilRSSr.alpha', 0)
+		setProperty('utilRSSr.alpha', rsInitialAlpha)
 
 
 		makeLuaText('utilRSTp', 'Press ENTER to continue', -1, 700, getProperty('utilRSSr.y'));  
@@ -672,8 +672,10 @@ function onCreatePost()
 		setTextBorder('utilRSTp', 2, '000000')
 		setObjectCamera("utilRSTp", "other")
 		addLuaText('utilRSTp', true)
+		setProperty('utilRSTp.alpha', rsInitialAlpha)
 
-		setProperty('utilRSTp.alpha', 0)
+		local rsTscWidth = getProperty('utilRSTsc.width')
+		setProperty('utilRSTsc.x', (screenWidth - rsTscWidth) / 2)
 	end
 
 	if animatedHudEnabled then
@@ -1400,7 +1402,7 @@ function onGameOverConfirm(retry)
     doTweenAlpha("fadeOutReasonText", "deathReason", 0, 1, "linear")
 end
 
-local rsArray = {'utilRSTsc', 'utilRSSj', 'utilRSJm', 'utilRSJs', 'utilRSJg', 'utilRSJb', 'utilRSJsh', 'utilRSSTm', 'utilRSSThc', 'utilRSSs', 'utilRSSa', 'utilRSSr', 'utilRSTp'}
+local rsArray = {'utilRSTsc', 'utilRSSj', 'utilRSJm', 'utilRSJs', 'utilRSJg', 'utilRSJb', 'utilRSJsh', 'utilRSSTm', 'utilRSSThc', 'utilRSSs', 'utilRSSa', 'utilRSSmn', 'utilRSSr', 'utilRSTp'}
 
 function onEndSong()
 	if resultScreen and not usedCheats and not rsLMO then
@@ -1408,15 +1410,16 @@ function onEndSong()
 		local fc = getVar("utilCFC")
 		percent = (math.floor(getProperty('ratingPercent') * 10000)/100)..'%'
 
-		setTextString("utilRSJm", 'Marvelous - '..tostring(formatNumberWithCommas(actMarvelous)))
-		setTextString("utilRSJs", 'Sicks - '..tostring(formatNumberWithCommas(actSick)))
-		setTextString("utilRSJg", 'Goods - '..tostring(formatNumberWithCommas(actGood)))
-		setTextString("utilRSJb", 'Bads - '..tostring(formatNumberWithCommas(actBad)))
-		setTextString("utilRSJsh", 'Shits - '..tostring(formatNumberWithCommas(actShit)))
-		setTextString("utilRSSTm", 'Misses: '..tostring(formatNumberWithCommas(actMisses)))
-		setTextString("utilRSSThc", 'Highest Combo: '..tostring(formatNumberWithCommas(actHighCombo)))
-		setTextString("utilRSSs", 'Score: '..tostring(formatNumberWithCommas(getProperty('songScore'))))
-		setTextString("utilRSSa", 'Accuracy: '..percent)
+		setTextString("utilRSJm", getTextString("utilRSJm")..tostring(formatNumberWithCommas(actMarvelous)))
+		setTextString("utilRSJs", getTextString("utilRSJs")..tostring(formatNumberWithCommas(actSick)))
+		setTextString("utilRSJg", getTextString("utilRSJg")..tostring(formatNumberWithCommas(actGood)))
+		setTextString("utilRSJb", getTextString("utilRSJb")..tostring(formatNumberWithCommas(actBad)))
+		setTextString("utilRSJsh", getTextString("utilRSJsh")..tostring(formatNumberWithCommas(actShit)))
+		setTextString("utilRSSTm", getTextString("utilRSSTm")..tostring(formatNumberWithCommas(actMisses)))
+		setTextString("utilRSSThc", getTextString("utilRSSThc")..tostring(formatNumberWithCommas(actHighCombo)))
+		setTextString("utilRSSs", getTextString("utilRSSs")..tostring(formatNumberWithCommas(getProperty('songScore'))))
+		setTextString("utilRSSa", getTextString("utilRSSa")..percent)
+		setTextString("utilRSSmn", getTextString("utilRSSmn")..tostring(formatNumberWithCommas(MaxNps)))
 		setTextString("utilRSSr", rating..' ('..fc..')')
 
 		doTweenAlpha('utilRSBackgroundAlpha', 'utilRSBackground', 0.7, 0.5, 'linear')
@@ -1428,6 +1431,7 @@ function onEndSong()
 		rsPTE = true
 
 		runTimer('utilRSEBA', 1, 1)
+		setProperty('playbackRate', 0)
 
 		return Function_Stop;
 	end
