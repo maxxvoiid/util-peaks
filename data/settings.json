@@ -370,6 +370,13 @@
 		"value": true //This is the default value
 	},
 	{
+		"save": "resultscreen",
+		"name": "Result Screen", //Name shown on the mod settings menu
+		"type": "bool",
+		"description": "If checked, it will display a results screen at the end of a song", //Description shown on the mod settings menu
+		"value": true //This is the default value
+	},
+	{
 		"save": "nowplayingpopup",
 		"name": "Now Playing Pop-up", //Name shown on the mod settings menu
 		"type": "bool",
