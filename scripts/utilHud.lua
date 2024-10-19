@@ -62,9 +62,6 @@ local newRatingEnabled = getModSetting('newratings')
 
 -------------------- Gameplay --------------------
 
-local onlyMarvelous = getModSetting('onlymarvelous')
-local onlyMarvelousVolume = getModSetting('onlymarvelousvolume')
-local onlyMarvelousType = getModSetting('onlymarveloustype')
 local opponentPlay = getModSetting('opponentplay')
 
 -------------------- Misc --------------------
@@ -72,7 +69,6 @@ local opponentPlay = getModSetting('opponentplay')
 local font = 'vcr.ttf'
 local divider = ' • '
 
-local actualSetObjectCamera = setObjectCamera
 local sName = 'UH' -- do not change this, changing it will hinder the process of finding errors
 local usedCheats = false
 
@@ -240,9 +236,9 @@ function onCreatePost()
 	addLuaSprite('utilBarEmpty', true)
 	addLuaSprite('utilBarFill', true)
 	
-	setObjectCamera('utilBarBorder', 'hud')
-	setObjectCamera('utilBarEmpty', 'hud')
-	setObjectCamera('utilBarFill', 'hud')
+	callScript('scripts/usefulFunctions', 'setObjectCamera', {'utilBarBorder', 'hud'}) -- setObjectCamera('utilBarBorder', 'hud')
+	callScript('scripts/usefulFunctions', 'setObjectCamera', {'utilBarEmpty', 'hud'}) -- setObjectCamera('utilBarEmpty', 'hud')
+	callScript('scripts/usefulFunctions', 'setObjectCamera', {'utilBarFill', 'hud'}) -- setObjectCamera('utilBarFill', 'hud')
 
 	scaleObject('utilBarBorder', timeBarLength + timeBarBorder, timeBarThickness + timeBarBorder)
 	scaleObject('utilBarEmpty', timeBarLength, timeBarThickness)
@@ -289,6 +285,90 @@ function onCreatePost()
 
 	setProperty('utilScoreTxt.visible', true)
 	setProperty('scoreTxt.visible', false)
+
+	--// now playing popup
+	if nowPlayingPopup then
+		boxX = -305
+		boxY = 50
+		textsX = 10
+		nowTextY = 65
+		subTextY = 95
+
+		if nowPlayingPosition == 'Top Right' or nowPlayingPosition == 'Bottom Right' then
+			boxX = 1405
+			textsX = 995
+		end
+		if nowPlayingPosition == 'Bottom Left' or nowPlayingPosition == 'Bottom Right' then
+			boxY = 560
+			nowTextY = 575
+			subTextY = 605
+		end
+
+		makeLuaSprite('utilPlayingLineColor', 'spriteSolid', boxX - 15, boxY) -- color bar
+		makeGraphic('utilPlayingLineColor', 300 + 15, 100, dadColFinal)
+		callScript('scripts/usefulFunctions', 'setObjectCamera', {'utilPlayingLineColor', 'other'}) -- setObjectCamera('utilPlayingLineColor', 'other')
+		addLuaSprite('utilPlayingLineColor', true)
+	
+		makeLuaSprite('utilPlayingBox', 'spriteSolid', boxX - 15, boxY) -- box
+		makeGraphic('utilPlayingBox', 300, 100, '000000')
+		callScript('scripts/usefulFunctions', 'setObjectCamera', {'utilPlayingBox', 'other'}) -- setObjectCamera('utilPlayingBox', 'other')
+		addLuaSprite('utilPlayingBox', true)
+	
+		makeLuaText('utilPlayingTxt', 'Now Playing:', 290, textsX, nowTextY) -- "Now Playing" text
+		setTextAlignment('utilPlayingTxt', 'left')
+		callScript('scripts/usefulFunctions', 'setObjectCamera', {'utilPlayingTxt', 'other'}) -- setObjectCamera('utilPlayingTxt', 'other')
+		setTextSize('utilPlayingTxt', 25)
+		setProperty('utilPlayingTxt.alpha', 0)
+		addLuaText('utilPlayingTxt')
+	
+		makeLuaText('utilPlayingSubTxt', songName, 290, textsX, subTextY) -- song name sub text
+		setTextAlignment('utilPlayingSubTxt', 'left')
+		callScript('scripts/usefulFunctions', 'setObjectCamera', {'utilPlayingSubTxt', 'other'}) -- setObjectCamera('utilPlayingSubTxt', 'other')
+
+		if string.len(songName) >= 15 then
+			setTextSize('utilPlayingSubTxt', 25)
+		elseif string.len(songName) >= 25 then
+			setTextSize('utilPlayingSubTxt', 20)
+		else
+			setTextSize('utilPlayingSubTxt', 30)
+		end
+
+		setProperty('utilPlayingSubTxt.alpha', 0)
+		addLuaText('utilPlayingSubTxt')
+	end
+
+	if animatedHudEnabled then
+		if not downscroll then
+			setProperty('healthBar.y', getProperty('healthBar.y') + 300)
+			setProperty('iconP1.y', getProperty('iconP1.y') + 300)
+			setProperty('iconP2.y', getProperty('iconP2.y') + 300)
+			setProperty('utilScoreTxt.y', getProperty('utilScoreTxt.y') + 300)
+		
+			setProperty('utilBarBorder.y', getProperty('utilBarBorder.y') - 300)
+			setProperty('utilBarEmpty.y', getProperty('utilBarEmpty.y') - 300)
+			setProperty('utilBarFill.y', getProperty('utilBarFill.y') - 300)
+			setProperty('utilTimer.y', getProperty('utilTimer.y') - 300)
+		else
+			setProperty('healthBar.y', getProperty('healthBar.y') - 300)
+			setProperty('iconP1.y', getProperty('iconP1.y') - 300)
+			setProperty('iconP2.y', getProperty('iconP2.y') - 300)
+			setProperty('utilScoreTxt.y', getProperty('utilScoreTxt.y') - 300)
+		
+			setProperty('utilBarBorder.y', getProperty('utilBarBorder.y') + 300)
+			setProperty('utilBarEmpty.y', getProperty('utilBarEmpty.y') + 300)
+			setProperty('utilBarFill.y', getProperty('utilBarFill.y') + 300)
+			setProperty('utilTimer.y', getProperty('utilTimer.y') + 300)
+		end
+
+		if ratingCounterEnabled then
+			setProperty('combo.x', getProperty('combo.x') - 300)
+			setProperty('sick.x', getProperty('sick.x') - 300)
+			setProperty('good.x', getProperty('good.x') - 300)
+			setProperty('bad.x', getProperty('bad.x') - 300)
+			setProperty('shit.x', getProperty('shit.x') - 300)
+			setProperty('fc.x', getProperty('fc.x') - 300)
+		end
+	end
 end
 
 ---------------------------------------------------------------------------------------
@@ -512,26 +592,6 @@ function getVersions()
 	return { fError = fileError, uVer = utilVersion, peVer = peVersion }
 end
 
-function setObjectCamera(object,camera) -- this will be used until there is a psych engine hotfix for the function
-	-- thank you Tiphy03 for the function :D
-	if stringStartsWith(version, '1.0') then
-		if string.lower(camera) == "game" then camera = "camGame" end
-		if string.lower(camera) == "camgame" then camera = "camGame" end
-	
-		if string.lower(camera) == "hud" then camera = "camHUD" end
-		if string.lower(camera) == "camhud" then camera = "camHUD" end
-
-		if string.lower(camera) == "other" then camera = "camOther" end
-		if string.lower(camera) == "camother" then camera = "camOther" end
-
-		if (camera == "camGame") or (camera == "camHUD") or (camera == "camOther") then
-			setProperty(object..'.camera',instanceArg(camera),false,true)
-		end
-	else
-		actualSetObjectCamera(object,camera)
-	end
-end
-
 function math.lerp(a, b, t)
     return (b - a) * t + a;
 end
@@ -585,6 +645,51 @@ function onEvent(name, v1, v2)
 		local bfCustomColFinal = string.format('%02x%02x%02x', hbP1ColorR, hbP1ColorG, hbP1ColorB)
 
 		setHealthBarColors(dadCustomColFinal, bfCustomColFinal)
+	end
+end
+
+function onSongStart()
+	if animatedHudEnabled then
+		if not downscroll then
+			doTweenY('healthBarTween', 'healthBar', getProperty('healthBar.y') - 300, 1, 'quintOut')
+			doTweenY('healthIconBFTween', 'iconP1', getProperty('iconP1.y') - 300, 1, 'quintOut')
+			doTweenY('healthIconDadTween', 'iconP2', getProperty('iconP2.y') - 300, 1, 'quintOut')
+			doTweenY('scoreTxtTween', 'utilScoreTxt', getProperty('utilScoreTxt.y') - 300, 1, 'quintOut')
+		
+			doTweenY('utilBarBorderTween', 'utilBarBorder', getProperty('utilBarBorder.y') + 300, 1, 'quintOut')
+			doTweenY('utilBarEmptyTween', 'utilBarEmpty', getProperty('utilBarEmpty.y') + 300, 1, 'quintOut')
+			doTweenY('utilBarFillTween', 'utilBarFill', getProperty('utilBarFill.y') + 300, 1, 'quintOut')
+			doTweenY('utilTimerTween', 'utilTimer', getProperty('utilTimer.y') + 300, 1, 'quintOut')
+		else
+			doTweenY('healthBarTween', 'healthBar', getProperty('healthBar.y') + 300, 1, 'quintOut')
+			doTweenY('healthIconBFTween', 'iconP1', getProperty('iconP1.y') + 300, 1, 'quintOut')
+			doTweenY('healthIconDadTween', 'iconP2', getProperty('iconP2.y') + 300, 1, 'quintOut')
+			doTweenY('scoreTxtTween', 'utilScoreTxt', getProperty('utilScoreTxt.y') + 300, 1, 'quintOut')
+		
+			doTweenY('utilBarBorderTween', 'utilBarBorder', getProperty('utilBarBorder.y') - 300, 1, 'quintOut')
+			doTweenY('utilBarEmptyTween', 'utilBarEmpty', getProperty('utilBarEmpty.y') - 300, 1, 'quintOut')
+			doTweenY('utilBarFillTween', 'utilBarFill', getProperty('utilBarFill.y') - 300, 1, 'quintOut')
+			doTweenY('utilTimerTween', 'utilTimer', getProperty('utilTimer.y') - 300, 1, 'quintOut')
+		end
+
+		if ratingCounterEnabled then
+			doTweenX('ratingComboTween', 'combo', getProperty('combo.x') + 300, 1, 'quintOut')
+			doTweenX('ratingSickTween', 'sick', getProperty('sick.x') + 300, 1.15, 'quintOut')
+			doTweenX('ratingGoodTween', 'good', getProperty('good.x') + 300, 1.25, 'quintOut')
+			doTweenX('ratingBadTween', 'bad', getProperty('bad.x') + 300, 1.35, 'quintOut')
+			doTweenX('ratingShitTween', 'shit', getProperty('shit.x') + 300, 1.45, 'quintOut')
+			doTweenX('ratingFcTween', 'fc', getProperty('fc.x') + 300, 1.55, 'quintOut')
+		end
+	end
+
+	if nowPlayingPopup then
+		if nowPlayingPosition == 'Top Left' or nowPlayingPosition == 'Bottom Left' then
+			doTweenX('MoveInOne', 'utilPlayingLineColor', 0, 0.35, 'CircInOut')
+		elseif nowPlayingPosition == 'Top Right' or nowPlayingPosition == 'Bottom Right' then
+			doTweenX('MoveInOne', 'utilPlayingLineColor', 970, 0.35, 'CircInOut')
+		end
+
+		runTimer('utilPlayingBoxBegin', 0.25, 1)
 	end
 end
 
@@ -664,4 +769,107 @@ function onUpdatePost(dt)
 	screenCenter('utilScoreTxt', 'x')
 	setProperty("utilScoreTxt.scale.x", scoreTxtSX)
 	setProperty("utilScoreTxt.scale.y", scoreTxtSY)
+end
+
+function onGameOverStart()
+	--[[ Hey Modders! ✌️
+
+	I have made a variable in case you want to add any text to Show Reason of Game Over:
+	use 'setVar("utilGOReasonExtra", "Custom Reason")' to make the reason text to your liking!
+
+		~ MaxxVoiid
+	]]
+
+	if not showReasonGO then return end
+
+	local extraDeathReason = getVar("utilGOReasonExtra")
+	local deathReason = getVar("utilGOReason")
+	if deathReason == nil then deathReason = 'Died to health' end
+
+	if extraDeathReason ~= nil and extraDeathReason ~= '' then
+		makeLuaText('deathReason', extraDeathReason, screenWidth, 0, 900)
+	else
+		makeLuaText('deathReason', deathReason, screenWidth, 0, 900)
+	end
+
+    callScript('scripts/usefulFunctions', 'setObjectCamera', {'deathReason', 'other'}) -- setObjectCamera("deathReason", "other")
+    setTextSize('deathReason', 32)
+    addLuaText("deathReason")
+
+    doTweenY('upDeathReason', 'deathReason', 600, 1.5, 'quintOut')
+end
+
+function onGameOverConfirm(retry)
+	if not showReasonGO then return end
+
+    doTweenAlpha("fadeOutReasonText", "deathReason", 0, 1, "linear")
+end
+
+function onTimerCompleted(tag, loops, loopsLeft)
+	if nowPlayingPosition == 'Top Left' or nowPlayingPosition == 'Bottom Left' then
+
+		if tag == 'utilPlayingBoxBegin' then
+			doTweenX('MoveInTwo', 'utilPlayingBox', 0, 0.35, 'CircInOut')
+	
+			runTimer('utilPlayingTxtBegin', 0.25, 1)
+		end
+		if tag == 'utilPlayingTxtBegin' then
+			doTweenAlpha('fadeInTxt', 'utilPlayingTxt', 1, 0.5, 'linear')
+			doTweenAlpha('fadeInSubTxt', 'utilPlayingSubTxt', 1, 0.5, 'linear')
+	
+			runTimer('utilPlayingBoxWait', nowPlayingDuration, 1)
+		end
+		if tag == 'utilPlayingBoxWait' then
+			doTweenX('MoveOutTwo', 'utilPlayingBox', -450, 0.35, 'CircInOut')
+	
+			setProperty('utilPlayingTxt.alpha', 0)
+			setProperty('utilPlayingSubTxt.alpha', 0)
+	
+			runTimer('utilPlayingBoxLeave', 0.25, 1)
+		end
+		if tag == 'utilPlayingBoxLeave' then
+			doTweenX('MoveOutOne', 'utilPlayingLineColor', -450, 0.35, 'CircInOut')
+
+			runTimer('utilPlayingNonVisible', 1, 1)
+		end
+
+	elseif nowPlayingPosition == 'Top Right' or nowPlayingPosition == 'Bottom Right' then
+
+		if tag == 'utilPlayingBoxBegin' then
+			doTweenX('MoveInTwo', 'utilPlayingBox', 985, 0.35, 'CircInOut')
+	
+			runTimer('utilPlayingTxtBegin', 0.25, 1)
+		end
+		if tag == 'utilPlayingTxtBegin' then
+			doTweenAlpha('fadeInTxt', 'utilPlayingTxt', 1, 0.5, 'linear')
+			doTweenAlpha('fadeInSubTxt', 'utilPlayingSubTxt', 1, 0.5, 'linear')
+	
+			runTimer('utilPlayingBoxWait', nowPlayingDuration, 1)
+		end
+		if tag == 'utilPlayingBoxWait' then
+			doTweenX('MoveOutTwo', 'utilPlayingBox', 1405, 0.35, 'CircInOut')
+	
+			setProperty('utilPlayingTxt.alpha', 0)
+			setProperty('utilPlayingSubTxt.alpha', 0)
+	
+			runTimer('utilPlayingBoxLeave', 0.25, 1)
+		end
+		if tag == 'utilPlayingBoxLeave' then
+			doTweenX('MoveOutOne', 'utilPlayingLineColor', 1405, 0.35, 'CircInOut')
+
+			runTimer('utilPlayingNonVisible', 1, 1)
+		end
+
+	end
+
+	if tag == 'utilRSEBA' then
+		rsEBA = true
+	end
+
+	if tag == 'utilPlayingNonVisible' then
+		setProperty('utilPlayingLineColor.visible', false)
+		setProperty('utilPlayingBox.visible', false)
+		setProperty('utilPlayingTxt.visible', false)
+		setProperty('utilPlayingSubTxt.visible', false)
+	end
 end
