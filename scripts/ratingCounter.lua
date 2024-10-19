@@ -22,8 +22,6 @@ This script works as it should, don't touch anything if you don't know what you 
 local dFont = 'vcr.ttf'
 local ratingCounterEnabled = getModSetting('ratingcounterenabled')
 local ratingCounterZoom = getModSetting('ratingcounterzoom')
-local marvelousRatingEnabled = getModSetting('marvelousenabled')
-local marvelousRatingMs = getModSetting('marvelousms')
 local fullFcName = getModSetting('fullfcname')
 
 local usedBotplay = false -- used for cheaters who used botplay at some point in the song >:(
@@ -40,22 +38,10 @@ function onCreatePost()
 	setTextFont('combo', dFont)
 	setTextAlignment('combo', 'left')
 
-	if marvelousRatingEnabled then
-		makeLuaText('marvelous', 'Marvelous: 0', -1, getProperty('combo.x'), getProperty('combo.y') + getProperty('combo.height'));  
-		setTextSize('marvelous', 22);
-		setTextFont('marvelous', dFont)
-		setTextAlignment('marvelous', 'left')
-
-		makeLuaText('sick', 'Sicks: 0', -1, getProperty('combo.x'), getProperty('marvelous.y') + getProperty('marvelous.height'));  
-		setTextSize('sick', 22);
-		setTextFont('sick', dFont)
-		setTextAlignment('sick', 'left')
-	else
-		makeLuaText('sick', 'Sicks: 0', -1, getProperty('combo.x'), getProperty('combo.y') + getProperty('combo.height'));  
-		setTextSize('sick', 22);
-		setTextFont('sick', dFont)
-		setTextAlignment('sick', 'left')
-	end
+	makeLuaText('sick', 'Sicks: 0', -1, getProperty('combo.x'), getProperty('combo.y') + getProperty('combo.height'));  
+	setTextSize('sick', 22);
+	setTextFont('sick', dFont)
+	setTextAlignment('sick', 'left')
 
 	makeLuaText('good', 'Goods: 0', -1, getProperty('combo.x'), getProperty('sick.y') + getProperty('sick.height'));    
 	setTextSize('good', 22);
@@ -105,35 +91,14 @@ function onCreatePost()
 	setTextBorder('fc', 2, '000000')
 
 	setScrollFactor("combo", 0, 0)
-	setObjectCamera("combo", "hud")
 	setScrollFactor("sick", 0, 0)
-	setObjectCamera("sick", "hud")
 	setScrollFactor("good", 0, 0)
-	setObjectCamera("good", "hud")
 	setScrollFactor("bad", 0, 0)
-	setObjectCamera("bad", "hud")
 	setScrollFactor("shit", 0, 0)
-	setObjectCamera("shit", "hud")
 	setScrollFactor("fc", 0, 0)
-	setObjectCamera("fc", "hud")
 
 	if ratingCounterEnabled then
 		addLuaText('combo', true);
-
-		if marvelousRatingEnabled then
-			setProperty("marvelous.wordWrap", false)
-			setProperty("marvelous.autoSize", true)
-	
-			setProperty("marvelous.antialiasing", gAA)
-	
-			setTextBorder('marvelous', 2, '000000')
-	
-			setScrollFactor("marvelous", 0, 0)
-			setObjectCamera("marvelous", "hud")
-	
-			addLuaText('marvelous', true);
-		end
-	
 		addLuaText('sick', true);
 		addLuaText('good', true);
 		addLuaText('bad', true);
@@ -326,9 +291,6 @@ end
 	comboSX = 1
 	comboSY = 1
 
-	marvelousSX = 1
-	marvelousSY = 1
-
 	sickSX = 1
 	sickSY = 1
 
@@ -346,14 +308,12 @@ end
 
 	local mCombo = 0
 	local prevCombo = 0
-	local prevMarvelous = 0
 	local prevSick = 0
 	local prevGood = 0
 	local prevBad = 0
 	local prevShit = 0
 	local prevFc = 0
 
-	local actMarvelous = 0
 	local actSick = 0
 	local actGood = 0
 	local actBad = 0
@@ -366,19 +326,6 @@ end
 		local windowSick = getProperty('ratingsData[0].hitWindow')
 		local windowGood = getProperty('ratingsData[1].hitWindow')
 		local windowBad = getProperty('ratingsData[2].hitWindow')
-
-		if marvelousRatingEnabled and diff <= marvelousRatingMs then
-			if ratingCounterZoom then
-				tweenNumber(nil, "marvelousSX", 1.075, 1, .2, nil, easing.linear)
-				tweenNumber(nil, "marvelousSY", 1.075, 1, .2, nil, easing.linear)
-			end
-
-			actMarvelous = actMarvelous + 1
-
-			setTextColor("marvelous", "FFEBBE")
-			doTweenColor('marvelousW', "marvelous", 'ffffff', 0.3, 'linear')
-			return
-		end
 
 		if diff <= windowSick then
 			if ratingCounterZoom then
@@ -494,12 +441,18 @@ end
 			mCombo = combo
 		end
 
-		local comboTxt = "Combo: " ..tostring(formatNumberWithCommas(combo)).. ' ('..formatNumberWithCommas(mCombo)..')'
-		local marvelousTxt = "Marvelous: " ..tostring(formatNumberWithCommas(actMarvelous))
-		local sickTxt = "Sicks: " ..tostring(formatNumberWithCommas(actSick))
-		local goodTxt = "Goods: " ..tostring(formatNumberWithCommas(actGood))
-		local badTxt = "Bads: " ..tostring(formatNumberWithCommas(actBad))
-		local shitTxt = "Shits: " ..tostring(formatNumberWithCommas(actShit))
+		local formatComboNumber = callScript('scripts/usefulFunctions', 'formatNumberWithCommas', {combo})
+		local formatMComboNumber = callScript('scripts/usefulFunctions', 'formatNumberWithCommas', {mCombo})
+		local formatSickTxt = callScript('scripts/usefulFunctions', 'formatNumberWithCommas', {actSick})
+		local formatGoodTxt = callScript('scripts/usefulFunctions', 'formatNumberWithCommas', {actGood})
+		local formatBadTxt = callScript('scripts/usefulFunctions', 'formatNumberWithCommas', {actBad})
+		local formatShitTxt = callScript('scripts/usefulFunctions', 'formatNumberWithCommas', {actShit})
+
+		local comboTxt = "Combo: " ..tostring(formatNumberWithCommas(formatComboNumber)).. ' ('..formatNumberWithCommas(formatMComboNumber)..')'
+		local sickTxt = "Sicks: " ..tostring(formatNumberWithCommas(formatSickTxt))
+		local goodTxt = "Goods: " ..tostring(formatNumberWithCommas(formatGoodTxt))
+		local badTxt = "Bads: " ..tostring(formatNumberWithCommas(formatBadTxt))
+		local shitTxt = "Shits: " ..tostring(formatNumberWithCommas(formatShitTxt))
 		local fcTxt = getVar("utilCFC")
 
 		if (combo ~= prevCombo) then
@@ -509,16 +462,6 @@ end
 		setProperty("combo.visible", not hideHud)
 		setProperty("combo.scale.x", comboSX)
 		setProperty("combo.scale.y", comboSY)
-
-		if marvelousRatingEnabled then
-			if (actMarvelous ~= prevMarvelous) then
-				setTextString("marvelous", marvelousTxt)
-				centerOrigin("marvelous")
-			end
-			setProperty("marvelous.visible", not hideHud)
-			setProperty("marvelous.scale.x", marvelousSX)
-			setProperty("marvelous.scale.y", marvelousSY)
-		end 
 
 		if (actSick ~= prevSick) then
 			setTextString("sick", sickTxt)
